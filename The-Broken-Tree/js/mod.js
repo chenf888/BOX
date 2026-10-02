@@ -144,7 +144,9 @@ function markObserved(id) {
 // so string-keyed exhibits are invisible to it — the detonation panel is a raw-html grid instead.
 function buildMuseumPanel() {
 	const cells = EXHIBITS.map(EX => {
-		const action = EX.fuse === 0 ? `markObserved("${EX.id}")` : `armClick("${EX.id}")`
+		// Inner args must use single quotes: the onclick attribute is double-quoted, and
+		// `onclick="armClick("Z2")"` is parsed as armClick( + a stray empty attribute.
+		const action = EX.fuse === 0 ? `markObserved('${EX.id}')` : `armClick('${EX.id}')`
 		const label = EX.fuse === 0 ? "ALWAYS ON — mark observed" : "ARM — " + EX.fuse + "s fuse"
 		return "<td style='padding:3px'><button onclick=\"" + action + "\" style='cursor:pointer;padding:6px 8px;background:#202020;color:#eee;border:1px solid #666;border-radius:4px;min-width:150px;min-height:52px'>" +
 			"<b>[" + EX.id + "]</b> " + EX.label + "<br><span style='opacity:0.75'>" + label + "</span></button></td>"
