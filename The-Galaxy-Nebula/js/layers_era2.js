@@ -22,13 +22,20 @@ addLayer("or6", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("or6", 13)) m = m.times(upgradeEffect("or6", 13))
+        if (hasUpgrade("or6", 11)) m = m.div(2)
+        if (hasUpgrade("or6", 12)) m = m.div(upgradeEffect("or6", 12))
+        if (hasUpgrade("or6", 13)) m = m.div(upgradeEffect("or6", 13))
+        if (hasUpgrade("or6", 14)) m = m.div(upgradeEffect("or6", 14))
+        if (hasUpgrade("or6", 25)) m = m.div(upgradeEffect("or6", 25))
         if (hasMilestone("or6", 0)) m = m.div(2.5)
         if (getBuyableAmount("or6", 11).gte(1)) m = m.div(buyableEffect("or6", 11))
         if (hasUpgrade("or7", 23)) m = m.div(upgradeEffect("or7", 23))
         if (hasUpgrade("oa7", 31)) m = m.div(upgradeEffect("oa7", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("or6", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -40,7 +47,7 @@ addLayer("or6", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("or6", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -82,13 +89,13 @@ addLayer("or6", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 planetary nebulae; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("or6", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -113,11 +120,11 @@ addLayer("or6", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Planetary Nebulae gain softcap starts 1,000× later.",
+              description: "Next floor of planetary nebulae costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("or6", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -173,7 +180,7 @@ addLayer("or6", {
 
 
     update(diff) {
-        if (hasMilestone("or6", 1) && !inChallenge("oa6", 23)) {
+        if (hasMilestone("or6", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
             player.or6.points = player.or6.points.add(tmp.or6.resetGain.times(0.02).times(diff))
         }
     },
@@ -203,17 +210,22 @@ addLayer("or7", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("or7", 13)) m = m.times(upgradeEffect("or7", 13))
+        if (hasUpgrade("or7", 11)) m = m.div(2)
+        if (hasUpgrade("or7", 12)) m = m.div(upgradeEffect("or7", 12))
+        if (hasUpgrade("or7", 13)) m = m.div(upgradeEffect("or7", 13))
+        if (hasUpgrade("or7", 14)) m = m.div(upgradeEffect("or7", 14))
+        if (hasUpgrade("or7", 25)) m = m.div(upgradeEffect("or7", 25))
         if (hasMilestone("or7", 0)) m = m.div(2.5)
         if (getBuyableAmount("or7", 11).gte(1)) m = m.div(buyableEffect("or7", 11))
         if (hasUpgrade("or8", 23)) m = m.div(upgradeEffect("or8", 23))
         if (hasUpgrade("oa8", 31)) m = m.div(upgradeEffect("oa8", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("or7", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
-if (hasUpgrade("or8", 23)) m = m.times(upgradeEffect("or8", 23))
-        if (hasUpgrade("or6", 23)) m = m.times(upgradeEffect("or6", 23))
-        if (hasMilestone("or7", 2)) m = m.times(player.or7.heavy.add(1).log(10).plus(1).pow(1.5))
+if (hasMilestone("or7", 2)) m = m.div(player.or7.heavy.add(1).log(10).plus(1).pow(1.5))
         return m
     },
     gainExp() { return new Decimal(1) },
@@ -224,7 +236,7 @@ if (hasUpgrade("or8", 23)) m = m.times(upgradeEffect("or8", 23))
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("or7", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -267,13 +279,13 @@ if (hasUpgrade("or8", 23)) m = m.times(upgradeEffect("or8", 23))
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 supernovae; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("or7", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -298,11 +310,11 @@ if (hasUpgrade("or8", 23)) m = m.times(upgradeEffect("or8", 23))
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Supernovae gain softcap starts 1,000× later.",
+              description: "Next floor of supernovae costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("or7", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -358,14 +370,14 @@ if (hasUpgrade("or8", 23)) m = m.times(upgradeEffect("or8", 23))
 
 
     update(diff) {
-        if (hasMilestone("or7", 1) && !inChallenge("oa6", 23)) {
+        if (hasMilestone("or7", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
             player.or7.points = player.or7.points.add(tmp.or7.resetGain.times(0.02).times(diff))
         }
-        if (hasMilestone("or7", 1) && !inChallenge("oa6", 23)) {
+        if (hasMilestone("or7", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
             let rate = player.or7.points.add(1).log(10).plus(1).pow(2).div(10)
             if (hasUpgrade("or7", 24)) rate = rate.times(4)
             if (hasUpgrade("dm", 15)) rate = rate.times(3)
-            if (hasChallenge("oa6", 14)) rate = rate.times(5)
+            if (hasChallenge("oa6", 14)) rate = rate.times(challengeEffect("oa6", 14))
             player.or7.heavy = player.or7.heavy.add(rate.times(diff))
         }
     },
@@ -395,13 +407,20 @@ addLayer("or8", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("or8", 13)) m = m.times(upgradeEffect("or8", 13))
+        if (hasUpgrade("or8", 11)) m = m.div(2)
+        if (hasUpgrade("or8", 12)) m = m.div(upgradeEffect("or8", 12))
+        if (hasUpgrade("or8", 13)) m = m.div(upgradeEffect("or8", 13))
+        if (hasUpgrade("or8", 14)) m = m.div(upgradeEffect("or8", 14))
+        if (hasUpgrade("or8", 25)) m = m.div(upgradeEffect("or8", 25))
         if (hasMilestone("or8", 0)) m = m.div(2.5)
         if (getBuyableAmount("or8", 11).gte(1)) m = m.div(buyableEffect("or8", 11))
         if (hasUpgrade("or9", 23)) m = m.div(upgradeEffect("or9", 23))
         if (hasUpgrade("oa9", 31)) m = m.div(upgradeEffect("oa9", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("or8", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -413,7 +432,7 @@ addLayer("or8", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("or8", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -455,13 +474,13 @@ addLayer("or8", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 neutron stars; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("or8", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -486,11 +505,11 @@ addLayer("or8", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Neutron Stars gain softcap starts 1,000× later.",
+              description: "Next floor of neutron stars costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("or8", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -546,7 +565,7 @@ addLayer("or8", {
 
 
     update(diff) {
-        if (hasMilestone("or8", 1) && !inChallenge("oa6", 23)) {
+        if (hasMilestone("or8", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
             player.or8.points = player.or8.points.add(tmp.or8.resetGain.times(0.02).times(diff))
         }
     },
@@ -576,13 +595,20 @@ addLayer("or9", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("or9", 13)) m = m.times(upgradeEffect("or9", 13))
+        if (hasUpgrade("or9", 11)) m = m.div(2)
+        if (hasUpgrade("or9", 12)) m = m.div(upgradeEffect("or9", 12))
+        if (hasUpgrade("or9", 13)) m = m.div(upgradeEffect("or9", 13))
+        if (hasUpgrade("or9", 14)) m = m.div(upgradeEffect("or9", 14))
+        if (hasUpgrade("or9", 25)) m = m.div(upgradeEffect("or9", 25))
         if (hasMilestone("or9", 0)) m = m.div(2.5)
         if (getBuyableAmount("or9", 11).gte(1)) m = m.div(buyableEffect("or9", 11))
         if (hasUpgrade("or10", 23)) m = m.div(upgradeEffect("or10", 23))
         if (hasUpgrade("oa10", 31)) m = m.div(upgradeEffect("oa10", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("or9", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -594,7 +620,7 @@ addLayer("or9", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("or9", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -636,13 +662,13 @@ addLayer("or9", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 pulsars; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("or9", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -667,11 +693,11 @@ addLayer("or9", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Pulsars gain softcap starts 1,000× later.",
+              description: "Next floor of pulsars costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("or9", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -727,7 +753,7 @@ addLayer("or9", {
 
 
     update(diff) {
-        if (hasMilestone("or9", 1) && !inChallenge("oa6", 23)) {
+        if (hasMilestone("or9", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
             player.or9.points = player.or9.points.add(tmp.or9.resetGain.times(0.02).times(diff))
         }
     },
@@ -757,13 +783,20 @@ addLayer("or10", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("or10", 13)) m = m.times(upgradeEffect("or10", 13))
+        if (hasUpgrade("or10", 11)) m = m.div(2)
+        if (hasUpgrade("or10", 12)) m = m.div(upgradeEffect("or10", 12))
+        if (hasUpgrade("or10", 13)) m = m.div(upgradeEffect("or10", 13))
+        if (hasUpgrade("or10", 14)) m = m.div(upgradeEffect("or10", 14))
+        if (hasUpgrade("or10", 25)) m = m.div(upgradeEffect("or10", 25))
         if (hasMilestone("or10", 0)) m = m.div(2.5)
         if (getBuyableAmount("or10", 11).gte(1)) m = m.div(buyableEffect("or10", 11))
         if (hasUpgrade("or11", 23)) m = m.div(upgradeEffect("or11", 23))
         if (hasUpgrade("oa11", 31)) m = m.div(upgradeEffect("oa11", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("or10", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -775,7 +808,7 @@ addLayer("or10", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("or10", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -817,13 +850,13 @@ addLayer("or10", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 magnetars; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("or10", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -848,11 +881,11 @@ addLayer("or10", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Magnetars gain softcap starts 1,000× later.",
+              description: "Next floor of magnetars costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("or10", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -908,7 +941,7 @@ addLayer("or10", {
 
 
     update(diff) {
-        if (hasMilestone("or10", 1) && !inChallenge("oa6", 23)) {
+        if (hasMilestone("or10", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
             player.or10.points = player.or10.points.add(tmp.or10.resetGain.times(0.02).times(diff))
         }
     },
@@ -938,13 +971,20 @@ addLayer("pe6", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("pe6", 13)) m = m.times(upgradeEffect("pe6", 13))
+        if (hasUpgrade("pe6", 11)) m = m.div(2)
+        if (hasUpgrade("pe6", 12)) m = m.div(upgradeEffect("pe6", 12))
+        if (hasUpgrade("pe6", 13)) m = m.div(upgradeEffect("pe6", 13))
+        if (hasUpgrade("pe6", 14)) m = m.div(upgradeEffect("pe6", 14))
+        if (hasUpgrade("pe6", 25)) m = m.div(upgradeEffect("pe6", 25))
         if (hasMilestone("pe6", 0)) m = m.div(2.5)
         if (getBuyableAmount("pe6", 11).gte(1)) m = m.div(buyableEffect("pe6", 11))
         if (hasUpgrade("pe7", 23)) m = m.div(upgradeEffect("pe7", 23))
         if (hasUpgrade("or7", 31)) m = m.div(upgradeEffect("or7", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("pe6", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -956,7 +996,7 @@ addLayer("pe6", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("pe6", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -998,13 +1038,13 @@ addLayer("pe6", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 bok globules; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("pe6", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -1029,11 +1069,11 @@ addLayer("pe6", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Bok Globules gain softcap starts 1,000× later.",
+              description: "Next floor of bok globules costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("pe6", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -1075,10 +1115,23 @@ addLayer("pe6", {
                   player[this.layer].points = player[this.layer].points.sub(cost)
                   setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
               } },
+        12: { title: "Chemical Time Capsules Converter",
+              cost(x) { return Decimal.pow(3, x).times(100) },
+              effect() { return player[this.layer].points.add(1).log(10).plus(1).pow(0.6) },
+              display() { return "Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " bok globules<br>Stardust gain ×" + format(tmp[this.layer].buyables[this.id].effect) + "<br>Bought: " + formatWhole(getBuyableAmount(this.layer, this.id)) },
+              canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
+              buy() {
+                  let cost = tmp[this.layer].buyables[this.id].cost
+                  player[this.layer].points = player[this.layer].points.sub(cost)
+                  setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+              } },
     },
 
 
     update(diff) {
+        if (hasMilestone("pe6", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.pe6.points = player.pe6.points.add(tmp.pe6.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -1106,13 +1159,20 @@ addLayer("pe7", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("pe7", 13)) m = m.times(upgradeEffect("pe7", 13))
+        if (hasUpgrade("pe7", 11)) m = m.div(2)
+        if (hasUpgrade("pe7", 12)) m = m.div(upgradeEffect("pe7", 12))
+        if (hasUpgrade("pe7", 13)) m = m.div(upgradeEffect("pe7", 13))
+        if (hasUpgrade("pe7", 14)) m = m.div(upgradeEffect("pe7", 14))
+        if (hasUpgrade("pe7", 25)) m = m.div(upgradeEffect("pe7", 25))
         if (hasMilestone("pe7", 0)) m = m.div(2.5)
         if (getBuyableAmount("pe7", 11).gte(1)) m = m.div(buyableEffect("pe7", 11))
         if (hasUpgrade("pe8", 23)) m = m.div(upgradeEffect("pe8", 23))
         if (hasUpgrade("or8", 31)) m = m.div(upgradeEffect("or8", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("pe7", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -1124,7 +1184,7 @@ addLayer("pe7", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("pe7", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -1166,13 +1226,13 @@ addLayer("pe7", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 globular clusters; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("pe7", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -1197,11 +1257,11 @@ addLayer("pe7", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Globular Clusters gain softcap starts 1,000× later.",
+              description: "Next floor of globular clusters costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("pe7", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -1243,10 +1303,23 @@ addLayer("pe7", {
                   player[this.layer].points = player[this.layer].points.sub(cost)
                   setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
               } },
+        12: { title: "Core Collapse Converter",
+              cost(x) { return Decimal.pow(3, x).times(100) },
+              effect() { return player[this.layer].points.add(1).log(10).plus(1).pow(0.6) },
+              display() { return "Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " globular clusters<br>Stardust gain ×" + format(tmp[this.layer].buyables[this.id].effect) + "<br>Bought: " + formatWhole(getBuyableAmount(this.layer, this.id)) },
+              canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
+              buy() {
+                  let cost = tmp[this.layer].buyables[this.id].cost
+                  player[this.layer].points = player[this.layer].points.sub(cost)
+                  setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+              } },
     },
 
 
     update(diff) {
+        if (hasMilestone("pe7", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.pe7.points = player.pe7.points.add(tmp.pe7.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -1274,13 +1347,20 @@ addLayer("pe8", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("pe8", 13)) m = m.times(upgradeEffect("pe8", 13))
+        if (hasUpgrade("pe8", 11)) m = m.div(2)
+        if (hasUpgrade("pe8", 12)) m = m.div(upgradeEffect("pe8", 12))
+        if (hasUpgrade("pe8", 13)) m = m.div(upgradeEffect("pe8", 13))
+        if (hasUpgrade("pe8", 14)) m = m.div(upgradeEffect("pe8", 14))
+        if (hasUpgrade("pe8", 25)) m = m.div(upgradeEffect("pe8", 25))
         if (hasMilestone("pe8", 0)) m = m.div(2.5)
         if (getBuyableAmount("pe8", 11).gte(1)) m = m.div(buyableEffect("pe8", 11))
         if (hasUpgrade("pe9", 23)) m = m.div(upgradeEffect("pe9", 23))
         if (hasUpgrade("or9", 31)) m = m.div(upgradeEffect("or9", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("pe8", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -1292,7 +1372,7 @@ addLayer("pe8", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("pe8", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -1334,13 +1414,13 @@ addLayer("pe8", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 ob associations; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("pe8", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -1365,11 +1445,11 @@ addLayer("pe8", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "OB Associations gain softcap starts 1,000× later.",
+              description: "Next floor of ob associations costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("pe8", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -1411,10 +1491,23 @@ addLayer("pe8", {
                   player[this.layer].points = player[this.layer].points.sub(cost)
                   setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
               } },
+        12: { title: "O-Star Winds Converter",
+              cost(x) { return Decimal.pow(3, x).times(100) },
+              effect() { return player[this.layer].points.add(1).log(10).plus(1).pow(0.6) },
+              display() { return "Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " ob associations<br>Stardust gain ×" + format(tmp[this.layer].buyables[this.id].effect) + "<br>Bought: " + formatWhole(getBuyableAmount(this.layer, this.id)) },
+              canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
+              buy() {
+                  let cost = tmp[this.layer].buyables[this.id].cost
+                  player[this.layer].points = player[this.layer].points.sub(cost)
+                  setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+              } },
     },
 
 
     update(diff) {
+        if (hasMilestone("pe8", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.pe8.points = player.pe8.points.add(tmp.pe8.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -1442,13 +1535,20 @@ addLayer("pe9", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("pe9", 13)) m = m.times(upgradeEffect("pe9", 13))
+        if (hasUpgrade("pe9", 11)) m = m.div(2)
+        if (hasUpgrade("pe9", 12)) m = m.div(upgradeEffect("pe9", 12))
+        if (hasUpgrade("pe9", 13)) m = m.div(upgradeEffect("pe9", 13))
+        if (hasUpgrade("pe9", 14)) m = m.div(upgradeEffect("pe9", 14))
+        if (hasUpgrade("pe9", 25)) m = m.div(upgradeEffect("pe9", 25))
         if (hasMilestone("pe9", 0)) m = m.div(2.5)
         if (getBuyableAmount("pe9", 11).gte(1)) m = m.div(buyableEffect("pe9", 11))
         if (hasUpgrade("pe10", 23)) m = m.div(upgradeEffect("pe10", 23))
         if (hasUpgrade("or10", 31)) m = m.div(upgradeEffect("or10", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("pe9", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -1460,7 +1560,7 @@ addLayer("pe9", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("pe9", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -1502,13 +1602,13 @@ addLayer("pe9", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 protostellar disks; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("pe9", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -1533,11 +1633,11 @@ addLayer("pe9", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Protostellar Disks gain softcap starts 1,000× later.",
+              description: "Next floor of protostellar disks costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("pe9", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -1579,10 +1679,23 @@ addLayer("pe9", {
                   player[this.layer].points = player[this.layer].points.sub(cost)
                   setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
               } },
+        12: { title: "Snow Lines Converter",
+              cost(x) { return Decimal.pow(3, x).times(100) },
+              effect() { return player[this.layer].points.add(1).log(10).plus(1).pow(0.6) },
+              display() { return "Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " protostellar disks<br>Stardust gain ×" + format(tmp[this.layer].buyables[this.id].effect) + "<br>Bought: " + formatWhole(getBuyableAmount(this.layer, this.id)) },
+              canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
+              buy() {
+                  let cost = tmp[this.layer].buyables[this.id].cost
+                  player[this.layer].points = player[this.layer].points.sub(cost)
+                  setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+              } },
     },
 
 
     update(diff) {
+        if (hasMilestone("pe9", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.pe9.points = player.pe9.points.add(tmp.pe9.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -1610,13 +1723,20 @@ addLayer("pe10", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("pe10", 13)) m = m.times(upgradeEffect("pe10", 13))
+        if (hasUpgrade("pe10", 11)) m = m.div(2)
+        if (hasUpgrade("pe10", 12)) m = m.div(upgradeEffect("pe10", 12))
+        if (hasUpgrade("pe10", 13)) m = m.div(upgradeEffect("pe10", 13))
+        if (hasUpgrade("pe10", 14)) m = m.div(upgradeEffect("pe10", 14))
+        if (hasUpgrade("pe10", 25)) m = m.div(upgradeEffect("pe10", 25))
         if (hasMilestone("pe10", 0)) m = m.div(2.5)
         if (getBuyableAmount("pe10", 11).gte(1)) m = m.div(buyableEffect("pe10", 11))
         if (hasUpgrade("pe11", 23)) m = m.div(upgradeEffect("pe11", 23))
         if (hasUpgrade("or11", 31)) m = m.div(upgradeEffect("or11", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("pe10", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -1628,7 +1748,7 @@ addLayer("pe10", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("pe10", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -1670,13 +1790,13 @@ addLayer("pe10", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 herbig-haro objects; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("pe10", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -1701,11 +1821,11 @@ addLayer("pe10", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Herbig-Haro Objects gain softcap starts 1,000× later.",
+              description: "Next floor of herbig-haro objects costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("pe10", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -1747,10 +1867,23 @@ addLayer("pe10", {
                   player[this.layer].points = player[this.layer].points.sub(cost)
                   setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
               } },
+        12: { title: "Mach Cones Converter",
+              cost(x) { return Decimal.pow(3, x).times(100) },
+              effect() { return player[this.layer].points.add(1).log(10).plus(1).pow(0.6) },
+              display() { return "Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " herbig-haro objects<br>Stardust gain ×" + format(tmp[this.layer].buyables[this.id].effect) + "<br>Bought: " + formatWhole(getBuyableAmount(this.layer, this.id)) },
+              canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
+              buy() {
+                  let cost = tmp[this.layer].buyables[this.id].cost
+                  player[this.layer].points = player[this.layer].points.sub(cost)
+                  setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+              } },
     },
 
 
     update(diff) {
+        if (hasMilestone("pe10", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.pe10.points = player.pe10.points.add(tmp.pe10.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -1774,13 +1907,20 @@ addLayer("sg6", {
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("sg6", 13)) m = m.times(upgradeEffect("sg6", 13))
+        if (hasUpgrade("sg6", 11)) m = m.div(2)
+        if (hasUpgrade("sg6", 12)) m = m.div(upgradeEffect("sg6", 12))
+        if (hasUpgrade("sg6", 13)) m = m.div(upgradeEffect("sg6", 13))
+        if (hasUpgrade("sg6", 14)) m = m.div(upgradeEffect("sg6", 14))
+        if (hasUpgrade("sg6", 25)) m = m.div(upgradeEffect("sg6", 25))
         if (hasMilestone("sg6", 0)) m = m.div(2.5)
         if (getBuyableAmount("sg6", 11).gte(1)) m = m.div(buyableEffect("sg6", 11))
         if (hasUpgrade("sg7", 23)) m = m.div(upgradeEffect("sg7", 23))
         if (hasUpgrade("pe7", 31)) m = m.div(upgradeEffect("pe7", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("sg6", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -1792,7 +1932,7 @@ addLayer("sg6", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("sg6", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -1834,13 +1974,13 @@ addLayer("sg6", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 cosmic rays; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("sg6", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -1865,11 +2005,11 @@ addLayer("sg6", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Cosmic Rays gain softcap starts 1,000× later.",
+              description: "Next floor of cosmic rays costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("sg6", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -1925,6 +2065,9 @@ addLayer("sg6", {
 
 
     update(diff) {
+        if (hasMilestone("sg6", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.sg6.points = player.sg6.points.add(tmp.sg6.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -1948,13 +2091,20 @@ addLayer("sg7", {
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("sg7", 13)) m = m.times(upgradeEffect("sg7", 13))
+        if (hasUpgrade("sg7", 11)) m = m.div(2)
+        if (hasUpgrade("sg7", 12)) m = m.div(upgradeEffect("sg7", 12))
+        if (hasUpgrade("sg7", 13)) m = m.div(upgradeEffect("sg7", 13))
+        if (hasUpgrade("sg7", 14)) m = m.div(upgradeEffect("sg7", 14))
+        if (hasUpgrade("sg7", 25)) m = m.div(upgradeEffect("sg7", 25))
         if (hasMilestone("sg7", 0)) m = m.div(2.5)
         if (getBuyableAmount("sg7", 11).gte(1)) m = m.div(buyableEffect("sg7", 11))
         if (hasUpgrade("sg8", 23)) m = m.div(upgradeEffect("sg8", 23))
         if (hasUpgrade("pe8", 31)) m = m.div(upgradeEffect("pe8", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("sg7", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -1966,7 +2116,7 @@ addLayer("sg7", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("sg7", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -2008,13 +2158,13 @@ addLayer("sg7", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 galactic bulge; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("sg7", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -2039,11 +2189,11 @@ addLayer("sg7", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Galactic Bulge gain softcap starts 1,000× later.",
+              description: "Next floor of galactic bulge costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("sg7", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -2099,6 +2249,9 @@ addLayer("sg7", {
 
 
     update(diff) {
+        if (hasMilestone("sg7", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.sg7.points = player.sg7.points.add(tmp.sg7.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -2122,13 +2275,20 @@ addLayer("sg8", {
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("sg8", 13)) m = m.times(upgradeEffect("sg8", 13))
+        if (hasUpgrade("sg8", 11)) m = m.div(2)
+        if (hasUpgrade("sg8", 12)) m = m.div(upgradeEffect("sg8", 12))
+        if (hasUpgrade("sg8", 13)) m = m.div(upgradeEffect("sg8", 13))
+        if (hasUpgrade("sg8", 14)) m = m.div(upgradeEffect("sg8", 14))
+        if (hasUpgrade("sg8", 25)) m = m.div(upgradeEffect("sg8", 25))
         if (hasMilestone("sg8", 0)) m = m.div(2.5)
         if (getBuyableAmount("sg8", 11).gte(1)) m = m.div(buyableEffect("sg8", 11))
         if (hasUpgrade("sg9", 23)) m = m.div(upgradeEffect("sg9", 23))
         if (hasUpgrade("pe9", 31)) m = m.div(upgradeEffect("pe9", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("sg8", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -2140,7 +2300,7 @@ addLayer("sg8", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("sg8", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -2182,13 +2342,13 @@ addLayer("sg8", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 stellar halo; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("sg8", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -2213,11 +2373,11 @@ addLayer("sg8", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Stellar Halo gain softcap starts 1,000× later.",
+              description: "Next floor of stellar halo costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("sg8", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -2273,6 +2433,9 @@ addLayer("sg8", {
 
 
     update(diff) {
+        if (hasMilestone("sg8", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.sg8.points = player.sg8.points.add(tmp.sg8.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -2296,13 +2459,20 @@ addLayer("sg9", {
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("sg9", 13)) m = m.times(upgradeEffect("sg9", 13))
+        if (hasUpgrade("sg9", 11)) m = m.div(2)
+        if (hasUpgrade("sg9", 12)) m = m.div(upgradeEffect("sg9", 12))
+        if (hasUpgrade("sg9", 13)) m = m.div(upgradeEffect("sg9", 13))
+        if (hasUpgrade("sg9", 14)) m = m.div(upgradeEffect("sg9", 14))
+        if (hasUpgrade("sg9", 25)) m = m.div(upgradeEffect("sg9", 25))
         if (hasMilestone("sg9", 0)) m = m.div(2.5)
         if (getBuyableAmount("sg9", 11).gte(1)) m = m.div(buyableEffect("sg9", 11))
         if (hasUpgrade("sg10", 23)) m = m.div(upgradeEffect("sg10", 23))
         if (hasUpgrade("pe10", 31)) m = m.div(upgradeEffect("pe10", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("sg9", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -2314,7 +2484,7 @@ addLayer("sg9", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("sg9", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -2356,13 +2526,13 @@ addLayer("sg9", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 thick disc; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("sg9", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -2387,11 +2557,11 @@ addLayer("sg9", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Thick Disc gain softcap starts 1,000× later.",
+              description: "Next floor of thick disc costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("sg9", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -2447,6 +2617,9 @@ addLayer("sg9", {
 
 
     update(diff) {
+        if (hasMilestone("sg9", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.sg9.points = player.sg9.points.add(tmp.sg9.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -2470,13 +2643,20 @@ addLayer("sg10", {
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("sg10", 13)) m = m.times(upgradeEffect("sg10", 13))
+        if (hasUpgrade("sg10", 11)) m = m.div(2)
+        if (hasUpgrade("sg10", 12)) m = m.div(upgradeEffect("sg10", 12))
+        if (hasUpgrade("sg10", 13)) m = m.div(upgradeEffect("sg10", 13))
+        if (hasUpgrade("sg10", 14)) m = m.div(upgradeEffect("sg10", 14))
+        if (hasUpgrade("sg10", 25)) m = m.div(upgradeEffect("sg10", 25))
         if (hasMilestone("sg10", 0)) m = m.div(2.5)
         if (getBuyableAmount("sg10", 11).gte(1)) m = m.div(buyableEffect("sg10", 11))
         if (hasUpgrade("sg11", 23)) m = m.div(upgradeEffect("sg11", 23))
         if (hasUpgrade("pe11", 31)) m = m.div(upgradeEffect("pe11", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("sg10", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -2488,7 +2668,7 @@ addLayer("sg10", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("sg10", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -2530,13 +2710,13 @@ addLayer("sg10", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 thin disc; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("sg10", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -2561,11 +2741,11 @@ addLayer("sg10", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Thin Disc gain softcap starts 1,000× later.",
+              description: "Next floor of thin disc costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("sg10", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -2621,6 +2801,9 @@ addLayer("sg10", {
 
 
     update(diff) {
+        if (hasMilestone("sg10", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.sg10.points = player.sg10.points.add(tmp.sg10.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -2644,82 +2827,90 @@ addLayer("oa6", {
         ["blank", "12px"],
         "challenges",
     ],
+    // consumes oa7 u23 and sg7 u31 (chain-feed / spiral-density-wave); harmless on a
+    // type "none" layer — it exists so those two upgrades have a sink.
+    gainMult() {
+        let m = new Decimal(1)
+        if (hasUpgrade("oa7", 23)) m = m.times(upgradeEffect("oa7", 23))
+        if (hasUpgrade("sg7", 31)) m = m.times(upgradeEffect("sg7", 31))
+        return m
+    },
     challenges: {
         11: { name: "Bare Core",
             challengeDescription() { return "All arm-lane multipliers are fourth-rooted.<br>Best stardust inside: " + format(player.oa6.maxpoints[0]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
             goalDescription() { return "Reach " + format(Decimal.pow(1e3, 3 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) + " stardust inside" },
             canComplete() { return player.points.gte(Decimal.pow(1e3, 3 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) },
-            rewardDescription() { return "Reward: stardust gain, scaling with your best score" },
+            rewardDescription() { return "stardust gain, scaling with your best score" },
             rewardEffect() { return player.oa6.maxpoints[0].add(1).log(10).plus(1).pow(2) },
             rewardDisplay() { return "×" + format(this.rewardEffect()) },
             completionLimit: 3,
             unlocked() { return player.oa6.best.gte(1) },
         },
         12: { name: "Stifled Winds",
-            challengeDescription() { return "Stardust gain is completely frozen.<br>Best stardust inside: " + format(player.oa6.maxpoints[1]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
+            challengeDescription() { return "Stardust gain is throttled to 1% — rebuild from nothing.<br>Best stardust inside: " + format(player.oa6.maxpoints[1]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
             goalDescription() { return "Reach " + format(Decimal.pow(1e3, 4 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) + " stardust inside" },
             canComplete() { return player.points.gte(Decimal.pow(1e3, 4 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) },
-            rewardDescription() { return "Reward: gas clouds gain, scaling with your best score" },
+            rewardDescription() { return "gas clouds gain, scaling with your best score" },
             rewardEffect() { return player.oa6.maxpoints[1].add(1).log(10).plus(1).pow(2) },
             rewardDisplay() { return "×" + format(this.rewardEffect()) },
             completionLimit: 3,
             unlocked() { return player.oa6.best.gte(1) },
         },
         13: { name: "Milestone Drought",
-            challengeDescription() { return "All passive milestone production is offline.<br>Best stardust inside: " + format(player.oa6.maxpoints[2]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
+            challengeDescription() { return "All passive milestone production is offline (manual and auto prestige still work).<br>Best stardust inside: " + format(player.oa6.maxpoints[2]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
             goalDescription() { return "Reach " + format(Decimal.pow(1e3, 5 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) + " stardust inside" },
             canComplete() { return player.points.gte(Decimal.pow(1e3, 5 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) },
-            rewardDescription() { return "Reward: all four arms gain, scaling with your best score" },
+            rewardDescription() { return "all four arms gain, scaling with your best score" },
             rewardEffect() { return player.oa6.maxpoints[2].add(1).log(10).plus(1).pow(2) },
             rewardDisplay() { return "×" + format(this.rewardEffect()) },
             completionLimit: 3,
             unlocked() { return player.oa6.best.gte(1) },
         },
         14: { name: "Root of Ruin",
-            challengeDescription() { return "Arm-lane multipliers are rooted — harder.<br>Best stardust inside: " + format(player.oa6.maxpoints[3]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
+            challengeDescription() { return "Arm-lane multipliers are eighth-rooted — harder.<br>Best stardust inside: " + format(player.oa6.maxpoints[3]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
             goalDescription() { return "Reach " + format(Decimal.pow(1e3, 6 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) + " stardust inside" },
             canComplete() { return player.points.gte(Decimal.pow(1e3, 6 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) },
-            rewardDescription() { return "Reward: heavy elements gain, scaling with your best score" },
+            rewardDescription() { return "heavy elements gain, scaling with your best score" },
             rewardEffect() { return player.oa6.maxpoints[3].add(1).log(10).plus(1).pow(2) },
             rewardDisplay() { return "×" + format(this.rewardEffect()) },
             completionLimit: 3,
             unlocked() { return player.oa6.best.gte(1) },
         },
         21: { name: "Cold Fusion",
-            challengeDescription() { return "Stardust gain is completely frozen.<br>Best stardust inside: " + format(player.oa6.maxpoints[4]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
+            challengeDescription() { return "Stardust gain is throttled to 1% — rebuild from nothing.<br>Best stardust inside: " + format(player.oa6.maxpoints[4]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
             goalDescription() { return "Reach " + format(Decimal.pow(1e3, 7 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) + " stardust inside" },
             canComplete() { return player.points.gte(Decimal.pow(1e3, 7 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) },
-            rewardDescription() { return "Reward: dark matter gain, scaling with your best score" },
+            rewardDescription() { return "dark matter gain, scaling with your best score" },
             rewardEffect() { return player.oa6.maxpoints[4].add(1).log(10).plus(1).pow(2) },
             rewardDisplay() { return "×" + format(this.rewardEffect()) },
             completionLimit: 3,
             unlocked() { return player.oa6.best.gte(1) },
         },
         22: { name: "Vacuum Squeeze",
-            challengeDescription() { return "Stardust gain is completely frozen.<br>Best stardust inside: " + format(player.oa6.maxpoints[5]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
+            challengeDescription() { return "Stardust gain is throttled to 1% — rebuild from nothing.<br>Best stardust inside: " + format(player.oa6.maxpoints[5]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
             goalDescription() { return "Reach " + format(Decimal.pow(1e3, 8 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) + " stardust inside" },
             canComplete() { return player.points.gte(Decimal.pow(1e3, 8 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) },
-            rewardDescription() { return "Reward: core trio gain, scaling with your best score" },
+            rewardDescription() { return "core trio gain, scaling with your best score" },
             rewardEffect() { return player.oa6.maxpoints[5].add(1).log(10).plus(1).pow(2) },
             rewardDisplay() { return "×" + format(this.rewardEffect()) },
             completionLimit: 3,
             unlocked() { return player.oa6.best.gte(1) },
         },
         23: { name: "Frozen Fountains",
-            challengeDescription() { return "All passive milestone production is offline.<br>Best stardust inside: " + format(player.oa6.maxpoints[6]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
+            challengeDescription() { return "All passive milestone production is offline (manual and auto prestige still work).<br>Best stardust inside: " + format(player.oa6.maxpoints[6]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
             goalDescription() { return "Reach " + format(Decimal.pow(1e3, 9 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) + " stardust inside" },
             canComplete() { return player.points.gte(Decimal.pow(1e3, 9 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) },
-            rewardDescription() { return "Reward: galactic cores gain, scaling with your best score" },
+            rewardDescription() { return "galactic cores gain, scaling with your best score" },
             rewardEffect() { return player.oa6.maxpoints[6].add(1).log(10).plus(1).pow(2) },
             rewardDisplay() { return "×" + format(this.rewardEffect()) },
             completionLimit: 3,
             unlocked() { return player.oa6.best.gte(1) },
         },
         24: { name: "Silence of the Stars",
-            challengeDescription() { return "All passive milestone production is offline.<br>Best stardust inside: " + format(player.oa6.maxpoints[7]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
+            challengeDescription() { return "All passive milestone production is offline (manual and auto prestige still work).<br>Best stardust inside: " + format(player.oa6.maxpoints[7]) + "<br>" + challengeCompletions(this.layer, this.id) + "/3 completions" },
             goalDescription() { return "Reach " + format(Decimal.pow(1e3, 10 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) + " stardust inside" },
             canComplete() { return player.points.gte(Decimal.pow(1e3, 10 + 2 * challengeCompletions(this.layer, this.id)).times(1e10)) },
-            rewardDescription() { return "Reward: vacuum energy gain, scaling with your best score" },
+            rewardDescription() { return "vacuum energy gain, scaling with your best score" },
             rewardEffect() { return player.oa6.maxpoints[7].add(1).log(10).plus(1).pow(2) },
             rewardDisplay() { return "×" + format(this.rewardEffect()) },
             completionLimit: 3,
@@ -2735,7 +2926,6 @@ addLayer("oa6", {
         }
         player.oa6.best = player.oa6.best.max(player.points)
     },
-    resetsNothing() { return true },
 })
 
 addLayer("oa7", {
@@ -2758,13 +2948,20 @@ addLayer("oa7", {
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("oa7", 13)) m = m.times(upgradeEffect("oa7", 13))
+        if (hasUpgrade("oa7", 11)) m = m.div(2)
+        if (hasUpgrade("oa7", 12)) m = m.div(upgradeEffect("oa7", 12))
+        if (hasUpgrade("oa7", 13)) m = m.div(upgradeEffect("oa7", 13))
+        if (hasUpgrade("oa7", 14)) m = m.div(upgradeEffect("oa7", 14))
+        if (hasUpgrade("oa7", 25)) m = m.div(upgradeEffect("oa7", 25))
         if (hasMilestone("oa7", 0)) m = m.div(2.5)
         if (getBuyableAmount("oa7", 11).gte(1)) m = m.div(buyableEffect("oa7", 11))
         if (hasUpgrade("oa8", 23)) m = m.div(upgradeEffect("oa8", 23))
         if (hasUpgrade("sg8", 31)) m = m.div(upgradeEffect("sg8", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("oa7", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -2776,7 +2973,7 @@ addLayer("oa7", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("oa7", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -2821,13 +3018,13 @@ addLayer("oa7", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 gamma-ray bursts; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("oa7", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -2854,11 +3051,11 @@ addLayer("oa7", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Gamma-Ray Bursts gain softcap starts 1,000× later.",
+              description: "Next floor of gamma-ray bursts costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("oa7", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -2900,10 +3097,23 @@ addLayer("oa7", {
                   player[this.layer].points = player[this.layer].points.sub(cost)
                   setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
               } },
+        12: { title: "Prompt Spike Converter",
+              cost(x) { return Decimal.pow(3, x).times(100) },
+              effect() { return player[this.layer].points.add(1).log(10).plus(1).pow(0.6) },
+              display() { return "Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " gamma-ray bursts<br>Stardust gain ×" + format(tmp[this.layer].buyables[this.id].effect) + "<br>Bought: " + formatWhole(getBuyableAmount(this.layer, this.id)) },
+              canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
+              buy() {
+                  let cost = tmp[this.layer].buyables[this.id].cost
+                  player[this.layer].points = player[this.layer].points.sub(cost)
+                  setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+              } },
     },
 
 
     update(diff) {
+        if (hasMilestone("oa7", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.oa7.points = player.oa7.points.add(tmp.oa7.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -2927,13 +3137,20 @@ addLayer("oa8", {
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("oa8", 13)) m = m.times(upgradeEffect("oa8", 13))
+        if (hasUpgrade("oa8", 11)) m = m.div(2)
+        if (hasUpgrade("oa8", 12)) m = m.div(upgradeEffect("oa8", 12))
+        if (hasUpgrade("oa8", 13)) m = m.div(upgradeEffect("oa8", 13))
+        if (hasUpgrade("oa8", 14)) m = m.div(upgradeEffect("oa8", 14))
+        if (hasUpgrade("oa8", 25)) m = m.div(upgradeEffect("oa8", 25))
         if (hasMilestone("oa8", 0)) m = m.div(2.5)
         if (getBuyableAmount("oa8", 11).gte(1)) m = m.div(buyableEffect("oa8", 11))
         if (hasUpgrade("oa9", 23)) m = m.div(upgradeEffect("oa9", 23))
         if (hasUpgrade("sg9", 31)) m = m.div(upgradeEffect("sg9", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("oa8", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -2945,7 +3162,7 @@ addLayer("oa8", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("oa8", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -2990,13 +3207,13 @@ addLayer("oa8", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 kilonovae; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("oa8", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -3023,11 +3240,11 @@ addLayer("oa8", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Kilonovae gain softcap starts 1,000× later.",
+              description: "Next floor of kilonovae costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("oa8", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -3069,10 +3286,23 @@ addLayer("oa8", {
                   player[this.layer].points = player[this.layer].points.sub(cost)
                   setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
               } },
+        12: { title: "Lanthanide Blankets Converter",
+              cost(x) { return Decimal.pow(3, x).times(100) },
+              effect() { return player[this.layer].points.add(1).log(10).plus(1).pow(0.6) },
+              display() { return "Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " kilonovae<br>Stardust gain ×" + format(tmp[this.layer].buyables[this.id].effect) + "<br>Bought: " + formatWhole(getBuyableAmount(this.layer, this.id)) },
+              canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
+              buy() {
+                  let cost = tmp[this.layer].buyables[this.id].cost
+                  player[this.layer].points = player[this.layer].points.sub(cost)
+                  setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+              } },
     },
 
 
     update(diff) {
+        if (hasMilestone("oa8", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.oa8.points = player.oa8.points.add(tmp.oa8.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -3096,13 +3326,20 @@ addLayer("oa9", {
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("oa9", 13)) m = m.times(upgradeEffect("oa9", 13))
+        if (hasUpgrade("oa9", 11)) m = m.div(2)
+        if (hasUpgrade("oa9", 12)) m = m.div(upgradeEffect("oa9", 12))
+        if (hasUpgrade("oa9", 13)) m = m.div(upgradeEffect("oa9", 13))
+        if (hasUpgrade("oa9", 14)) m = m.div(upgradeEffect("oa9", 14))
+        if (hasUpgrade("oa9", 25)) m = m.div(upgradeEffect("oa9", 25))
         if (hasMilestone("oa9", 0)) m = m.div(2.5)
         if (getBuyableAmount("oa9", 11).gte(1)) m = m.div(buyableEffect("oa9", 11))
         if (hasUpgrade("oa10", 23)) m = m.div(upgradeEffect("oa10", 23))
         if (hasUpgrade("sg10", 31)) m = m.div(upgradeEffect("sg10", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("oa9", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -3114,7 +3351,7 @@ addLayer("oa9", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("oa9", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -3159,13 +3396,13 @@ addLayer("oa9", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 fast radio bursts; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("oa9", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -3192,11 +3429,11 @@ addLayer("oa9", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Fast Radio Bursts gain softcap starts 1,000× later.",
+              description: "Next floor of fast radio bursts costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("oa9", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -3238,10 +3475,23 @@ addLayer("oa9", {
                   player[this.layer].points = player[this.layer].points.sub(cost)
                   setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
               } },
+        12: { title: "Parkes Detections Converter",
+              cost(x) { return Decimal.pow(3, x).times(100) },
+              effect() { return player[this.layer].points.add(1).log(10).plus(1).pow(0.6) },
+              display() { return "Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " fast radio bursts<br>Stardust gain ×" + format(tmp[this.layer].buyables[this.id].effect) + "<br>Bought: " + formatWhole(getBuyableAmount(this.layer, this.id)) },
+              canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
+              buy() {
+                  let cost = tmp[this.layer].buyables[this.id].cost
+                  player[this.layer].points = player[this.layer].points.sub(cost)
+                  setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+              } },
     },
 
 
     update(diff) {
+        if (hasMilestone("oa9", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.oa9.points = player.oa9.points.add(tmp.oa9.resetGain.times(0.02).times(diff))
+        }
     },
 })
 
@@ -3265,13 +3515,20 @@ addLayer("oa10", {
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("oa10", 13)) m = m.times(upgradeEffect("oa10", 13))
+        if (hasUpgrade("oa10", 11)) m = m.div(2)
+        if (hasUpgrade("oa10", 12)) m = m.div(upgradeEffect("oa10", 12))
+        if (hasUpgrade("oa10", 13)) m = m.div(upgradeEffect("oa10", 13))
+        if (hasUpgrade("oa10", 14)) m = m.div(upgradeEffect("oa10", 14))
+        if (hasUpgrade("oa10", 25)) m = m.div(upgradeEffect("oa10", 25))
         if (hasMilestone("oa10", 0)) m = m.div(2.5)
         if (getBuyableAmount("oa10", 11).gte(1)) m = m.div(buyableEffect("oa10", 11))
         if (hasUpgrade("oa11", 23)) m = m.div(upgradeEffect("oa11", 23))
         if (hasUpgrade("sg11", 31)) m = m.div(upgradeEffect("sg11", 31))
+        if (hasChallenge("oa6", 13)) m = m.div(challengeEffect("oa6", 13))
+        if (hasUpgrade("oa10", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
         if (player.mw.unlocked) m = m.div(tmp.mw.effect.armFeed)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -3283,7 +3540,7 @@ addLayer("oa10", {
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
-        if (player.mw.unlocked && this.row <= 10) return
+        if (hasMilestone("mw", 3) && this.row <= 10) return
         let kept = ["unlocked", "auto", "milestones"]
         if (hasMilestone("oa10", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
@@ -3328,13 +3585,13 @@ addLayer("oa10", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 tidal disruption events; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("oa10", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -3361,11 +3618,11 @@ addLayer("oa10", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "Tidal Disruption Events gain softcap starts 1,000× later.",
+              description: "Next floor of tidal disruption events costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("oa10", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -3407,9 +3664,22 @@ addLayer("oa10", {
                   player[this.layer].points = player[this.layer].points.sub(cost)
                   setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
               } },
+        12: { title: "Super-Eddington Flares Converter",
+              cost(x) { return Decimal.pow(3, x).times(100) },
+              effect() { return player[this.layer].points.add(1).log(10).plus(1).pow(0.6) },
+              display() { return "Cost: " + format(tmp[this.layer].buyables[this.id].cost) + " tidal disruption events<br>Stardust gain ×" + format(tmp[this.layer].buyables[this.id].effect) + "<br>Bought: " + formatWhole(getBuyableAmount(this.layer, this.id)) },
+              canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
+              buy() {
+                  let cost = tmp[this.layer].buyables[this.id].cost
+                  player[this.layer].points = player[this.layer].points.sub(cost)
+                  setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+              } },
     },
 
 
     update(diff) {
+        if (hasMilestone("oa10", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
+            player.oa10.points = player.oa10.points.add(tmp.oa10.resetGain.times(0.02).times(diff))
+        }
     },
 })

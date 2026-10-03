@@ -20,8 +20,11 @@ addLayer("gc", {
     ],
     gainMult() {
         let m = new Decimal(1)
+        if (hasUpgrade("gc", 11)) m = m.times(2)
         if (hasUpgrade("gc", 12)) m = m.times(upgradeEffect("gc", 12))
         if (hasUpgrade("gc", 13)) m = m.times(upgradeEffect("gc", 13))
+        if (hasUpgrade("gc", 14)) m = m.times(upgradeEffect("gc", 14))
+        if (hasUpgrade("gc", 25)) m = m.times(upgradeEffect("gc", 25))
         if (hasMilestone("gc", 0)) m = m.times(2.5)
         if (hasMilestone("gc", 1)) m = m.times(3)
         if (getBuyableAmount("gc", 11).gte(1)) m = m.times(buyableEffect("gc", 11))
@@ -52,7 +55,7 @@ addLayer("gc", {
 
         if (hasUpgrade("fu", 31)) m = m.times(upgradeEffect("fu", 31))
         if (hasUpgrade("pl", 23)) m = m.times(upgradeEffect("pl", 23))
-        if (hasUpgrade("hr", 15)) m = m.times(1e4)
+        if (hasUpgrade("dm", 14)) m = m.times(1e4)
         if (hasChallenge("oa6", 12)) m = m.times(challengeEffect("oa6", 12))
         if (hasChallenge("oa6", 22)) m = m.times(challengeEffect("oa6", 22))
         return m
@@ -402,10 +405,15 @@ addLayer("fu", {
     ],
     gainMult() {
         let m = new Decimal(1)
+        if (hasUpgrade("fu", 11)) m = m.times(2)
+        if (hasUpgrade("fu", 12)) m = m.times(upgradeEffect("fu", 12))
         if (hasUpgrade("fu", 13)) m = m.times(upgradeEffect("fu", 13))
+        if (hasUpgrade("fu", 14)) m = m.times(upgradeEffect("fu", 14))
+        if (hasUpgrade("fu", 25)) m = m.times(upgradeEffect("fu", 25))
         if (hasMilestone("fu", 0)) m = m.times(2.5)
         if (hasMilestone("fu", 1)) m = m.times(3)
         if (hasUpgrade("gc", 23)) m = m.times(upgradeEffect("gc", 23))
+        if (hasUpgrade("pl", 31)) m = m.times(upgradeEffect("pl", 31))
         if (getBuyableAmount("fu", 11).gte(1)) m = m.times(buyableEffect("fu", 11))
         if (hasUpgrade("or1", 23)) m = m.times(upgradeEffect("or1", 23))
         if (hasUpgrade("or1", 31)) m = m.times(upgradeEffect("or1", 31))
@@ -618,7 +626,11 @@ addLayer("pl", {
     ],
     gainMult() {
         let m = new Decimal(1)
+        if (hasUpgrade("pl", 11)) m = m.times(2)
+        if (hasUpgrade("pl", 12)) m = m.times(upgradeEffect("pl", 12))
         if (hasUpgrade("pl", 13)) m = m.times(upgradeEffect("pl", 13))
+        if (hasUpgrade("pl", 14)) m = m.times(upgradeEffect("pl", 14))
+        if (hasUpgrade("pl", 25)) m = m.times(upgradeEffect("pl", 25))
         if (hasMilestone("pl", 0)) m = m.times(2.5)
         if (hasMilestone("pl", 1)) m = m.times(3)
         if (hasUpgrade("fu", 23)) m = m.times(upgradeEffect("fu", 23))

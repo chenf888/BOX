@@ -282,7 +282,7 @@ function importSave(imported = undefined, forced = false) {
 		player.versionType = getModID();
 		fixSave();
 		versionCheck();
-		NaNcheck(save)
+		NaNcheck(player)
 		save();
 		window.location.reload();
 	} catch (e) {
@@ -318,7 +318,8 @@ var saveInterval = setInterval(function () {
 }, 5000);
 
 window.onbeforeunload = () => {
-    if (player.autosave) {
-        save();
+    // the autosave toggle lives in options, not on player
+    if (options && options.autosave) {
+        save(true);
     }
 };

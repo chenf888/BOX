@@ -20,7 +20,11 @@ addLayer("mw", {
     ],
     gainMult() {
         let m = new Decimal(1)
+        if (hasUpgrade("mw", 11)) m = m.times(2)
+        if (hasUpgrade("mw", 12)) m = m.times(upgradeEffect("mw", 12))
         if (hasUpgrade("mw", 13)) m = m.times(upgradeEffect("mw", 13))
+        if (hasUpgrade("mw", 14)) m = m.times(upgradeEffect("mw", 14))
+        if (hasUpgrade("mw", 25)) m = m.times(upgradeEffect("mw", 25))
         if (hasMilestone("mw", 0)) m = m.times(2.5)
         if (hasMilestone("mw", 1)) m = m.times(3)
         if (player.mw.winding.gt(1)) m = m.times(player.mw.winding)
@@ -34,11 +38,17 @@ addLayer("mw", {
         if (hasUpgrade("oa22", 23)) m = m.times(upgradeEffect("oa22", 23))
         if (hasUpgrade("oa22", 31)) m = m.times(upgradeEffect("oa22", 31))
         if (hasChallenge("oa6", 23)) m = m.times(challengeEffect("oa6", 23))
-        if (hasMilestone("hr", 4)) m = m.times(1e8)
+        if (hasUpgrade("hr", 15)) m = m.times(1e4)
+        if (hasMilestone("mw", 4)) m = m.times(1e6)
+        if (hasMilestone("hr", 6)) m = m.times(1e8)
         return m
     },
     gainExp() { return new Decimal(1) },
-    softcap() { return new Decimal("1e12") },
+    softcap() {
+        let c = new Decimal("1e12")
+        if (hasUpgrade("mw", 24)) c = c.times(1e3)
+        return c
+    },
     softcapPower() { return new Decimal(0.4) },
     effect() {
         return { armFeed: player.mw.points.add(1).log(10).plus(1).pow(0.5) }
@@ -206,7 +216,7 @@ addLayer("mw", {
               } },
     },
     update(diff) {
-        if (hasMilestone("mw", 1) && !inChallenge("oa6", 21)) {
+        if (hasMilestone("mw", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 21) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
             player.mw.points = player.mw.points.add(tmp.mw.resetGain.times(0.02).times(diff))
         }
     },
@@ -240,12 +250,18 @@ addLayer("lg", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("lg", 13)) m = m.times(upgradeEffect("lg", 13))
+        if (hasUpgrade("lg", 11)) m = m.div(2)
+        if (hasUpgrade("lg", 12)) m = m.div(upgradeEffect("lg", 12))
+        if (hasUpgrade("lg", 13)) m = m.div(upgradeEffect("lg", 13))
+        if (hasUpgrade("lg", 14)) m = m.div(upgradeEffect("lg", 14))
+        if (hasUpgrade("lg", 25)) m = m.div(upgradeEffect("lg", 25))
         if (hasMilestone("lg", 0)) m = m.div(2.5)
         if (getBuyableAmount("lg", 11).gte(1)) m = m.div(buyableEffect("lg", 11))
         if (hasUpgrade("mw", 23)) m = m.div(upgradeEffect("mw", 23))
         if (hasUpgrade("mw", 31)) m = m.div(upgradeEffect("mw", 31))
+        if (hasUpgrade("lg", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -297,13 +313,13 @@ addLayer("lg", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 group bindings; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("lg", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -328,11 +344,11 @@ addLayer("lg", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "group bindings gain softcap starts 1,000× later.",
+              description: "Next floor of group bindings costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("lg", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -414,7 +430,11 @@ addLayer("vc", {
     ],
     gainMult() {
         let m = new Decimal(1)
+        if (hasUpgrade("vc", 11)) m = m.times(2)
+        if (hasUpgrade("vc", 12)) m = m.times(upgradeEffect("vc", 12))
         if (hasUpgrade("vc", 13)) m = m.times(upgradeEffect("vc", 13))
+        if (hasUpgrade("vc", 14)) m = m.times(upgradeEffect("vc", 14))
+        if (hasUpgrade("vc", 25)) m = m.times(upgradeEffect("vc", 25))
         if (hasMilestone("vc", 0)) m = m.times(2.5)
         if (getBuyableAmount("vc", 11).gte(1)) m = m.times(buyableEffect("vc", 11))
         if (hasUpgrade("lg", 23)) m = m.times(upgradeEffect("lg", 23))
@@ -422,6 +442,7 @@ addLayer("vc", {
         if (hasUpgrade("hr", 12)) m = m.times(1e3)
         if (hasUpgrade("dm", 13)) m = m.pow(1.03)
         if (hasUpgrade("dm", 23)) m = m.times(1e6)
+        if (hasMilestone("mw", 4)) m = m.times(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.root(4)
         return m
     },
@@ -486,7 +507,7 @@ addLayer("vc", {
               effect() {
                   let ret = new Decimal(1)
                   if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10000)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -599,12 +620,18 @@ addLayer("ln", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("ln", 13)) m = m.times(upgradeEffect("ln", 13))
+        if (hasUpgrade("ln", 11)) m = m.div(2)
+        if (hasUpgrade("ln", 12)) m = m.div(upgradeEffect("ln", 12))
+        if (hasUpgrade("ln", 13)) m = m.div(upgradeEffect("ln", 13))
+        if (hasUpgrade("ln", 14)) m = m.div(upgradeEffect("ln", 14))
+        if (hasUpgrade("ln", 25)) m = m.div(upgradeEffect("ln", 25))
         if (hasMilestone("ln", 0)) m = m.div(2.5)
         if (getBuyableAmount("ln", 11).gte(1)) m = m.div(buyableEffect("ln", 11))
         if (hasUpgrade("vc", 23)) m = m.div(upgradeEffect("vc", 23))
         if (hasUpgrade("vc", 31)) m = m.div(upgradeEffect("vc", 31))
+        if (hasUpgrade("ln", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -656,13 +683,13 @@ addLayer("ln", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 supercluster flow; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("ln", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -687,11 +714,11 @@ addLayer("ln", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "supercluster flow gain softcap starts 1,000× later.",
+              description: "Next floor of supercluster flow costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("ln", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -773,7 +800,11 @@ addLayer("cw", {
     ],
     gainMult() {
         let m = new Decimal(1)
+        if (hasUpgrade("cw", 11)) m = m.times(2)
+        if (hasUpgrade("cw", 12)) m = m.times(upgradeEffect("cw", 12))
         if (hasUpgrade("cw", 13)) m = m.times(upgradeEffect("cw", 13))
+        if (hasUpgrade("cw", 14)) m = m.times(upgradeEffect("cw", 14))
+        if (hasUpgrade("cw", 25)) m = m.times(upgradeEffect("cw", 25))
         if (hasMilestone("cw", 0)) m = m.times(2.5)
         if (getBuyableAmount("cw", 11).gte(1)) m = m.times(buyableEffect("cw", 11))
         if (hasUpgrade("ln", 23)) m = m.times(upgradeEffect("ln", 23))
@@ -781,6 +812,7 @@ addLayer("cw", {
         if (hasUpgrade("hr", 12)) m = m.times(1e3)
         if (hasUpgrade("dm", 13)) m = m.pow(1.03)
         if (hasUpgrade("dm", 23)) m = m.times(1e6)
+        if (hasMilestone("mw", 4)) m = m.times(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.root(4)
         return m
     },
@@ -845,7 +877,7 @@ addLayer("cw", {
               effect() {
                   let ret = new Decimal(1)
                   if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10000)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -958,12 +990,18 @@ addLayer("ga", {
     ],
     gainMult() {
         let m = new Decimal(1)
-        if (hasUpgrade("ga", 13)) m = m.times(upgradeEffect("ga", 13))
+        if (hasUpgrade("ga", 11)) m = m.div(2)
+        if (hasUpgrade("ga", 12)) m = m.div(upgradeEffect("ga", 12))
+        if (hasUpgrade("ga", 13)) m = m.div(upgradeEffect("ga", 13))
+        if (hasUpgrade("ga", 14)) m = m.div(upgradeEffect("ga", 14))
+        if (hasUpgrade("ga", 25)) m = m.div(upgradeEffect("ga", 25))
         if (hasMilestone("ga", 0)) m = m.div(2.5)
         if (getBuyableAmount("ga", 11).gte(1)) m = m.div(buyableEffect("ga", 11))
         if (hasUpgrade("cw", 23)) m = m.div(upgradeEffect("cw", 23))
         if (hasUpgrade("cw", 31)) m = m.div(upgradeEffect("cw", 31))
+        if (hasUpgrade("ga", 24)) m = m.div(1e3)
         if (hasUpgrade("dm", 23)) m = m.div(1e6)
+        if (hasMilestone("mw", 4)) m = m.div(1e4)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) m = m.pow(2)
         return m
     },
@@ -1015,13 +1053,13 @@ addLayer("ga", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         14: { title: "Threshold Effect",
-              description: "×5 at 100 attractor pull; ×5 more at 1e4.",
+              description: "×5 at 10 floors; ×5 more at 20.",
               cost: new Decimal(4),
               unlocked() { return hasUpgrade("ga", 13) },
               effect() {
                   let ret = new Decimal(1)
-                  if (player[this.layer].best.gte(100)) ret = ret.times(5)
-                  if (player[this.layer].best.gte(1e4)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(10)) ret = ret.times(5)
+                  if (player[this.layer].best.gte(20)) ret = ret.times(5)
                   return ret
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
@@ -1046,11 +1084,11 @@ addLayer("ga", {
                   return ret },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         24: { title: "Pressure Release",
-              description: "attractor pull gain softcap starts 1,000× later.",
+              description: "Next floor of attractor pull costs 1,000× less stardust.",
               cost: new Decimal(12),
               unlocked() { return hasUpgrade("ga", 21) },
               effect() { return new Decimal(1e3) },
-              effectDisplay() { return "softcap ×" + format(upgradeEffect(this.layer, this.id)) } },
+              effectDisplay() { return "costs ÷" + format(upgradeEffect(this.layer, this.id)) } },
         25: { title: "Buyable Synergy",
               description: "Gain is boosted by your first buyable's effect.",
               cost: new Decimal(15),
@@ -1133,14 +1171,16 @@ addLayer("de", {
         let raw = pts.pow(0.6)
         raw = raw.times(tmp.de.gainMult)
         if (inChallenge("oa6", 11) || inChallenge("oa6", 14)) raw = raw.root(4)
-        let ret = raw.sub(player.de.points).max(0).floor()
+        // no floor(): a fractional final step must stay reachable (the old floor
+        // could leave the gain at 0 while canReset still said yes, wasting a reset)
+        let ret = raw.sub(player.de.points).max(0)
         return ret
     },
     getNextAt() {
         let target = player.de.points.add(2)
         return Decimal.pow(10, target.max(2).pow(1 / 0.6))
     },
-    canReset() { return player.points.gte(tmp.de.getNextAt) },
+    canReset() { return player.points.gte(tmp.de.getNextAt) && tmp.de.getResetGain.gt(0) },
     prestigeButtonText() {
         if (!canReset("de")) return "Space is not yet stretched thin enough.<br>Next at " + format(tmp.de.getNextAt) + " stardust"
         return "Let space push: gain <b>" + format(getResetGain("de")) + "</b> vacuum energy"
@@ -1148,19 +1188,25 @@ addLayer("de", {
     gainMult() {
         let m = new Decimal(1)
         if (hasUpgrade("de", 11)) m = m.times(2)
+        if (hasUpgrade("de", 12)) m = m.times(upgradeEffect("de", 12))
         if (hasUpgrade("de", 13)) m = m.times(upgradeEffect("de", 13))
         if (hasUpgrade("de", 14)) m = m.times(upgradeEffect("de", 14))
+        if (hasUpgrade("de", 24)) m = m.times(upgradeEffect("de", 24))
+        if (hasUpgrade("de", 25)) m = m.times(upgradeEffect("de", 25))
         if (hasMilestone("de", 0)) m = m.times(2.5)
         if (hasMilestone("de", 1)) m = m.times(3)
         if (getBuyableAmount("de", 11).gte(1)) m = m.times(buyableEffect("de", 11))
-        if (hasUpgrade("cw", 23)) m = m.times(upgradeEffect("cw", 23))
+        if (hasUpgrade("ga", 23)) m = m.times(upgradeEffect("ga", 23))
+        if (hasMilestone("de", 4)) m = m.times(10)
+        if (hasMilestone("mw", 4)) m = m.times(1e4)
+        if (hasUpgrade("hr", 13)) m = m.times(1e2)
         if (hasUpgrade("dm", 22)) m = m.times(10)
         if (hasChallenge("oa6", 24)) m = m.times(challengeEffect("oa6", 24))
         if (hasMilestone("hr", 5)) m = m.times(1e3)
         return m
     },
     update(diff) {
-        if (hasMilestone("de", 1) && !inChallenge("oa6", 21)) {
+        if (hasMilestone("de", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 21) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
             player.de.points = player.de.points.add(layers.de.getResetGain().times(0.02).times(diff))
         }
     },
@@ -1361,7 +1407,7 @@ addLayer("hr", {
              unlocked() { return hasMilestone(this.layer, 2) },
              done() { return player[this.layer].total.gte(8) } },
         4: { requirementDescription: "12 light-years",
-             effectDescription: "All four arm lanes gain ×1e6",
+             effectDescription: "All four arm lanes gain ×1e6 (reads The Grand Assembly; galactic cores ×1e8)",
              unlocked() { return hasMilestone(this.layer, 3) },
              done() { return player[this.layer].total.gte(12) } },
         5: { requirementDescription: "16 light-years",

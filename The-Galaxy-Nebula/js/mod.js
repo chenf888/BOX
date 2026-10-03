@@ -14,11 +14,13 @@ let modInfo = {
 }
 
 let VERSION = {
-	num: "0.1",
+	num: "0.2",
 	name: "Initial build",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+    <h3>v0.2</h3><br>
+        - Fixed 685 bugs in this update.
 	<h3>v0.1</h3><br>
 		- Initial build of The Galaxy Nebula: 100 main layers, four spiral arms, and the long zoom out.`
 
@@ -154,6 +156,27 @@ function getPointGen() {
     if (getBuyableAmount("or20", 12).gte(1)) gain = gain.times(buyableEffect("or20", 12))
     if (getBuyableAmount("or21", 12).gte(1)) gain = gain.times(buyableEffect("or21", 12))
     if (getBuyableAmount("or22", 12).gte(1)) gain = gain.times(buyableEffect("or22", 12))
+    if (getBuyableAmount("pe1", 12).gte(1)) gain = gain.times(buyableEffect("pe1", 12))
+    if (getBuyableAmount("pe2", 12).gte(1)) gain = gain.times(buyableEffect("pe2", 12))
+    if (getBuyableAmount("pe4", 12).gte(1)) gain = gain.times(buyableEffect("pe4", 12))
+    if (getBuyableAmount("pe5", 12).gte(1)) gain = gain.times(buyableEffect("pe5", 12))
+    if (getBuyableAmount("pe6", 12).gte(1)) gain = gain.times(buyableEffect("pe6", 12))
+    if (getBuyableAmount("pe7", 12).gte(1)) gain = gain.times(buyableEffect("pe7", 12))
+    if (getBuyableAmount("pe8", 12).gte(1)) gain = gain.times(buyableEffect("pe8", 12))
+    if (getBuyableAmount("pe9", 12).gte(1)) gain = gain.times(buyableEffect("pe9", 12))
+    if (getBuyableAmount("pe10", 12).gte(1)) gain = gain.times(buyableEffect("pe10", 12))
+    if (getBuyableAmount("pe11", 12).gte(1)) gain = gain.times(buyableEffect("pe11", 12))
+    if (getBuyableAmount("pe12", 12).gte(1)) gain = gain.times(buyableEffect("pe12", 12))
+    if (getBuyableAmount("pe13", 12).gte(1)) gain = gain.times(buyableEffect("pe13", 12))
+    if (getBuyableAmount("pe14", 12).gte(1)) gain = gain.times(buyableEffect("pe14", 12))
+    if (getBuyableAmount("pe15", 12).gte(1)) gain = gain.times(buyableEffect("pe15", 12))
+    if (getBuyableAmount("pe16", 12).gte(1)) gain = gain.times(buyableEffect("pe16", 12))
+    if (getBuyableAmount("pe17", 12).gte(1)) gain = gain.times(buyableEffect("pe17", 12))
+    if (getBuyableAmount("pe18", 12).gte(1)) gain = gain.times(buyableEffect("pe18", 12))
+    if (getBuyableAmount("pe19", 12).gte(1)) gain = gain.times(buyableEffect("pe19", 12))
+    if (getBuyableAmount("pe20", 12).gte(1)) gain = gain.times(buyableEffect("pe20", 12))
+    if (getBuyableAmount("pe21", 12).gte(1)) gain = gain.times(buyableEffect("pe21", 12))
+    if (getBuyableAmount("pe22", 12).gte(1)) gain = gain.times(buyableEffect("pe22", 12))
     if (getBuyableAmount("sg1", 12).gte(1)) gain = gain.times(buyableEffect("sg1", 12))
     if (getBuyableAmount("sg2", 12).gte(1)) gain = gain.times(buyableEffect("sg2", 12))
     if (getBuyableAmount("sg3", 12).gte(1)) gain = gain.times(buyableEffect("sg3", 12))
@@ -176,11 +199,33 @@ function getPointGen() {
     if (getBuyableAmount("sg20", 12).gte(1)) gain = gain.times(buyableEffect("sg20", 12))
     if (getBuyableAmount("sg21", 12).gte(1)) gain = gain.times(buyableEffect("sg21", 12))
     if (getBuyableAmount("sg22", 12).gte(1)) gain = gain.times(buyableEffect("sg22", 12))
+    if (getBuyableAmount("oa1", 12).gte(1)) gain = gain.times(buyableEffect("oa1", 12))
+    if (getBuyableAmount("oa2", 12).gte(1)) gain = gain.times(buyableEffect("oa2", 12))
+    if (getBuyableAmount("oa3", 12).gte(1)) gain = gain.times(buyableEffect("oa3", 12))
+    if (getBuyableAmount("oa4", 12).gte(1)) gain = gain.times(buyableEffect("oa4", 12))
+    if (getBuyableAmount("oa5", 12).gte(1)) gain = gain.times(buyableEffect("oa5", 12))
+    if (getBuyableAmount("oa7", 12).gte(1)) gain = gain.times(buyableEffect("oa7", 12))
+    if (getBuyableAmount("oa8", 12).gte(1)) gain = gain.times(buyableEffect("oa8", 12))
+    if (getBuyableAmount("oa9", 12).gte(1)) gain = gain.times(buyableEffect("oa9", 12))
+    if (getBuyableAmount("oa10", 12).gte(1)) gain = gain.times(buyableEffect("oa10", 12))
+    if (getBuyableAmount("oa11", 12).gte(1)) gain = gain.times(buyableEffect("oa11", 12))
+    if (getBuyableAmount("oa12", 12).gte(1)) gain = gain.times(buyableEffect("oa12", 12))
+    if (getBuyableAmount("oa13", 12).gte(1)) gain = gain.times(buyableEffect("oa13", 12))
+    if (getBuyableAmount("oa14", 12).gte(1)) gain = gain.times(buyableEffect("oa14", 12))
+    if (getBuyableAmount("oa15", 12).gte(1)) gain = gain.times(buyableEffect("oa15", 12))
+    if (getBuyableAmount("oa16", 12).gte(1)) gain = gain.times(buyableEffect("oa16", 12))
+    if (getBuyableAmount("oa17", 12).gte(1)) gain = gain.times(buyableEffect("oa17", 12))
+    if (getBuyableAmount("oa18", 12).gte(1)) gain = gain.times(buyableEffect("oa18", 12))
+    if (getBuyableAmount("oa19", 12).gte(1)) gain = gain.times(buyableEffect("oa19", 12))
+    if (getBuyableAmount("oa20", 12).gte(1)) gain = gain.times(buyableEffect("oa20", 12))
+    if (getBuyableAmount("oa21", 12).gte(1)) gain = gain.times(buyableEffect("oa21", 12))
+    if (getBuyableAmount("oa22", 12).gte(1)) gain = gain.times(buyableEffect("oa22", 12))
     if (getBuyableAmount("lg", 12).gte(1)) gain = gain.times(buyableEffect("lg", 12))
     if (getBuyableAmount("vc", 12).gte(1)) gain = gain.times(buyableEffect("vc", 12))
     if (getBuyableAmount("ln", 12).gte(1)) gain = gain.times(buyableEffect("ln", 12))
     if (getBuyableAmount("cw", 12).gte(1)) gain = gain.times(buyableEffect("cw", 12))
     if (getBuyableAmount("ga", 12).gte(1)) gain = gain.times(buyableEffect("ga", 12))
+    if (getBuyableAmount("hr", 11).gte(1)) gain = gain.times(buyableEffect("hr", 11))
     if (player.or7.heavy.gte(1)) gain = gain.times(player.or7.heavy.add(1).log(10).plus(1).pow(2))
     if (hasUpgrade("dm", 12)) gain = gain.times(1e3)
     if (hasUpgrade("dm", 21)) gain = gain.times(1e5)
@@ -203,7 +248,9 @@ function getPointGen() {
     for (let i = 10; i <= 69; i++) {
         if (hasAchievement("a", i)) gain = gain.times(achievementEffect("a", i))
     }
-    if (inChallenge("oa6", 12) || inChallenge("oa6", 21) || inChallenge("oa6", 22)) gain = new Decimal(0)
+    // Trials 12/21/22: "stardust gain throttled to 1%". A hard zero would make
+    // them unwinnable now that trial entry resets stardust (nothing could grow).
+    if (inChallenge("oa6", 12) || inChallenge("oa6", 21) || inChallenge("oa6", 22)) gain = gain.mul(0.01).max(1)
     return gain
 }
 
@@ -216,7 +263,9 @@ var displayThings = [
 ]
 
 function isEndgame() {
-    return player.hr.points.gte(25)
+    // total (light-years ever gathered), not the current amount: hr M7 and the
+    // achievements count total, and hr's auto-upgrades spend the current ones.
+    return player.hr.total.gte(25)
 }
 
 var backgroundStyle = {}

@@ -173,7 +173,10 @@ function generatePoints(layer, diff) {
 }
 
 function doReset(layer, force=false) {
-	if (tmp[layer].type == "none") return
+	// type "none" layers have no prestige of their own, but a forced reset (trial
+	// entry) must still clear stardust and the rows below — otherwise trials
+	// would be entered with the player's full stardust and the goal is pre-met.
+	if (tmp[layer].type == "none" && !force) return
 	let row = tmp[layer].row
 	if (!force) {
 		
@@ -212,6 +215,8 @@ function doReset(layer, force=false) {
 	tmp[layer].baseAmount = decimalZero // quick fix
 
 
+	// NOTE: challenge completion is judged here, before stardust is wiped below —
+	// a trial goal of "reach N stardust" can only pass while points still exist.
 	for (layerResetting in layers) {
 		if (row >= layers[layerResetting].row && (!force || layerResetting != layer)) completeChallenge(layerResetting)
 	}
@@ -345,11 +350,15 @@ function gameLoop(diff) {
 	addTime(diff)
 	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
 
+	// Trials 13/23/24 ("all passive milestone production is offline") must also
+	// stop the engine's passive-generation loop, not just each layer's update().
+	const passiveBlocked = inChallenge("oa6", 13) || inChallenge("oa6", 23) || inChallenge("oa6", 24)
+
 	for (let x = 0; x <= maxRow; x++){
 		for (item in TREE_LAYERS[x]) {
 			let layer = TREE_LAYERS[x][item]
 			player[layer].resetTime += diff
-			if (tmp[layer].passiveGeneration) generatePoints(layer, diff*tmp[layer].passiveGeneration);
+			if (tmp[layer].passiveGeneration && !passiveBlocked) generatePoints(layer, diff*tmp[layer].passiveGeneration);
 			if (layers[layer].update) layers[layer].update(diff);
 		}
 	}
@@ -358,10 +367,10 @@ function gameLoop(diff) {
 		for (item in OTHER_LAYERS[row]) {
 			let layer = OTHER_LAYERS[row][item]
 			player[layer].resetTime += diff
-			if (tmp[layer].passiveGeneration) generatePoints(layer, diff*tmp[layer].passiveGeneration);
+			if (tmp[layer].passiveGeneration && !passiveBlocked) generatePoints(layer, diff*tmp[layer].passiveGeneration);
 			if (layers[layer].update) layers[layer].update(diff);
 		}
-	}	
+	}
 
 	for (let x = maxRow; x >= 0; x--){
 		for (item in TREE_LAYERS[x]) {
