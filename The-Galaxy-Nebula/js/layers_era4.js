@@ -48,7 +48,7 @@ addLayer("or16", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -249,7 +249,7 @@ addLayer("or17", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -455,7 +455,7 @@ addLayer("or18", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -656,7 +656,7 @@ addLayer("or19", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -862,7 +862,7 @@ addLayer("or20", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -1063,7 +1063,7 @@ addLayer("or21", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -1267,7 +1267,7 @@ addLayer("or22", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -1473,7 +1473,7 @@ addLayer("pe16", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -1674,7 +1674,7 @@ addLayer("pe17", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -1880,7 +1880,7 @@ addLayer("pe18", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -2081,7 +2081,7 @@ addLayer("pe19", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -2287,7 +2287,7 @@ addLayer("pe20", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -2488,7 +2488,7 @@ addLayer("pe21", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },
@@ -2692,7 +2692,7 @@ addLayer("pe22", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("sg18", 3)) return true },
     passiveGeneration() { if (hasMilestone("sg18", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("sg18", 3)) return true },
     resetsNothing() { if (hasMilestone("sg18", 3)) return true },

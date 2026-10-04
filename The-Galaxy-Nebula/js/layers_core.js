@@ -71,7 +71,8 @@ addLayer("gc", {
     softcapPower() { return new Decimal(0.4) },
     resetsNothing() { if (hasMilestone("fu", 2)) return true },
     passiveGeneration() { if (hasMilestone("fu", 3)) return 1 },
-    autoPrestige() { if (hasMilestone("pl", 0)) return true },
+    // SAFETY INVARIANT (see below): auto-prestige must not arrive before this layer's own resetsNothing milestone.
+    autoPrestige() { if (hasMilestone("pl", 0) && hasMilestone("fu", 2)) return true },
     autoUpgrade() { if (hasMilestone("pl", 2)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
@@ -469,7 +470,7 @@ addLayer("fu", {
     softcapPower() { return new Decimal(0.4) },
     resetsNothing() { if (hasMilestone("or1", 2)) return true },
     passiveGeneration() { if (hasMilestone("or1", 2)) return 1 },
-    autoPrestige() { if (hasMilestone("pe1", 2)) return true },
+    autoPrestige() { if (hasMilestone("pe1", 2) && hasMilestone("or1", 2)) return true },
     autoUpgrade() { if (hasMilestone("pe1", 2)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
@@ -698,7 +699,9 @@ addLayer("pl", {
     softcapPower() { return new Decimal(0.4) },
     resetsNothing() { if (hasMilestone("sg2", 2)) return true },
     passiveGeneration() { if (hasMilestone("sg2", 2)) return 1 },
-    autoPrestige() { if (hasMilestone("pe1", 2)) return true },
+    // SAFETY INVARIANT (see gc): pe1 M2 lands at ~3.8e25 stardust but sg2 M2 needs ~1.3e32, so an
+    // ungated auto-prestige here zeroes stardust for six orders of magnitude of play.
+    autoPrestige() { if (hasMilestone("pe1", 2) && hasMilestone("sg2", 2)) return true },
     autoUpgrade() { if (hasMilestone("sg2", 2)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
@@ -804,7 +807,7 @@ addLayer("pl", {
     },
     milestones: {
         0: { requirementDescription: "6e4 planetary systems",
-             effectDescription: "Gas clouds gain auto-prestige (toggleable)",
+             effectDescription: "Gas clouds auto-prestige once Fusion Cores M2 stops them resetting stardust",
              done() { return player[this.layer].best.gte(6e4) } },
         1: { requirementDescription: "4e5 planetary systems",
              effectDescription: "Planetary system gain ×3; stardust gain ×25",

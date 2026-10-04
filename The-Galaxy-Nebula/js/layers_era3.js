@@ -48,7 +48,7 @@ addLayer("or11", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("pe12", 3)) return true },
     passiveGeneration() { if (hasMilestone("pe12", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("pe12", 3)) return true },
     resetsNothing() { if (hasMilestone("pe12", 3)) return true },
@@ -254,7 +254,7 @@ addLayer("or12", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("pe12", 3)) return true },
     passiveGeneration() { if (hasMilestone("pe12", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("pe12", 3)) return true },
     resetsNothing() { if (hasMilestone("pe12", 3)) return true },
@@ -460,7 +460,7 @@ addLayer("or13", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("pe12", 3)) return true },
     passiveGeneration() { if (hasMilestone("pe12", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("pe12", 3)) return true },
     resetsNothing() { if (hasMilestone("pe12", 3)) return true },
@@ -666,7 +666,7 @@ addLayer("or14", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("pe12", 3)) return true },
     passiveGeneration() { if (hasMilestone("pe12", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("pe12", 3)) return true },
     resetsNothing() { if (hasMilestone("pe12", 3)) return true },
@@ -872,7 +872,7 @@ addLayer("or15", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("pe12", 3)) return true },
     passiveGeneration() { if (hasMilestone("pe12", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("pe12", 3)) return true },
     resetsNothing() { if (hasMilestone("pe12", 3)) return true },
@@ -1078,7 +1078,7 @@ addLayer("pe11", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("pe12", 3)) return true },
     passiveGeneration() { if (hasMilestone("pe12", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("pe12", 3)) return true },
     resetsNothing() { if (hasMilestone("pe12", 3)) return true },
@@ -1284,7 +1284,7 @@ addLayer("pe12", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("pe12", 3)) return true },
     passiveGeneration() { if (hasMilestone("pe12", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("pe12", 3)) return true },
     resetsNothing() { if (hasMilestone("pe12", 3)) return true },
@@ -1490,7 +1490,7 @@ addLayer("pe13", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("pe12", 3)) return true },
     passiveGeneration() { if (hasMilestone("pe12", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("pe12", 3)) return true },
     resetsNothing() { if (hasMilestone("pe12", 3)) return true },
@@ -1696,7 +1696,7 @@ addLayer("pe14", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("pe12", 3)) return true },
     passiveGeneration() { if (hasMilestone("pe12", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("pe12", 3)) return true },
     resetsNothing() { if (hasMilestone("pe12", 3)) return true },
@@ -1902,7 +1902,7 @@ addLayer("pe15", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("pe12", 3)) return true },
     passiveGeneration() { if (hasMilestone("pe12", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("pe12", 3)) return true },
     resetsNothing() { if (hasMilestone("pe12", 3)) return true },

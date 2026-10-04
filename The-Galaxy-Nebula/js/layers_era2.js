@@ -43,7 +43,7 @@ addLayer("or6", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("or8", 3)) return true },
     passiveGeneration() { if (hasMilestone("or8", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("or8", 3)) return true },
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
@@ -245,7 +245,7 @@ if (hasMilestone("or7", 2)) m = m.div(player.or7.heavy.add(1).log(10).plus(1).po
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("or8", 3)) return true },
     passiveGeneration() { if (hasMilestone("or8", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("or8", 3)) return true },
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
@@ -454,7 +454,7 @@ addLayer("or8", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("or8", 3)) return true },
     passiveGeneration() { if (hasMilestone("or8", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("or8", 3)) return true },
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
@@ -655,7 +655,7 @@ addLayer("or9", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("or8", 3)) return true },
     passiveGeneration() { if (hasMilestone("or8", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("or8", 3)) return true },
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
@@ -856,7 +856,7 @@ addLayer("or10", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("or8", 3)) return true },
     passiveGeneration() { if (hasMilestone("or8", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("or8", 3)) return true },
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
@@ -1057,7 +1057,7 @@ addLayer("pe6", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("or8", 3)) return true },
     passiveGeneration() { if (hasMilestone("or8", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("or8", 3)) return true },
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
@@ -1258,7 +1258,7 @@ addLayer("pe7", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("or8", 3)) return true },
     passiveGeneration() { if (hasMilestone("or8", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("or8", 3)) return true },
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
@@ -1459,7 +1459,7 @@ addLayer("pe8", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("or8", 3)) return true },
     passiveGeneration() { if (hasMilestone("or8", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("or8", 3)) return true },
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
@@ -1660,7 +1660,7 @@ addLayer("pe9", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("or8", 3)) return true },
     passiveGeneration() { if (hasMilestone("or8", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("or8", 3)) return true },
     resetsNothing() { if (hasMilestone("or8", 3)) return true },
@@ -1861,7 +1861,7 @@ addLayer("pe10", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("or8", 3)) return true },
     passiveGeneration() { if (hasMilestone("or8", 3)) return 1 },
     autoUpgrade() { if (hasMilestone("or8", 3)) return true },
     resetsNothing() { if (hasMilestone("or8", 3)) return true },

@@ -231,7 +231,9 @@ addLayer("mw", {
     },
     resetsNothing() { if (hasMilestone("hr", 1)) return true },
     passiveGeneration() { if (hasMilestone("mw", 1)) return 1 },
-    autoPrestige() { if (hasMilestone("mw", 2)) return true },
+    // SAFETY INVARIANT: hr M1 is when mw stops resetting stardust; auto-prestiging before then
+    // wipes the stardust The Cosmic Horizon needs to gather its first light-year.
+    autoPrestige() { if (hasMilestone("mw", 2) && hasMilestone("hr", 1)) return true },
     autoUpgrade() { if (hasMilestone("hr", 1)) return true },
 })
 
@@ -278,7 +280,10 @@ addLayer("lg", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    // SAFETY INVARIANT: the spine lanes only automate once hr M1 says stardust no longer gates
+    // anything (their own resetsNothing is hr M1). Before that, automating them would keep
+    // resetting stardust and The Cosmic Horizon could never gather its first light-year.
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("hr", 1)) return true },
     passiveGeneration() { if (hasMilestone(this.layer, 1)) return 1 },
     autoUpgrade() { if (hasMilestone("hr", 1)) return true },
     resetsNothing() { if (hasMilestone("hr", 1)) return true },
@@ -475,7 +480,10 @@ addLayer("vc", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    // SAFETY INVARIANT: the spine lanes only automate once hr M1 says stardust no longer gates
+    // anything (their own resetsNothing is hr M1). Before that, automating them would keep
+    // resetting stardust and The Cosmic Horizon could never gather its first light-year.
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("hr", 1)) return true },
     passiveGeneration() { if (hasMilestone(this.layer, 1)) return 1 },
     autoUpgrade() { if (hasMilestone("hr", 1)) return true },
     resetsNothing() { if (hasMilestone("hr", 1)) return true },
@@ -667,7 +675,10 @@ addLayer("ln", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    // SAFETY INVARIANT: the spine lanes only automate once hr M1 says stardust no longer gates
+    // anything (their own resetsNothing is hr M1). Before that, automating them would keep
+    // resetting stardust and The Cosmic Horizon could never gather its first light-year.
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("hr", 1)) return true },
     passiveGeneration() { if (hasMilestone(this.layer, 1)) return 1 },
     autoUpgrade() { if (hasMilestone("hr", 1)) return true },
     resetsNothing() { if (hasMilestone("hr", 1)) return true },
@@ -864,7 +875,10 @@ addLayer("cw", {
     },
     softcapPower() { return new Decimal(0.4) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    // SAFETY INVARIANT: the spine lanes only automate once hr M1 says stardust no longer gates
+    // anything (their own resetsNothing is hr M1). Before that, automating them would keep
+    // resetting stardust and The Cosmic Horizon could never gather its first light-year.
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("hr", 1)) return true },
     passiveGeneration() { if (hasMilestone(this.layer, 1)) return 1 },
     autoUpgrade() { if (hasMilestone("hr", 1)) return true },
     resetsNothing() { if (hasMilestone("hr", 1)) return true },
@@ -1056,7 +1070,10 @@ addLayer("ga", {
     },
     gainExp() { return new Decimal(1) },
 
-    autoPrestige() { if (hasMilestone(this.layer, 2)) return true },
+    // SAFETY INVARIANT: the spine lanes only automate once hr M1 says stardust no longer gates
+    // anything (their own resetsNothing is hr M1). Before that, automating them would keep
+    // resetting stardust and The Cosmic Horizon could never gather its first light-year.
+    autoPrestige() { if (hasMilestone(this.layer, 2) && hasMilestone("hr", 1)) return true },
     passiveGeneration() { if (hasMilestone(this.layer, 1)) return 1 },
     autoUpgrade() { if (hasMilestone("hr", 1)) return true },
     resetsNothing() { if (hasMilestone("hr", 1)) return true },
@@ -1396,7 +1413,8 @@ addLayer("de", {
     },
     resetsNothing() { if (hasMilestone("hr", 1)) return true },
     passiveGeneration() { if (hasMilestone("de", 1)) return 1 },
-    autoPrestige() { if (hasMilestone("de", 2)) return true },
+    // SAFETY INVARIANT: same window as mw, one row deeper.
+    autoPrestige() { if (hasMilestone("de", 2) && hasMilestone("hr", 1)) return true },
     autoUpgrade() { if (hasMilestone("hr", 1)) return true },
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return

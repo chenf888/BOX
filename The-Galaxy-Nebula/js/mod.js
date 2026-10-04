@@ -14,11 +14,13 @@ let modInfo = {
 }
 
 let VERSION = {
-	num: "0.3",
+	num: "0.3.1",
 	name: "Initial build",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+    <h3>v0.3.1</h3><br>
+        -Modified 52 layers, which may have resolved the hard lock.
     <h3>v0.3</h3><br>
         - This update modified 220 upgrades, corrected 403 milestones, lowered the numerical requirement for one milestone, added an entry threshold to one challenge, changed the entry requirements or values of 100 layers, and rebuilt the cost ladder for 34 static layers.
     <h3>v0.2</h3><br>
