@@ -24,6 +24,7 @@ addLayer("gc", {
         if (hasUpgrade("gc", 12)) m = m.times(upgradeEffect("gc", 12))
         if (hasUpgrade("gc", 13)) m = m.times(upgradeEffect("gc", 13))
         if (hasUpgrade("gc", 14)) m = m.times(upgradeEffect("gc", 14))
+        if (hasUpgrade("gc", 15)) m = m.times(3)
         if (hasUpgrade("gc", 25)) m = m.times(upgradeEffect("gc", 25))
         if (hasMilestone("gc", 0)) m = m.times(2.5)
         if (hasMilestone("gc", 1)) m = m.times(3)
@@ -75,7 +76,7 @@ addLayer("gc", {
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
         if (player.mw.unlocked && this.row <= 10) return
-        let kept = ["unlocked", "auto", "milestones"]
+        let kept = ["unlocked", "auto", "milestones", "best", "total"]
         if (hasMilestone("gc", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
     },
@@ -83,6 +84,10 @@ addLayer("gc", {
         "main-display",
         "prestige-button",
         ["display-text", function() { return 'You have ' + format(player.points) + ' stardust' }],
+        ["display-text", function() {
+            if (!player.ps.unlocked) return 'The ignition chamber opens at <b>' + format(tmp.ps.gate) + '</b> stardust'
+            if (!player.pe1.unlocked) return 'The Perseus Arm opens at <b>' + format(tmp.pe1.requires) + '</b> stardust'
+        }],
         ["display-text", function() { if (player.gc.points.gte(tmp.gc.softcap.div(2))) return 'Gain softcap starts at ' + format(tmp.gc.softcap) + ' gas clouds' }],
         ["blank", "12px"],
         ["microtabs", "stuff"],
@@ -135,13 +140,11 @@ addLayer("gc", {
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         15: { title: "The Cloud Ignites",
-              description: "Unlock the Protostar Ignition chamber — and the Perseus Arm.",
+              description: "Gas cloud gain x3, and the ignition chamber appears on your map.",
               cost: new Decimal(400),
               unlocked() { return hasUpgrade("gc", 14) },
-              onPurchase() {
-                  player.ps.unlocked = true
-                  player.pe1.unlocked = true
-              } },
+              effect() { return new Decimal(3) },
+              effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x gain" } },
         21: { title: "Cloud Lenses",
               description: "First Light (u13) is raised to ^1.1.",
               cost: new Decimal(800),
@@ -217,6 +220,8 @@ addLayer("gc", {
               } },
     },
     update(diff) {
+        // Every layer admits itself on its own printed threshold (handbook 12, 2022-06-26), so
+        // this hook only streams gas clouds; ps and pe1 unlock from their own update()s.
         if (hasMilestone("gc", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
             player.gc.points = player.gc.points.add(tmp.gc.resetGain.times(0.02).times(diff))
         }
@@ -231,7 +236,10 @@ addLayer("ps", {
     color: "#ffd28a",
     resource: "protostar energy",
     type: "none",
-    layerShown() { return player.ps.unlocked },
+    // ps has no prestige formula of its own (type "none"), so the engine's requires field is
+    // inert here; the admission toll rides along as its own printed threshold.
+    gate() { return new Decimal("1e2") },
+    layerShown() { return player.ps.unlocked || player.points.gte(tmp.ps.gate) },
     startData() { return {
         unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0),
         compression: new Decimal(0), compressing: false, ignitions: 0,
@@ -273,10 +281,10 @@ addLayer("ps", {
         return t
     },
     compressSpeed() {
+        // Base rate only. The upgrades that scale compression are applied in update(), next to
+        // the loop they drive, so every id touching this layer is readable in one place.
         let s = new Decimal(2)
         s = s.times(player.gc.points.add(1).log(10).plus(1))
-        if (hasUpgrade("ps", 12)) s = s.times(upgradeEffect("ps", 12))
-        if (hasUpgrade("ps", 13)) s = s.times(upgradeEffect("ps", 13))
         if (hasMilestone("ps", 2)) s = s.times(4)
         return s
     },
@@ -374,9 +382,16 @@ addLayer("ps", {
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
     },
     update(diff) {
+        // Threshold admission (handbook 12, 2022-06-26).
+        if (!player.ps.unlocked && player.points.gte(tmp.ps.gate)) {
+            player.ps.unlocked = true
+            needCanvasUpdate = true
+        }
+        let speed = tmp.ps.compressSpeed
+        if (hasUpgrade("ps", 12)) speed = speed.times(upgradeEffect("ps", 12))
+        if (hasUpgrade("ps", 13)) speed = speed.times(upgradeEffect("ps", 13))
+        if (hasUpgrade("ps", 21)) speed = speed.times(player.pl.points.add(1).pow(0.3))
         if (player.ps.compressing) {
-            let speed = tmp.ps.compressSpeed
-            if (hasUpgrade("ps", 21)) speed = speed.times(player.pl.points.add(1).pow(0.3))
             player.ps.compression = player.ps.compression.add(speed.times(diff))
             if (player.ps.compression.gte(tmp.ps.compressTarget)) player.ps.compression = tmp.ps.compressTarget
         }
@@ -409,6 +424,7 @@ addLayer("fu", {
         if (hasUpgrade("fu", 12)) m = m.times(upgradeEffect("fu", 12))
         if (hasUpgrade("fu", 13)) m = m.times(upgradeEffect("fu", 13))
         if (hasUpgrade("fu", 14)) m = m.times(upgradeEffect("fu", 14))
+        if (hasUpgrade("fu", 15)) m = m.times(3)
         if (hasUpgrade("fu", 25)) m = m.times(upgradeEffect("fu", 25))
         if (hasMilestone("fu", 0)) m = m.times(2.5)
         if (hasMilestone("fu", 1)) m = m.times(3)
@@ -458,7 +474,7 @@ addLayer("fu", {
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
         if (player.mw.unlocked && this.row <= 10) return
-        let kept = ["unlocked", "auto", "milestones"]
+        let kept = ["unlocked", "auto", "milestones", "best", "total"]
         if (hasMilestone("fu", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
     },
@@ -466,6 +482,10 @@ addLayer("fu", {
         "main-display",
         "prestige-button",
         ["display-text", function() { return 'You have ' + format(player.gc.points) + ' gas clouds' }],
+        ["display-text", function() {
+            if (!player.pl.unlocked) return 'Planetary Systems open at <b>' + format(tmp.pl.requires) + '</b> stardust'
+            if (!player.or1.unlocked) return 'The Orion Arm opens at <b>' + format(tmp.or1.requires) + '</b> stardust'
+        }],
         ["display-text", function() { if (player.fu.points.gte(tmp.fu.softcap.div(2))) return 'Gain softcap starts at ' + format(tmp.fu.softcap) + ' fusion plasma' }],
         ["blank", "12px"],
         ["microtabs", "stuff"],
@@ -518,10 +538,11 @@ addLayer("fu", {
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         15: { title: "Worlds Coalesce",
-              description: "Unlock the Planetary Systems layer.",
+              description: "Fusion plasma gain x3, and the planetary systems appear on your map.",
               cost: new Decimal(400),
               unlocked() { return hasUpgrade("fu", 14) },
-              onPurchase() { player.pl.unlocked = true } },
+              effect() { return new Decimal(3) },
+              effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x gain" } },
         21: { title: "CNO Bloom",
               description: "Carbon Catalyst (u13) is raised to ^1.1.",
               cost: new Decimal(800),
@@ -598,6 +619,7 @@ addLayer("fu", {
               } },
     },
     update(diff) {
+        // pl and sg1 admit themselves on their own printed thresholds; this hook only streams.
         if (hasMilestone("fu", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
             player.fu.points = player.fu.points.add(tmp.fu.resetGain.times(0.02).times(diff))
         }
@@ -630,6 +652,7 @@ addLayer("pl", {
         if (hasUpgrade("pl", 12)) m = m.times(upgradeEffect("pl", 12))
         if (hasUpgrade("pl", 13)) m = m.times(upgradeEffect("pl", 13))
         if (hasUpgrade("pl", 14)) m = m.times(upgradeEffect("pl", 14))
+        if (hasUpgrade("pl", 15)) m = m.times(3)
         if (hasUpgrade("pl", 25)) m = m.times(upgradeEffect("pl", 25))
         if (hasMilestone("pl", 0)) m = m.times(2.5)
         if (hasMilestone("pl", 1)) m = m.times(3)
@@ -680,7 +703,7 @@ addLayer("pl", {
     doReset(resettingLayer) {
         if (layers[resettingLayer].row <= this.row) return
         if (player.mw.unlocked && this.row <= 10) return
-        let kept = ["unlocked", "auto", "milestones"]
+        let kept = ["unlocked", "auto", "milestones", "best", "total"]
         if (hasMilestone("pl", 3)) kept.push("upgrades", "buyables")
         layerDataReset(this.layer, kept)
     },
@@ -688,6 +711,7 @@ addLayer("pl", {
         "main-display",
         "prestige-button",
         ["display-text", function() { return 'You have ' + format(player.fu.points) + ' fusion plasma' }],
+        ["display-text", function() { if (!player.sg1.unlocked) return 'The Sagittarius Arm opens at <b>' + format(tmp.sg1.requires) + '</b> stardust' }],
         ["display-text", function() { if (player.pl.points.gte(tmp.pl.softcap.div(2))) return 'Gain softcap starts at ' + format(tmp.pl.softcap) + ' planetary systems' }],
         ["blank", "12px"],
         ["microtabs", "stuff"],
@@ -740,10 +764,11 @@ addLayer("pl", {
               },
               effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x" } },
         15: { title: "The Sagittarius Arm Beckons",
-              description: "Unlock the Sagittarius Arm.",
+              description: "Planetary system gain x3, and the Sagittarius Arm appears on your map.",
               cost: new Decimal(400),
               unlocked() { return hasUpgrade("pl", 14) },
-              onPurchase() { player.sg1.unlocked = true } },
+              effect() { return new Decimal(3) },
+              effectDisplay() { return format(upgradeEffect(this.layer, this.id)) + "x gain" } },
         21: { title: "Giant relocated",
               description: "Grand Tack (u13) is raised to ^1.1.",
               cost: new Decimal(800),
@@ -819,6 +844,11 @@ addLayer("pl", {
               } },
     },
     update(diff) {
+        // Threshold admission (handbook 12, 2022-06-26): the price is printed in this tab.
+        if (!player.pl.unlocked && player.points.gte(tmp.pl.requires)) {
+            player.pl.unlocked = true
+            needCanvasUpdate = true
+        }
         if (hasMilestone("pl", 1) && !inChallenge("oa6", 13) && !inChallenge("oa6", 23) && !inChallenge("oa6", 24)) {
             player.pl.points = player.pl.points.add(tmp.pl.resetGain.times(0.02).times(diff))
         }

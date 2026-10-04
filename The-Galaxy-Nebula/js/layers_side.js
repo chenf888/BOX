@@ -7,6 +7,17 @@ addLayer("a", {
     symbol: "A",
     tooltip() { return "The Galactic Survey" },
     achievementPopups: true,
+    tabFormat: [
+        "main-display",
+        ["display-text", function() { return 'Survey badges earned: <b>' + formatWhole(player.a.achievements.length) + '</b> / 60' }],
+        ["display-text", function() {
+            let survey = new Decimal(1)
+            for (let i = 10; i <= 69; i++) if (hasAchievement("a", i)) survey = survey.times(achievementEffect("a", i))
+            return 'Survey bonus to stardust gain: <b>×' + format(survey.max(1).pow(0.25).min(1e6)) + '</b> (all 60 goals are compressed to a 0.25 power so this side track can never outgrow the main ladder)'
+        }],
+        ["blank", "12px"],
+        "achievements",
+    ],
     update() {
         if (hasAchievement("a", 20) && !hasMilestone("or1", 0)) player.or1.milestones.push(0)
         if (hasAchievement("a", 21) && !hasMilestone("pe1", 1)) player.pe1.milestones.push(1)
@@ -58,12 +69,12 @@ addLayer("a", {
             effect() { return new Decimal(3) },
         },
         18: { name: "Chandrasekhar",
-            done() { return player.or5.points.gte(1.44) },
+            done() { return player.or5.best.gte(1.44) },
             tooltip: "Fill a white dwarf to its absolute limit.<br>Reward: bragging rights",
             effect() { return new Decimal(1) },
         },
         19: { name: "Total Ionization",
-            done() { return player.pe3.points.gte(100) },
+            done() { return player.pe3.best.gte(100) },
             tooltip: "Ionize an HII region to 100%.<br>Reward: bragging rights",
             effect() { return new Decimal(1) },
         },
