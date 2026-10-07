@@ -1,0 +1,288 @@
+// side.js — a (Achievements, 5x10, M10 collection + P11 guarded backfill)
+//          d (Story & Palette Dashboard, P13 side layer)
+
+// ---------------------------------------------------------------------------
+// a — Achievements 成就 (side, never reset)
+// ---------------------------------------------------------------------------
+addLayer("a", {
+    name: function() { return L("成就", "Achievements") },
+    symbol: "★",
+    startData() { return { unlocked: true, points: new Decimal(0) } },
+    color: "#f5f5f5",
+    row: "side",
+    tooltip() { return L("成就：每一格都对应一个真实目标", "Achievements: every tile is a real goal") },
+
+    achievements: {
+        // Row 1 — monochrome awakening
+        11: { name: function() { return L("点亮屏幕", "Screen On") },
+              done() { return player.w.points.gte(1) },
+              tooltip: function() { return L("获得 1 灰度。<br>无奖励——这是你的第一步。", "Have 1 Grayscale.<br>No reward — just your first step.") } },
+        12: { name: function() { return L("灰度一百", "One Hundred Grays") },
+              done() { return player.w.best.gte(100) },
+              tooltip: function() { return L("灰度最高达到 100。", "Reach 100 best Grayscale.") } },
+        13: { name: function() { return L("棱镜在手", "Prism in Hand") },
+              done() { return hasUpgrade("w", 22) },
+              tooltip: function() { return L("买下「三棱镜」。颜色即将到来。", "Buy The Prism. Color is coming.") } },
+        14: { name: function() { return L("第一通道", "First Channel") },
+              done() { return player.r.unlocked },
+              tooltip: function() { return L("解锁红通道。", "Unlock the Red Channel.") },
+              onComplete() { if (!hasMilestone("w", 1)) player.w.milestones.push(1) } },
+        15: { name: function() { return L("红的开始", "A Red Start") },
+              done() { return player.r.best.gte(3) },
+              tooltip: function() { return L("红色等级达到 3。", "Reach Red level 3.") } },
+        // Row 2 — three primaries
+        21: { name: function() { return L("万级灰度", "Ten Thousand Grays") },
+              done() { return player.w.best.gte(1e4) },
+              tooltip: function() { return L("灰度最高达到 1e4。<br>奖励：亮度获取 ×2", "Reach 1e4 best Grayscale.<br>Reward: Light gain ×2") },
+              effect() { return new Decimal(2) } },
+        22: { name: function() { return L("绿意盎然", "Green Joins") },
+              done() { return player.g.unlocked },
+              tooltip: function() { return L("解锁绿通道。<br>奖励：灰度获取 ×1.5", "Unlock the Green Channel.<br>Reward: Grayscale gain ×1.5") },
+              effect() { return new Decimal(1.5) } },
+        23: { name: function() { return L("忧郁蓝调", "Blue Joins") },
+              done() { return player.b.unlocked },
+              tooltip: function() { return L("解锁蓝通道。", "Unlock the Blue Channel.") } },
+        24: { name: function() { return L("三十级之和", "Thirty Levels") },
+              done() { return chanSum().gte(30) },
+              tooltip: function() { return L("通道等级之和达到 30。", "Reach 30 total channel levels.") } },
+        25: { name: function() { return L("第一次调色", "First Mix") },
+              done() { return player.c.unlocked },
+              tooltip: function() { return L("解锁补色层。", "Unlock Complements.") } },
+        // Row 3 — the workshop row
+        31: { name: function() { return L("转起来", "Spin the Wheel") },
+              done() { return player.h.unlocked },
+              tooltip: function() { return L("解锁色相层。", "Unlock Hue.") } },
+        32: { name: function() { return L("鲜艳一点", "A Little Vivid") },
+              done() { return player.s.unlocked },
+              tooltip: function() { return L("解锁饱和度层。", "Unlock Saturation.") } },
+        33: { name: function() { return L("枢纽在线", "Hub Online") },
+              done() { return player.t.unlocked },
+              tooltip: function() { return L("解锁真彩枢纽。<br>奖励：白光软cap延迟里程碑", "Unlock the True Color Hub.<br>Reward: backfill a White Light milestone") },
+              onComplete() { if (!hasMilestone("w", 1)) player.w.milestones.push(1) } },
+        34: { name: function() { return L("画笔就绪", "Brush Ready") },
+              done() { return player.p.unlocked },
+              tooltip: function() { return L("解锁调色工坊。", "Unlock the Painter's Workshop.") } },
+        35: { name: function() { return L("接受试炼", "Take the Trials") },
+              done() { return player.cb.unlocked },
+              tooltip: function() { return L("解锁色觉试炼。", "Unlock the Chromatic Trials.") } },
+        // Row 4 — mid-game marks
+        41: { name: function() { return L("灰度之海", "Sea of Gray") },
+              done() { return player.w.best.gte(1e8) },
+              tooltip: function() { return L("灰度最高达到 1e8。<br>奖励：灰度获取 ×2", "Reach 1e8 best Grayscale.<br>Reward: Grayscale gain ×2") },
+              effect() { return new Decimal(2) } },
+        42: { name: function() { return L("六万五千色", "Sixty-Five Thousand Colors") },
+              done() { return cubeVolume().gte(65536) },
+              tooltip: function() { return L("色板体积达到 2¹⁶。<br>奖励：亮度获取 ×10", "Palette volume ≥ 2¹⁶.<br>Reward: Light gain ×10") },
+              effect() { return new Decimal(10) } },
+        43: { name: function() { return L("红之六十四", "Red 64") },
+              done() { return player.r.best.gte(64) },
+              tooltip: function() { return L("红色等级达到 64。", "Reach Red level 64.") } },
+        44: { name: function() { return L("绿之六十四", "Green 64") },
+              done() { return player.g.best.gte(64) },
+              tooltip: function() { return L("绿色等级达到 64。", "Reach Green level 64.") } },
+        45: { name: function() { return L("蓝之六十四", "Blue 64") },
+              done() { return player.b.best.gte(64) },
+              tooltip: function() { return L("蓝色等级达到 64。", "Reach Blue level 64.") } },
+        // Row 5 — wheels and trials
+        51: { name: function() { return L("半轮", "Half the Wheel") },
+              done() { return player.h.best.gte(180) },
+              tooltip: function() { return L("色相达到 180°。", "Reach 180° Hue.") } },
+        52: { name: function() { return L("饱和至上", "Fully Saturated") },
+              done() { return player.s.best.gte(100) },
+              tooltip: function() { return L("饱和度达到 100%。", "Reach 100% Saturation.") } },
+        53: { name: function() { return L("二十对补色", "Twenty Pairs") },
+              done() { return player.c.best.gte(20) },
+              tooltip: function() { return L("补色达到 20 对。", "Reach 20 Complement pairs.") } },
+        54: { name: function() { return L("三枚徽章", "Three Badges") },
+              done() { return player.cb.best.gte(3) },
+              tooltip: function() { return L("获得 3 枚试炼徽章。", "Earn 3 Trial Badges.") } },
+        55: { name: function() { return L("八位时代", "The 8-bit Era") },
+              done() { return player.t.best.gte(7) },
+              tooltip: function() { return L("达到 8 位色深（256 色）。", "Reach 8-bit depth (256 colors).") } },
+        // Row 6 — deeper eras
+        61: { name: function() { return L("四位时代", "The 4-bit Era") },
+              done() { return player.t.best.gte(3) },
+              tooltip: function() { return L("达到 4 位色深。<br>奖励：回填补色里程碑", "Reach 4-bit depth.<br>Reward: backfill a Complement milestone") },
+              onComplete() { if (!hasMilestone("c", 0)) player.c.milestones.push(0) } },
+        62: { name: function() { return L("十六位时代", "The 16-bit Era") },
+              done() { return player.t.best.gte(15) },
+              tooltip: function() { return L("达到 16 位色深。<br>奖励：回填色相里程碑", "Reach 16-bit depth.<br>Reward: backfill a Hue milestone") },
+              onComplete() { if (!hasMilestone("h", 0)) player.h.milestones.push(0) } },
+        63: { name: function() { return L("二十四位", "Twenty-Four Bits") },
+              done() { return player.t.best.gte(23) },
+              tooltip: function() { return L("达到 24 位色深。终点在望。", "Reach 24-bit depth. The finish line is in sight.") } },
+        64: { name: function() { return L("红之一百二十八", "Red 128") },
+              done() { return player.r.best.gte(128) },
+              tooltip: function() { return L("红色等级达到 128。", "Reach Red level 128.") } },
+        65: { name: function() { return L("绿之一百九十二", "Green 192") },
+              done() { return player.g.best.gte(192) },
+              tooltip: function() { return L("绿色等级达到 192。", "Reach Green level 192.") } },
+        // Row 7 — the climb to full channels
+        71: { name: function() { return L("蓝之一百九十二", "Blue 192") },
+              done() { return player.b.best.gte(192) },
+              tooltip: function() { return L("蓝色等级达到 192。", "Reach Blue level 192.") } },
+        72: { name: function() { return L("纯红", "Pure Red") },
+              done() { return player.r.best.gte(255) },
+              tooltip: function() { return L("红色等级达到 255（满）。", "Reach Red level 255 (full).") } },
+        73: { name: function() { return L("纯绿", "Pure Green") },
+              done() { return player.g.best.gte(255) },
+              tooltip: function() { return L("绿色等级达到 255（满）。", "Reach Green level 255 (full).") } },
+        74: { name: function() { return L("纯蓝", "Pure Blue") },
+              done() { return player.b.best.gte(255) },
+              tooltip: function() { return L("蓝色等级达到 255（满）。", "Reach Blue level 255 (full).") } },
+        75: { name: function() { return L("百万色俱乐部", "Million Color Club") },
+              done() { return cubeVolume().gte(1048576) },
+              tooltip: function() { return L("色板体积达到 2²⁰。", "Palette volume ≥ 2²⁰.") } },
+        // Row 8 — trial collection
+        81: { name: function() { return L("通过第一关", "First Trial Passed") },
+              done() { return hasChallenge("cb", 11) },
+              tooltip: function() { return L("完成任意一次试炼。", "Complete any trial once.") } },
+        82: { name: function() { return L("红绿大师", "Protanomaly Master") },
+              done() { return maxedChallenge("cb", 11) },
+              tooltip: function() { return L("把「红绿色盲」试炼完成 3 次。", "Complete Protanopia 3 times.") } },
+        83: { name: function() { return L("九次试炼", "Nine Trials") },
+              done() { return new Decimal(totalTrialCompletions()).gte(9) },
+              tooltip: function() { return L("试炼完成总数达到 9。", "Reach 9 total trial completions.") } },
+        84: { name: function() { return L("色觉完备", "Full Chromatic Vision") },
+              done() { return new Decimal(totalTrialCompletions()).gte(18) },
+              tooltip: function() { return L("完成全部 18 次试炼。", "Complete all 18 trials.") } },
+        85: { name: function() { return L("增幅五级", "Amplified ×5") },
+              done() { return getBuyableAmount("cb", 11).gte(5) },
+              tooltip: function() { return L("棱镜增幅器达到 5 级。", "Reach level 5 Prism Amplifier.") } },
+        // Row 9 — big numbers
+        91: { name: function() { return L("1e15 俱乐部", "The 1e15 Club") },
+              done() { return player.w.best.gte(1e15) },
+              tooltip: function() { return L("灰度最高达到 1e15。", "Reach 1e15 best Grayscale.") } },
+        92: { name: function() { return L("1e30 俱乐部", "The 1e30 Club") },
+              done() { return player.w.best.gte(1e30) },
+              tooltip: function() { return L("灰度最高达到 1e30。", "Reach 1e30 best Grayscale.") } },
+        93: { name: function() { return L("1e60 俱乐部", "The 1e60 Club") },
+              done() { return player.w.best.gte(1e60) },
+              tooltip: function() { return L("灰度最高达到 1e60。", "Reach 1e60 best Grayscale.") } },
+        94: { name: function() { return L("炫目", "Dazzling") },
+              done() { return player.points.gte(1e15) },
+              tooltip: function() { return L("亮度达到 1e15。", "Reach 1e15 Light.") } },
+        95: { name: function() { return L("恒星核心", "Stellar Core") },
+              done() { return player.points.gte(1e30) },
+              tooltip: function() { return L("亮度达到 1e30。", "Reach 1e30 Light.") } },
+        // Row 10 — flavor & collection
+        101: { name: function() { return L("6871", "6,871") },
+               done() { return player.w.points.gte(6871) },
+               tooltip: function() { return L("灰度恰好超过 6871。这个数字让你想起了什么吗？", "Grayscale passes 6,871. Does this number feel familiar?") } },
+        102: { name: function() { return L("一枚硬币", "One Coin") },
+               done() { return hasUpgrade("c", 23) },
+               tooltip: function() { return L("买下那件只花 7 灰度的关键升级。", "Buy the key upgrade that costs only 7 Grayscale.") } },
+        103: { name: function() { return L("三线并进", "Three Lines Forward") },
+               done() { return player.r.best.gte(200) && player.g.best.gte(200) && player.b.best.gte(200) },
+               tooltip: function() { return L("三条通道都达到 200 级。", "All three channels reach level 200.") } },
+        104: { name: function() { return L("收藏家", "The Collector") },
+               done() { return new Decimal(player.w.upgrades.length + player.r.upgrades.length + player.g.upgrades.length + player.b.upgrades.length).gte(40) },
+               tooltip: function() { return L("白光与三通道共持有 40 个升级。", "Own 40 upgrades across White Light and the channels.") } },
+        105: { name: function() { return L("自动化先锋", "Automation Pioneer") },
+               done() { return chanSum().gte(150) },
+               tooltip: function() { return L("通道等级之和达到 150。<br>奖励：被动获取灰度（备用路径）", "Reach 150 total channel levels.<br>Reward: passive Grayscale (alternate path)") } },
+    },
+})
+
+// ---------------------------------------------------------------------------
+// d — Story & Palette Dashboard 故事与色板 (side, P13)
+// ---------------------------------------------------------------------------
+addLayer("d", {
+    name: function() { return L("故事与色板", "Story & Palette") },
+    symbol: "📖",
+    startData() { return {
+        unlocked: true,
+        points: new Decimal(0),
+        chinesemode: false,
+    }},
+    color: "#b0b0b0",
+    row: "side",
+    tooltip() { return L("一位显示器的色彩史，以及你的色板进度", "A monitor's history of color, and your palette progress") },
+    type: "none",
+
+    tabFormat: [
+        ["infobox", "chapter1"],
+        ["infobox", "chapter2"],
+        ["infobox", "chapter3"],
+        ["infobox", "chapter4"],
+        ["infobox", "chapter5"],
+        ["infobox", "chapter6"],
+        ["infobox", "chapter7"],
+        ["infobox", "chapter8"],
+        ["blank", "10px"],
+        ["display-text", function() { return L("<b>色板仪表盘</b>", "<b>Palette Dashboard</b>") }],
+        ["display-text", function() {
+            return L("色板体积", "Volume") + ": " + format(cubeVolume()) + " / 16,777,216　·　"
+                + L("完成度", "Completion") + ": " + format(palettePct()) + "%"
+        }],
+        ["display-text", function() {
+            return "R: " + formatWhole(player.r.points) + "/255　G: " + formatWhole(player.g.points)
+                + "/255　B: " + formatWhole(player.b.points) + "/255　·　"
+                + L("色深", "Depth") + ": " + formatWhole(bitDepth()) + "-bit"
+        }],
+        ["bar", "paletteBar"],
+        ["blank", "10px"],
+        ["raw-html", function() {
+            return '<button style="cursor:pointer;" onclick="toggleChineseMode()">'
+                + (window.chinesemode ? 'Switch to English' : '切换到中文') + '</button>'
+        }],
+    ],
+
+    bars: {
+        paletteBar: {
+            direction: RIGHT,
+            width: 400, height: 30,
+            progress() {
+                return cubeVolume().max(1).log(2).div(24).toNumber()
+            },
+            display() {
+                return L("色板完成度 ", "Palette completion ") + format(palettePct()) + "%"
+            },
+            fillStyle: { 'background-color': "#ffe066" },
+            baseStyle: { 'background-color': "#3a3a3a" },
+            textStyle: { 'color': "#ffffff" },
+        },
+    },
+
+    infoboxes: {
+        chapter1: {
+            title: function() { return L("第一章 · 单色觉醒", "Chapter 1 · Monochrome Awakening") },
+            body() { return L("你是一台老显示器。世界只有明与暗，灰与白。直到某天，你在自己的像素深处，发现了一枚三棱镜……",
+                "You are an old monitor. The world is only light and dark, gray and white. Until one day, deep in your own pixels, you find a small glass prism…") } },
+        chapter2: {
+            title: function() { return L("第二章 · 三原色", "Chapter 2 · Three Primaries") },
+            unlocked() { return player.r.unlocked },
+            body() { return L("棱镜落下，白光散开。红、绿、蓝——三条通道在你的屏幕上苏醒。每个等级都是一条新的色阶。",
+                "The prism falls, and white light scatters. Red, green, blue — three channels wake across your screen. Every level is a new step of shade.") } },
+        chapter3: {
+            title: function() { return L("第三章 · 混色", "Chapter 3 · Mixing") },
+            unlocked() { return player.c.unlocked },
+            body() { return L("两两相遇，便有了青、品红与黄。你开始明白：颜色不是被找到的，是被调出来的。",
+                "When pairs meet, cyan, magenta and yellow appear. You begin to understand: colors are not found. They are mixed.") } },
+        chapter4: {
+            title: function() { return L("第四章 · 八位时代", "Chapter 4 · The 8-bit Era") },
+            unlocked() { return eraReached(8) },
+            body() { return L("256 色。曾经的超级计算机穷尽一生也只能数到这里。而你只用了几个小时。",
+                "256 colors. A supercomputer of old would have spent a lifetime counting this far. It took you hours.") } },
+        chapter5: {
+            title: function() { return L("第五章 · 色觉试炼", "Chapter 5 · The Trials") },
+            unlocked() { return player.cb.unlocked },
+            body() { return L("你戴上了一副副色盲滤镜，在最受限的视野里重建色彩。真正的调色师，不怕失去任何一种颜色。",
+                "You wear each color-blindness filter in turn, rebuilding color inside the narrowest vision. A true painter fears no lost hue.") } },
+        chapter6: {
+            title: function() { return L("第六章 · 高彩与真彩", "Chapter 6 · High Color, True Color") },
+            unlocked() { return eraReached(16) },
+            body() { return L("65,536 色，然后是 16,777,216。绿通道永远比兄弟们多一位——5:6:5，人眼对绿色的偏爱被写进了硅里。",
+                "65,536 colors, then 16,777,216. Green always holds one extra bit — 5:6:5, the human eye's love of green, etched into silicon.") } },
+        chapter7: {
+            title: function() { return L("第七章 · 边缘色阶", "Chapter 7 · The Far Shades") },
+            unlocked() { return eraReached(24) },
+            body() { return L("色板只剩最后一角。那些 254 与 255 之间的色差，只有最耐心的眼睛才能分辨。你一遍遍地重铸灰度，为了最后那一格。",
+                "Only one corner of the palette remains. The shades between 254 and 255 are reserved for the most patient eyes. You reforge grayscale again and again, for the very last tile.") } },
+        chapter8: {
+            title: function() { return L("第八章 · 无一缺席", "Chapter 8 · None Missing") },
+            unlocked() { return player.r.points.gte(255) && player.g.points.gte(255) && player.b.points.gte(255) },
+            body() { return L("16,777,216。从纯黑到纯白，从最初的 1 位到完整的 24 位——每一种颜色都在，无一缺席。这台显示器，如今是一整片彩虹。",
+                "16,777,216. From pure black to pure white, from the first bit to the full 24 — every color is present, none missing. This monitor is now an entire rainbow.") } },
+    },
+})
