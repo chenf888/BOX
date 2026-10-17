@@ -37,6 +37,7 @@ addLayer("f", {
 		if (hasUpgrade("f", 21)) m = m.times(upgradeEffect("f", 21))
 		if (hasUpgrade("f", 22)) m = m.times(upgradeEffect("f", 22))
 		if (hasUpgrade("f", 24)) m = m.times(5)
+		if (hasMilestone("f", 0)) m = m.times(1.5)
 		if (hasMilestone("f", 1)) m = m.times(2)
 		if (hasMilestone("f", 5)) m = m.times(3)
 		if (hasMilestone("f", 6)) m = m.times(player.s.points.add(1).pow(0.2))
@@ -118,14 +119,12 @@ addLayer("f", {
 	tooltipLocked() { return L("需 " + format(TUNING.fReq) + " 诗章", "Requires " + format(TUNING.fReq) + " realms") },
 
 	doReset(resettingLayer) {
-		// The summit re-stakes the whole mountain: everything below is swept;
-		// the summit keeps its own ledger (best/total always, upgrades from m0).
+		// Vanilla TMT: own prestige and same-row siblings never sweep this layer.
 		// maxpoints are the M2 reward currency — entering a trial must never wipe
 		// the peaks already earned in the other three trials. It is an array, and
 		// layOver() mutates nested arrays in place, so copy it by hand.
+		if (!(layers[resettingLayer].row > this.row)) return
 		let kept = ["best", "total"]
-		if (resettingLayer === this.layer) kept.push("points")
-		if (hasMilestone("f", 0)) kept.push("upgrades")
 		let peaks = player[this.layer].maxpoints.map(x => new Decimal(x))
 		layerDataReset(this.layer, kept)
 		player[this.layer].maxpoints = peaks
@@ -278,7 +277,7 @@ addLayer("f", {
 	milestones: {
 		0: {
 			requirementDescription: function() { return L("九山礼峰值 ≥ 1", "best tributes ≥ 1") },
-			effectDescription: function() { return L("敬山礼不再卷走绝顶之阶。", "The rite no longer sweeps the summit's own steps.") },
+			effectDescription: function() { return L("九山礼获取 ×1.5。", "Tribute gain ×1.5.") },
 			done() { return player[this.layer].best.gte(1) },
 		},
 		1: {
@@ -462,10 +461,15 @@ addLayer("y", {
 		if (hasMilestone("y", 1)) return true
 		return false
 	},
+	autoUpgrade() {
+		if (hasMilestone("y", 2)) return true
+		return false
+	},
 
 	doReset(resettingLayer) {
+		// Vanilla TMT: own prestige and same-row siblings never sweep this layer.
+		if (!(layers[resettingLayer].row > this.row)) return
 		let kept = ["best", "total"]
-		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("y", 2)) kept.push("upgrades")
 		layerDataReset(this.layer, kept)
 	},
@@ -586,7 +590,7 @@ addLayer("y", {
 		2: {
 			requirementDescription: function() { return L("云阶峰值 ≥ 7", "best tiers ≥ 7") },
 			unlocked() { return hasMilestone(this.layer, 1) },
-			effectDescription: function() { return L("云端之阶留存（自动购阶开启）。", "The tiers' steps are kept (auto-buy of the ladder opens).") },
+			effectDescription: function() { return L("云端自动购阶开启。", "Auto-buys the cloud tiers' steps.") },
 			done() { return player[this.layer].best.gte(7) },
 		},
 	},

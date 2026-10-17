@@ -82,8 +82,9 @@ addLayer("g", {
 	},
 
 	doReset(resettingLayer) {
+		// Vanilla TMT: own prestige and same-row siblings never sweep this layer.
+		if (!(layers[resettingLayer].row > this.row)) return
 		let kept = ["best", "total"]
-		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("g", 2)) kept.push("upgrades")
 		if (hasMilestone("f", 4)) kept.push("upgrades", "milestones")
 		layerDataReset(this.layer, kept)
@@ -317,8 +318,9 @@ addLayer("s", {
 	tooltipLocked() { return L("需 " + format(TUNING.sReq) + " 醇藏", "Requires " + format(TUNING.sReq) + " wine") },
 
 	doReset(resettingLayer) {
+		// Vanilla TMT: own prestige and same-row siblings never sweep this layer.
+		if (!(layers[resettingLayer].row > this.row)) return
 		let kept = ["best", "total"]
-		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("s", 2)) kept.push("upgrades")
 		if (hasMilestone("f", 4)) kept.push("upgrades", "milestones")
 		layerDataReset(this.layer, kept)
@@ -561,8 +563,9 @@ addLayer("m", {
 	},
 
 	doReset(resettingLayer) {
+		// Vanilla TMT: own prestige and same-row siblings never sweep this layer.
+		if (!(layers[resettingLayer].row > this.row)) return
 		let kept = ["best", "total"]
-		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("m", 2)) kept.push("upgrades")
 		if (hasMilestone("f", 4)) kept.push("upgrades", "milestones")
 		layerDataReset(this.layer, kept)

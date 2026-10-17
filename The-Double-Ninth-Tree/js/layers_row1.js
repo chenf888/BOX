@@ -92,9 +92,10 @@ addLayer("k", {
 	},
 
 	doReset(resettingLayer) {
+		// Vanilla TMT: own prestige and same-row siblings never sweep this layer.
+		if (!(layers[resettingLayer].row > this.row)) return
 		let kept = ["best", "total"]
-		if (resettingLayer === this.layer) kept.push("points")
-		if (hasMilestone("k", 1)) kept.push("upgrades")
+		if (hasMilestone("k", 0)) kept.push("upgrades")
 		if (hasMilestone("k", 3)) kept.push("buyables")
 		layerDataReset(this.layer, kept)
 	},
@@ -215,7 +216,7 @@ addLayer("k", {
 	milestones: {
 		0: {
 			requirementDescription: function() { return L("菊露峰值 ≥ 2", "best dew ≥ 2") },
-			effectDescription: function() { return L("重整菊田不再卷走旧行。", "Re-staking the field no longer sweeps old rows.") },
+			effectDescription: function() { return L("更上层重置不再卷走菊田升级。", "Deeper resets no longer sweep the field's upgrades.") },
 			done() { return player[this.layer].best.gte(2) },
 		},
 		1: {
@@ -408,9 +409,10 @@ addLayer("j", {
 	},
 
 	doReset(resettingLayer) {
+		// Vanilla TMT: own prestige and same-row siblings never sweep this layer.
+		if (!(layers[resettingLayer].row > this.row)) return
 		let kept = ["best", "total"]
-		if (resettingLayer === this.layer) kept.push("points")
-		if (hasMilestone("j", 1)) kept.push("upgrades")
+		if (hasMilestone("j", 0)) kept.push("upgrades")
 		if (hasMilestone("j", 3)) kept.push("buyables")
 		layerDataReset(this.layer, kept)
 	},
@@ -530,7 +532,7 @@ addLayer("j", {
 	milestones: {
 		0: {
 			requirementDescription: function() { return L("醇藏峰值 ≥ 2", "best wine ≥ 2") },
-			effectDescription: function() { return L("重整酒坊不再卷走旧行。", "Re-staking the cellar no longer sweeps old rows.") },
+			effectDescription: function() { return L("更上层重置不再卷走酒坊升级。", "Deeper resets no longer sweep the cellar's upgrades.") },
 			done() { return player[this.layer].best.gte(2) },
 		},
 		1: {
@@ -745,9 +747,10 @@ addLayer("d", {
 	},
 
 	doReset(resettingLayer) {
+		// Vanilla TMT: own prestige and same-row siblings never sweep this layer.
+		if (!(layers[resettingLayer].row > this.row)) return
 		let kept = ["best", "total"]
-		if (resettingLayer === this.layer) kept.push("points")
-		if (hasMilestone("d", 1)) kept.push("upgrades")
+		if (hasMilestone("d", 0)) kept.push("upgrades")
 		if (hasMilestone("d", 3)) kept.push("buyables")
 		layerDataReset(this.layer, kept)
 	},
@@ -866,7 +869,7 @@ addLayer("d", {
 	milestones: {
 		0: {
 			requirementDescription: function() { return L("茱佩峰值 ≥ 2", "best charms ≥ 2") },
-			effectDescription: function() { return L("重整茱萸不再卷走旧行。", "Re-staking the charm no longer sweeps old rows.") },
+			effectDescription: function() { return L("更上层重置不再卷走茱萸升级。", "Deeper resets no longer sweep the charm's upgrades.") },
 			done() { return player[this.layer].best.gte(2) },
 		},
 		1: {

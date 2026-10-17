@@ -80,10 +80,11 @@ addLayer("p", {
 	},
 
 	doReset(resettingLayer) {
+		// Vanilla TMT reset rule: a layer's own prestige never sweeps its own
+		// data, and same-row siblings never reset each other. Only a deeper row
+		// (菊田 and above) resets 山道.
+		if (!(layers[resettingLayer].row > this.row)) return
 		let kept = ["best", "total"]
-		// A layer's own prestige must keep the currency it just earned; only a
-		// deeper layer's reset may sweep it (vanilla TMT self-reset semantics).
-		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("p", 0)) kept.push("upgrades")
 		if (hasMilestone("p", 3)) kept.push("buyables")
 		layerDataReset(this.layer, kept)
@@ -206,7 +207,7 @@ addLayer("p", {
 	milestones: {
 		0: {
 			requirementDescription: function() { return L("登程峰值 ≥ 25", "best journey ≥ 25") },
-			effectDescription: function() { return L("登高不再卷走山道上的升级。", "Climbs no longer sweep the path's upgrades away.") },
+			effectDescription: function() { return L("更上层重置（开垦菊田起）不再卷走山道升级。", "Deeper resets (from the chrysanthemum field up) no longer sweep the path's upgrades.") },
 			done() { return player[this.layer].best.gte(TUNING.pM0) },
 		},
 		1: {
