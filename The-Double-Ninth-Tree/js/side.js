@@ -13,10 +13,14 @@ addLayer("a", {
 	color: "#FFD54F",
 	resource: function() { return L("声名", "fame") },
 	row: "side",
+	type: "none",
 	startData() { return { unlocked: true, points: new Decimal(0) } },
 	tooltip() { return L("重阳成就：菊谱三十六种与十四声名。", "Double Ninth achievements: thirty-six codex varieties and fourteen of fame.") },
 	achievementPopups: true,
 
+	// TMT only registers achievements declared under `achievements`; top-level
+	// numeric keys are invisible to updateAchievements()/hasAchievement().
+	achievements: {
 	// 菊谱 varieties 1–36 → achievements 11–81 (grid ids 101–606, variety i = grid 100+i).
 	11: { name: function() { return L("菊谱·一", "codex #1") }, done() { return player.x.grid[101] === 1 }, tooltip: L("著录菊谱第一种。", "Record codex variety one.") },
 	12: { name: function() { return L("菊谱·二", "codex #2") }, done() { return player.x.grid[102] === 1 }, tooltip: L("著录菊谱第二种。", "Record codex variety two.") },
@@ -117,12 +121,14 @@ addLayer("a", {
 		done() { return hasUpgrade("y", 45) },
 		tooltip: L("九重云阶之上，为长者祝寿。", "Above the ninth tier, a hundred years are wished for the elders."),
 	},
+	},
 
 	// helper: how many codex varieties are recorded (value function, tmp-cached)
 	codexCount() {
 		let n = 0
-		for (let i = 101; i <= 606; i++)
-			if (player.x.grid[i] === 1) n++
+		for (let r = 1; r <= 6; r++)
+			for (let c = 1; c <= 6; c++)
+				if (player.x.grid[100 * r + c] === 1) n++
 		return n
 	},
 })
@@ -259,7 +265,7 @@ addLayer("o", {
 		},
 		12: {
 			title: function() { return L("重购酿具", "Respec the Cellar") },
-			display() { L("退还酒坊已购酿具之资，重整酒坊。", "Refund the cellar's bought brewing gear and re-stake the cellar.") },
+			display() { return L("退还酒坊已购酿具之资，重整酒坊。", "Refund the cellar's bought brewing gear and re-stake the cellar.") },
 			canClick() { return player.j.unlocked && player.j.spentOnBuyables.gt(0) },
 			onClick() {
 				respecBuyables("j")
@@ -270,9 +276,9 @@ addLayer("o", {
 	tabFormat: [
 		["display-text", function() {
 			return L("游玩时长：" + formatTime(player.timePlayed) +
-				"<br>山道里程 " + format(player.points) + " · 菊珠 " + format(player.k.jade) + " · 诗境 " + format(player.s.points) + " · 九山礼 " + format(player.f.points),
+				"<br>山道里程 " + format(player.points) + " · 菊珠 " + format(player.x.jade) + " · 诗境 " + format(player.s.points) + " · 九山礼 " + format(player.f.points),
 				"time played: " + formatTime(player.timePlayed) +
-				"<br>path " + format(player.points) + " · jade " + format(player.k.jade) + " · realms " + format(player.s.points) + " · tributes " + format(player.f.points))
+				"<br>path " + format(player.points) + " · jade " + format(player.x.jade) + " · realms " + format(player.s.points) + " · tributes " + format(player.f.points))
 		}],
 		["clickables", [1]],
 	],

@@ -20,7 +20,6 @@ addLayer("k", {
 		points: new Decimal(0),
 		total: new Decimal(0),
 		best: new Decimal(0),
-		jade: new Decimal(0),
 	}},
 	baseResource: function() { return L("登程", "journey tokens") },
 	baseAmount() { return player.p.points },
@@ -45,6 +44,7 @@ addLayer("k", {
 		if (hasUpgrade("d", 11)) m = m.times(2)      // 茱萸护菊 (sibling line, P10)
 		if (hasUpgrade("x", 21)) m = m.times(3)      // 菊展名远 (sibling line, P10)
 		if (hasUpgrade("g", 22)) m = m.times(upgradeEffect("g", 22))      // 糕质 (row-2 line, P10)
+		m = m.times(buyableEffect("k", 12))          // 篱下圃地: dew ×2^level
 		if (inChallenge("f", 21)) m = m.times(0.3)   // M2 trial c21「寒菊」
 		return m
 	},
@@ -57,6 +57,7 @@ addLayer("k", {
 	// M5: the field sheds 菊珠 passively. Custom variable, written by hand (F10).
 	jadeRate() {
 		let r = new Decimal(TUNING.jadeDrip)
+		r = r.add(buyableEffect("k", 11))             // 农具: +1 per level
 		if (hasUpgrade("k", 24)) r = r.times(2)
 		if (hasUpgrade("k", 33)) r = r.times(3)
 		if (hasAchievement("a", 84)) r = r.times(3)   // 菊谱全录
@@ -64,7 +65,10 @@ addLayer("k", {
 		return r
 	},
 	update(diff) {
-		player.k.jade = player.k.jade.add(this.jadeRate().times(diff))
+		if (!player[this.layer].unlocked) return
+		// 菊珠 is one pool for the whole game (the exhibition's and the market's):
+		// the field's drip feeds x.jade, never a private second pool.
+		player.x.jade = player.x.jade.add(this.jadeRate().times(diff))
 	},
 
 	passiveGeneration() {
@@ -88,7 +92,8 @@ addLayer("k", {
 	},
 
 	doReset(resettingLayer) {
-		let kept = ["best", "total", "jade"]
+		let kept = ["best", "total"]
+		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("k", 1)) kept.push("upgrades")
 		if (hasMilestone("k", 3)) kept.push("buyables")
 		layerDataReset(this.layer, kept)
@@ -237,11 +242,11 @@ addLayer("k", {
 		11: {
 			title: function() { return L("农具", "Hoe and Graft") },
 			cost(x) { return new Decimal(10).times(Decimal.pow(2, x)).floor() },
-			effect(x) { return x.add(1) },
+			effect(x) { return x },
 			display() {
 				let amt = getBuyableAmount(this.layer, this.id)
-				return L("每级：菊珠滴落 +" + formatWhole(amt.max(0).add(1)) + "<br>成本：" + format(tmp[this.layer].buyables[this.id].cost) + " 菊露",
-					"per level: jade drip +" + formatWhole(amt.max(0).add(1)) + "<br>cost: " + format(tmp[this.layer].buyables[this.id].cost) + " dew")
+				return L("每级：菊珠滴落 +1（现 " + format(tmp[this.layer].jadeRate) + "/秒）<br>成本：" + format(tmp[this.layer].buyables[this.id].cost) + " 菊露",
+					"per level: jade drip +1 (now " + format(tmp[this.layer].jadeRate) + "/s)<br>cost: " + format(tmp[this.layer].buyables[this.id].cost) + " dew")
 			},
 			canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
 			buy() {
@@ -272,9 +277,9 @@ addLayer("k", {
 
 	tabFormat: [
 		["display-text", function() {
-			return L("菊精 <b>" + format(player.k.points) + "</b> · 菊珠 <b style='color:#FF69B4'>" + format(player.k.jade) + "</b>" +
+			return L("菊精 <b>" + format(player.k.points) + "</b> · 菊珠 <b style='color:#FF69B4'>" + format(player.x.jade) + "</b>" +
 				(!hasUpgrade("k", 14) && player.k.points.gte(new Decimal(TUNING.kCap).div(2)) ? "<br><i>菊露软帽自 " + format(TUNING.kCap) + " 起</i>" : ""),
-				"essence <b>" + format(player.k.points) + "</b> · jade <b style='color:#FF69B4'>" + format(player.k.jade) + "</b>" +
+				"essence <b>" + format(player.k.points) + "</b> · jade <b style='color:#FF69B4'>" + format(player.x.jade) + "</b>" +
 				(!hasUpgrade("k", 14) && player.k.points.gte(new Decimal(TUNING.kCap).div(2)) ? "<br><i>dew soft cap from " + format(TUNING.kCap) + "</i>" : ""))
 		}],
 		"prestige-button",
@@ -354,6 +359,7 @@ addLayer("j", {
 	// 九日酿 cycle speed (K4 named mechanic, consumed by update).
 	brewSpeed() {
 		let s = new Decimal(1)
+		s = s.add(buyableEffect("j", 11))                 // 曲种: +1 per level
 		if (hasUpgrade("k", 23)) s = s.times(upgradeEffect("k", 23))
 		if (hasUpgrade("j", 23)) s = s.times(upgradeEffect("j", 23))
 		if (hasUpgrade("j", 33)) s = s.times(upgradeEffect("j", 33))
@@ -367,12 +373,17 @@ addLayer("j", {
 		return g
 	},
 	update(diff) {
+		if (!player[this.layer].unlocked) return            // the cellar starts when it opens
 		if (inChallenge("f", 31)) return                    // c31「断酒」: the brew stands still
 		if (!player.j.brewing) return
+		let cyc = this.brewCycle()
 		player.j.brew = player.j.brew + this.brewSpeed().toNumber() * diff
-		if (player.j.brew >= this.brewCycle()) {
-			player.j.brew = 0
-			addPoints(this.layer, this.brewGain())
+		if (player.j.brew >= cyc) {
+			// Bank every completed cycle (offline catch-up can complete many at once)
+			// and keep the overflow so no brew progress is thrown away.
+			let done = Math.floor(player.j.brew / cyc)
+			player.j.brew -= done * cyc
+			addPoints(this.layer, this.brewGain().times(done))
 		}
 	},
 
@@ -398,6 +409,7 @@ addLayer("j", {
 
 	doReset(resettingLayer) {
 		let kept = ["best", "total"]
+		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("j", 1)) kept.push("upgrades")
 		if (hasMilestone("j", 3)) kept.push("buyables")
 		layerDataReset(this.layer, kept)
@@ -545,11 +557,11 @@ addLayer("j", {
 		11: {
 			title: function() { return L("曲种", "Starter Cultures") },
 			cost(x) { return new Decimal(5).times(Decimal.pow(2, x)).floor() },
-			effect(x) { return x.add(1) },
+			effect(x) { return x },
 			display() {
 				let amt = getBuyableAmount(this.layer, this.id)
-				return L("每级：开酿 +" + formatWhole(amt.max(0).add(1)) + "<br>成本：" + format(tmp[this.layer].buyables[this.id].cost) + " 醇藏",
-					"per level: 开酿 +" + formatWhole(amt.max(0).add(1)) + "<br>cost: " + format(tmp[this.layer].buyables[this.id].cost) + " wine")
+				return L("每级：开酿 +1（现 ×" + format(tmp[this.layer].brewSpeed) + "）<br>成本：" + format(tmp[this.layer].buyables[this.id].cost) + " 醇藏",
+					"per level: brew speed +1 (now ×" + format(tmp[this.layer].brewSpeed) + ")<br>cost: " + format(tmp[this.layer].buyables[this.id].cost) + " wine")
 			},
 			canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
 			buy() {
@@ -575,6 +587,21 @@ addLayer("j", {
 				player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].add(1)
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(cost)
 			},
+		},
+
+		// 设置页「重购酿具」: refund every bought level, then clear the gear.
+		// (respecBuyables() only runs when this function exists.)
+		respec() {
+			let refund = new Decimal(0)
+			for (let id of [11, 12]) {
+				let amt = player.j.buyables[id].toNumber()
+				for (let i = 0; i < amt; i++)
+					refund = refund.add(layers.j.buyables[id].actualCostFunction(i))
+			}
+			player.j.buyables = getStartBuyables("j")
+			player.j.spentOnBuyables = decimalZero
+			player.j.points = player.j.points.add(refund)
+			updateBuyableTemp("j")
 		},
 	},
 
@@ -693,6 +720,7 @@ addLayer("d", {
 		if (hasUpgrade("d", 23)) g = g.times(upgradeEffect("d", 23))
 		if (hasUpgrade("d", 33)) g = g.times(upgradeEffect("d", 33))
 		g = g.times(player[this.layer].points.add(1).pow(0.15))
+		g = g.add(buyableEffect("d", 11))                 // 茱穗: +1 per level
 		return g.min(this.charmGuardCap())
 	},
 
@@ -718,6 +746,7 @@ addLayer("d", {
 
 	doReset(resettingLayer) {
 		let kept = ["best", "total"]
+		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("d", 1)) kept.push("upgrades")
 		if (hasMilestone("d", 3)) kept.push("buyables")
 		layerDataReset(this.layer, kept)
@@ -864,11 +893,11 @@ addLayer("d", {
 		11: {
 			title: function() { return L("茱穗", "Charm Sprays") },
 			cost(x) { return new Decimal(10).times(Decimal.pow(2, x)).floor() },
-			effect(x) { return x.add(1) },
+			effect(x) { return x },
 			display() {
 				let amt = getBuyableAmount(this.layer, this.id)
-				return L("每级：茱佩护身 +" + formatWhole(amt.max(0).add(1)) + "<br>成本：" + format(tmp[this.layer].buyables[this.id].cost) + " 茱佩",
-					"per level: 茱佩护身 +" + formatWhole(amt.max(0).add(1)) + "<br>cost: " + format(tmp[this.layer].buyables[this.id].cost) + " charms")
+				return L("每级：茱佩护身 +1（现 ×" + format(tmp[this.layer].charmGuard) + "）<br>成本：" + format(tmp[this.layer].buyables[this.id].cost) + " 茱佩",
+					"per level: charm guard +1 (now ×" + format(tmp[this.layer].charmGuard) + ")<br>cost: " + format(tmp[this.layer].buyables[this.id].cost) + " charms")
 			},
 			canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
 			buy() {

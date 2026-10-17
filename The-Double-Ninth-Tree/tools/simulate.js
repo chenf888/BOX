@@ -146,10 +146,15 @@ global.layerDataReset = function (l, keep) {
     keep = keep || [];
     const sd = LAYERS[l].startData ? LAYERS[l].startData() : {};
     const saved = { unlocked: player[l].unlocked };
-    ["points"].concat(keep).forEach((k) => { saved[k] = player[l][k]; });
+    // Engine semantics: ONLY the explicit keep list survives. `points` is kept
+    // when the layer's own doReset asks for it, never automatically.
+    keep.forEach((k) => { saved[k] = player[l][k]; });
     player[l].points = sd.points || decimalZero;
     player[l].upgrades = [];
     player[l].buyables = {};
+    for (const id of Object.keys(LAYERS[l].buyables || {}))
+        if (LAYERS[l].buyables[id] && typeof LAYERS[l].buyables[id] === "object")
+            player[l].buyables[id] = decimalZero;
     player[l].milestones = [];
     Object.keys(saved).forEach((k) => { player[l][k] = saved[k]; });
 };

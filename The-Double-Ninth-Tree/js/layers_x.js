@@ -42,6 +42,7 @@ addLayer("x", {
 		if (hasUpgrade("x", 34)) m = m.times(6)
 		if (hasUpgrade("d", 12)) m = m.times(3)      // 茱萸招展 (sibling line, P10)
 		if (hasUpgrade("k", 11)) m = m.times(2)      // 田圃助展 (sibling line, P10)
+		m = m.times(buyableEffect("x", 12))          // 名帖: bonds ×2^sqrt(level)
 		return m
 	},
 	gainExp() { return new Decimal(1) },
@@ -63,8 +64,9 @@ addLayer("x", {
 	// M10: the codex. 36 varieties, base-100 ids (101–606); revealed by the 菊珠 tile.
 	codexRevealed() {
 		let n = 0
-		for (let i = 101; i <= 606; i++)
-			if (player.x.grid[i] === 1) n++
+		for (let r = 1; r <= 6; r++)
+			for (let c = 1; c <= 6; c++)
+				if (player.x.grid[100 * r + c] === 1) n++
 		return n
 	},
 
@@ -89,12 +91,16 @@ addLayer("x", {
 	},
 
 	doReset(resettingLayer) {
-		let kept = ["best", "total"]
+		let kept = ["best", "total", "jade"]
+		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("x", 1)) kept.push("upgrades")
 		if (hasMilestone("x", 3)) kept.push("buyables")
-		// the codex outlives every reset (M10 collection integrity):
-		kept.push("grid")
+		// The codex outlives every reset (M10 collection integrity). It is an
+		// object, and layOver() mutates nested objects in place, so a keep entry
+		// alone would zero it before the restore — copy it by hand.
+		let grid = Object.assign({}, player[this.layer].grid)
 		layerDataReset(this.layer, kept)
+		player[this.layer].grid = grid
 	},
 
 	hotkeys: [
@@ -234,11 +240,11 @@ addLayer("x", {
 		11: {
 			title: function() { return L("展签束", "Ticket Bundles") },
 			cost(x) { return new Decimal(10).times(Decimal.pow(2, x)).floor() },
-			effect(x) { return x.add(1) },
+			effect(x) { return x },
 			display() {
 				let amt = getBuyableAmount(this.layer, this.id)
-				return L("每级：菊珠入手 +" + formatWhole(amt.max(0).add(1)) + "<br>成本：" + format(tmp[this.layer].buyables[this.id].cost) + " 花契",
-					"per level: jade gain +" + formatWhole(amt.max(0).add(1)) + "<br>cost: " + format(tmp[this.layer].buyables[this.id].cost) + " bonds")
+				return L("每级：金菊成功时额外 +1 菊珠（现 +" + formatWhole(amt.max(0)) + "）<br>成本：" + format(tmp[this.layer].buyables[this.id].cost) + " 花契",
+					"per level: +1 extra jade on a golden hit (now +" + formatWhole(amt.max(0)) + ")<br>cost: " + format(tmp[this.layer].buyables[this.id].cost) + " bonds")
 			},
 			canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
 			buy() {
@@ -277,16 +283,20 @@ addLayer("x", {
 			canClick() { return true },
 			onClick() {
 				if (Math.random() < tmp.x.jadeOdds)
-					player.x.jade = player.x.jade.times(2).max(1)
+					player.x.jade = player.x.jade.times(2).max(1).add(buyableEffect("x", 11))
 			},
 			style() { return {'background-color': '#FFD700', 'color': '#3d2b00'} },
 		},
 		21: {
 			title: function() { return L("枯菊", "Withered Chrysanthem") },
-			display() { return L("点按：半数菊珠入土（风险）。", "click: half your jade to the soil (risk).") },
+			display() { return L("点按：机缘（" + format(tmp[this.layer].jadeOdds.times(100).floor()) + "%）菊珠翻倍，否则半数入土。",
+				"click: on the odds (" + format(tmp[this.layer].jadeOdds.times(100).floor()) + "%) jade doubles, else half goes to the soil.") },
 			canClick() { return player.x.jade.gt(1) },
 			onClick() {
-				player.x.jade = player.x.jade.div(2)
+				if (Math.random() < tmp.x.jadeOdds)
+					player.x.jade = player.x.jade.times(2)
+				else
+					player.x.jade = player.x.jade.div(2)
 			},
 			style() { return {'background-color': '#8d6e63', 'color': '#efebe9'} },
 		},
@@ -300,7 +310,8 @@ addLayer("x", {
 				let tries = 0
 				while (tries < 400) {
 					tries++
-					let idx = 101 + Math.floor(Math.random() * 36)
+					// grid ids are row*100+col (101..606), not 101..136
+					let idx = 100 * (1 + Math.floor(Math.random() * 6)) + (1 + Math.floor(Math.random() * 6))
 					if (player.x.grid[idx] !== 1) { revealed = idx; break }
 				}
 				if (revealed >= 0) setGridData(this.layer, revealed, 1)
@@ -315,13 +326,16 @@ addLayer("x", {
 		maxRows: 6, maxCols: 6,
 		getStartData(id) { return 0 },
 		getUnlocked(id) { return hasUpgrade("k", 25) },
-		getCanClick(data, id) { return data === 0 },
+		// Revealing is the 菊珠 clickable's job (3 jade per crack); tiles are
+		// display-only, otherwise the whole codex could be lit for free.
+		getCanClick(data, id) { return false },
 		getTitle(data, id) {
 			let names = ["甘菊", "金背", "木茼", "秋华", "残暑", "白莲", "凤尾", "龙牙", "蟹爪", "蝶黄",
 				"雀舌", "团菊", "松针", "梅心", "荷香", "竹节", "石莲", "霜钟", "露英", "风铎",
 				"月团", "雪狮", "云鬓", "霞举", "天女", "瑶台", "宝珠", "千叶", "素冠", "翠盘",
 				"朱砂", "墨菊", "绿牡丹", "紫琅", "锦屏", "墨晶"]
-			return names[(id - 101) % 36]
+			let r = Math.floor(id / 100), c = id % 100
+			return names[(r - 1) * 6 + (c - 1)]
 		},
 		getDisplay(data, id) {
 			return data === 1 ? L("已著录", "recorded") : "？"

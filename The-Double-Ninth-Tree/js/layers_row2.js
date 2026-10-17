@@ -33,6 +33,20 @@ addLayer("g", {
 	canReset() {
 		return tmp[this.layer].baseAmount.gte(tmp[this.layer].nextAt) && player[this.layer].points.lt(TUNING.gCap)
 	},
+	// K5 hard ceiling: a buy-max burst may not overshoot the ninth layer.
+	// (The engine's static gain is a level count; we clamp it to the cap.)
+	getResetGain() {
+		let cur = player[this.layer].points
+		if (cur.gte(TUNING.gCap)) return new Decimal(0)
+		let t = tmp[this.layer]
+		let base = new Decimal(layers[this.layer].base)
+		let exp = new Decimal(layers[this.layer].exponent)
+		let gain = t.baseAmount.div(t.requires).div(t.gainMult).max(1)
+			.log(base).times(t.gainExp).pow(exp.pow(-1))
+			.times(t.directMult)
+		gain = gain.floor().sub(cur).add(1).max(1)
+		return gain.min(new Decimal(TUNING.gCap).sub(cur))
+	},
 
 	// static semantics inverted (07 rule 16): gainMult < 1 = cheaper floors.
 	gainMult() {
@@ -69,6 +83,7 @@ addLayer("g", {
 
 	doReset(resettingLayer) {
 		let kept = ["best", "total"]
+		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("g", 2)) kept.push("upgrades")
 		if (hasMilestone("f", 4)) kept.push("upgrades", "milestones")
 		layerDataReset(this.layer, kept)
@@ -247,7 +262,9 @@ addLayer("s", {
 		if (hasUpgrade("s", 21)) m = m.times(upgradeEffect("s", 21))
 		if (hasUpgrade("s", 22)) m = m.times(upgradeEffect("s", 22))
 		if (hasUpgrade("s", 24)) m = m.times(4)
-		if (hasMilestone("s", 3)) m = m.pow(hasUpgrade("s", 23) ? 1.1 : 1)
+		// milestone 3: 九诗成集 ×2; u23: the whole verse flow ^1.1 (independent)
+		if (hasMilestone("s", 3)) m = m.times(2)
+		if (hasUpgrade("s", 23)) m = m.pow(1.1)
 		if (hasUpgrade("g", 13)) m = m.times(upgradeEffect("g", 13))
 		if (hasMilestone("g", 3)) m = m.times(2)
 		if (buyableEffect("m", 12).gt(1)) m = m.times(buyableEffect("m", 12))
@@ -301,6 +318,7 @@ addLayer("s", {
 
 	doReset(resettingLayer) {
 		let kept = ["best", "total"]
+		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("s", 2)) kept.push("upgrades")
 		if (hasMilestone("f", 4)) kept.push("upgrades", "milestones")
 		layerDataReset(this.layer, kept)
@@ -544,6 +562,7 @@ addLayer("m", {
 
 	doReset(resettingLayer) {
 		let kept = ["best", "total"]
+		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("m", 2)) kept.push("upgrades")
 		if (hasMilestone("f", 4)) kept.push("upgrades", "milestones")
 		layerDataReset(this.layer, kept)

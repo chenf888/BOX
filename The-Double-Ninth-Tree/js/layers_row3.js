@@ -120,9 +120,15 @@ addLayer("f", {
 	doReset(resettingLayer) {
 		// The summit re-stakes the whole mountain: everything below is swept;
 		// the summit keeps its own ledger (best/total always, upgrades from m0).
+		// maxpoints are the M2 reward currency — entering a trial must never wipe
+		// the peaks already earned in the other three trials. It is an array, and
+		// layOver() mutates nested arrays in place, so copy it by hand.
 		let kept = ["best", "total"]
+		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("f", 0)) kept.push("upgrades")
+		let peaks = player[this.layer].maxpoints.map(x => new Decimal(x))
 		layerDataReset(this.layer, kept)
+		player[this.layer].maxpoints = peaks
 	},
 
 	hotkeys: [
@@ -411,6 +417,19 @@ addLayer("y", {
 	canReset() {
 		return tmp[this.layer].baseAmount.gte(tmp[this.layer].nextAt) && player[this.layer].points.lt(TUNING.yCap)
 	},
+	// K5 hard ceiling: exactly nine cloud tiers — buy-max may not overshoot.
+	getResetGain() {
+		let cur = player[this.layer].points
+		if (cur.gte(TUNING.yCap)) return new Decimal(0)
+		let t = tmp[this.layer]
+		let base = new Decimal(layers[this.layer].base)
+		let exp = new Decimal(layers[this.layer].exponent)
+		let gain = t.baseAmount.div(t.requires).div(t.gainMult).max(1)
+			.log(base).times(t.gainExp).pow(exp.pow(-1))
+			.times(t.directMult)
+		gain = gain.floor().sub(cur).add(1).max(1)
+		return gain.min(new Decimal(TUNING.yCap).sub(cur))
+	},
 
 	// static semantics inverted: gainMult < 1 = cheaper tiers.
 	gainMult() {
@@ -446,6 +465,7 @@ addLayer("y", {
 
 	doReset(resettingLayer) {
 		let kept = ["best", "total"]
+		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("y", 2)) kept.push("upgrades")
 		layerDataReset(this.layer, kept)
 	},

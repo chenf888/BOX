@@ -81,6 +81,9 @@ addLayer("p", {
 
 	doReset(resettingLayer) {
 		let kept = ["best", "total"]
+		// A layer's own prestige must keep the currency it just earned; only a
+		// deeper layer's reset may sweep it (vanilla TMT self-reset semantics).
+		if (resettingLayer === this.layer) kept.push("points")
 		if (hasMilestone("p", 0)) kept.push("upgrades")
 		if (hasMilestone("p", 3)) kept.push("buyables")
 		layerDataReset(this.layer, kept)
@@ -209,7 +212,7 @@ addLayer("p", {
 		1: {
 			requirementDescription: function() { return L("登程峰值 ≥ 50", "best journey ≥ 50") },
 			unlocked() { return hasMilestone(this.layer, 0) },
-			effectDescription: function() { return L("山道自生：每秒 +1 登程（自动开启）。", "The path grows itself: +1 journey/s (automated on).") },
+			effectDescription: function() { return L("山道自生：每秒自动登高一次（按当前登程收益）。", "The path grows itself: one climb per second at the current journey gain.") },
 			done() { return player[this.layer].best.gte(TUNING.pM1) },
 		},
 		2: {
@@ -230,11 +233,11 @@ addLayer("p", {
 		11: {
 			title: function() { return L("石阶", "Stone Steps") },
 			cost(x) { return new Decimal(10).times(Decimal.pow(2, x)).floor() },
-			effect(x) { return x.add(1) },
+			effect(x) { return x },
 			display() {
 				let amt = getBuyableAmount(this.layer, this.id)
-				return L("每级：攀一步 +" + formatWhole(amt.max(0).add(1)) + "<br>成本：" + format(tmp[this.layer].buyables[this.id].cost) + " 登程",
-					"per level: 攀一步 +" + formatWhole(amt.max(0).add(1)) + "<br>cost: " + format(tmp[this.layer].buyables[this.id].cost) + " journey")
+				return L("每级：攀一步 +1（现 +" + formatWhole(amt.max(0)) + "）<br>成本：" + format(tmp[this.layer].buyables[this.id].cost) + " 登程",
+					"per level: 攀一步 +1 (now +" + formatWhole(amt.max(0)) + ")<br>cost: " + format(tmp[this.layer].buyables[this.id].cost) + " journey")
 			},
 			canAfford() { return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost) },
 			buy() {
