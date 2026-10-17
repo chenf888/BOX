@@ -87,6 +87,7 @@ addLayer("lc", {
 		if (hasMilestone("lc", 0)) ret = ret.times(1.5)
 		if (hasUpgrade("al", 12)) ret = ret.times(upgradeEffect("al", 12))
 		if (getBuyableAmount("al", 12).gt(0)) ret = ret.times(buyableEffect("al", 12))
+		if (hasUpgrade("al", 15)) ret = ret.times(upgradeEffect("al", 15))
 		if (hasMilestone("cf", 3)) ret = ret.times(10)
 		if (hasUpgrade("cf", 15)) ret = ret.times(upgradeEffect("cf", 15))
 		ret = ret.times(player.points.add(1).log(10).div(TUNING.SELF.BASE_LOG_DIV).add(1).pow(0.5))
@@ -139,7 +140,7 @@ addLayer("lc", {
 		},
 		13: {
 			title: function() { return L("鱼陟负冰", "fish rise against the ice") },
-			description: function() { return L("本节之候自养：影愈长，察愈明 —— 本节候产 ×(候+1)^" + TUNING.SELF.SQRT_EXP + "，上限 ×" + TUNING.SELF.SQRT_CAP + "。", "The pentads feed on themselves: x (候+1)^" + TUNING.SELF.SQRT_EXP + ", capped at x" + TUNING.SELF.SQRT_CAP + ".") },
+			description: function() { return L("本节之候自养：影愈长，察愈明 —— 本节候产 ×(候+1)^" + TUNING.SELF.SQRT_EXP + "，上限 ×" + TUNING.SELF.SQRT_CAP + "。", "The pentads feed on themselves: x (pentads+1)^" + TUNING.SELF.SQRT_EXP + ", capped at x" + TUNING.SELF.SQRT_CAP + ".") },
 			cost: new Decimal(9),
 			effect() {
 				let v = player["lc"].points.add(1).pow(TUNING.SELF.SQRT_EXP)
@@ -150,21 +151,21 @@ addLayer("lc", {
 		},
 		14: {
 			title: function() { return L("獭祭鱼", "otters lay out their catch") },
-			description: function() { return L("积候成数：本节候产 ×(log10(候+10)/" + TUNING.SELF.LOG_DIV + "+1)。", "Pentads accumulate: x (log10(候+10)/" + TUNING.SELF.LOG_DIV + "+1).") },
+			description: function() { return L("积候成数：本节候产 ×(log10(候+10)/" + TUNING.SELF.LOG_DIV + "+1)。", "Pentads accumulate: x (log10(pentads+10)/" + TUNING.SELF.LOG_DIV + "+1).") },
 			cost: new Decimal(30),
 			effect() { return player["lc"].points.add(10).log(10).div(TUNING.SELF.LOG_DIV).add(1) },
 			effectDisplay() { return "×" + format(this.effect()) },
 		},
 		15: {
 			title: function() { return L("候雁北", "wild geese head north") },
-			description: function() { return L("候及日影：日影产出 ×(log10(日影+1)+1)。", "The pentad reaches the sun-shadow itself: 日影 output x (log10(日影+1)+1).") },
+			description: function() { return L("候及日影：日影产出 ×(log10(日影+1)+1)。", "The pentad reaches the sun-shadow itself: sun-shadow output x (log10(sun-shadow+1)+1).") },
 			cost: new Decimal(120),
 			effect() { return player.points.add(1).log(10).add(1) },
 			effectDisplay() { return "×" + format(this.effect()) },
 		},
 		21: {
 			title: function() { return L("草木萌动", "plants put out shoots") },
-			description: function() { return L("历书既开（历 · 碑一）之后，本节候产 ×2。", "Once the almanac is opened (历 stele 1), this node's output x2.") },
+			description: function() { return L("历书既开（历 · 碑一）之后，本节候产 ×2。", "Once the almanac is opened (almanac stele 1), this node's output x2.") },
 			cost: new Decimal(7),
 			effect() {
 				if (hasMilestone("al", 0)) return new Decimal(2)
@@ -192,7 +193,7 @@ addLayer("lc", {
 			effect() {
 				return new Decimal(1).add(player["lc"].best.add(1).log(10).div(20)).min(1.1)
 			},
-			effectDisplay() { return "候簿效果 ^" + format(this.effect()) },
+			effectDisplay() { return L("候簿效果 ^", "ledger effect ^") + format(this.effect()) },
 		},
 		25: {
 			title: function() { return L("鹰化为鸠·候簿", "hawks turn to doves · Ledger") },

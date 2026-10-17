@@ -118,7 +118,7 @@ addLayer("dz", {
 		},
 		13: {
 			title: function() { return L("水泉动", "the springs begin to move") },
-			description: function() { return L("本节之候自养：影愈长，察愈明 —— 本节候产 ×(候+1)^" + TUNING.SELF.SQRT_EXP + "，上限 ×" + TUNING.SELF.SQRT_CAP + "。", "The pentads feed on themselves: x (候+1)^" + TUNING.SELF.SQRT_EXP + ", capped at x" + TUNING.SELF.SQRT_CAP + ".") },
+			description: function() { return L("本节之候自养：影愈长，察愈明 —— 本节候产 ×(候+1)^" + TUNING.SELF.SQRT_EXP + "，上限 ×" + TUNING.SELF.SQRT_CAP + "。", "The pentads feed on themselves: x (pentads+1)^" + TUNING.SELF.SQRT_EXP + ", capped at x" + TUNING.SELF.SQRT_CAP + ".") },
 			cost: new Decimal(9),
 			effect() {
 				let v = player["dz"].points.add(1).pow(TUNING.SELF.SQRT_EXP)
@@ -129,7 +129,7 @@ addLayer("dz", {
 		},
 		14: {
 			title: function() { return L("雁北乡", "wild geese head north") },
-			description: function() { return L("积候成数：本节候产 ×(log10(候+10)/" + TUNING.SELF.LOG_DIV + "+1)。", "Pentads accumulate: x (log10(候+10)/" + TUNING.SELF.LOG_DIV + "+1).") },
+			description: function() { return L("积候成数：本节候产 ×(log10(候+10)/" + TUNING.SELF.LOG_DIV + "+1)。", "Pentads accumulate: x (log10(pentads+10)/" + TUNING.SELF.LOG_DIV + "+1).") },
 			cost: new Decimal(30),
 			effect() { return player["dz"].points.add(10).log(10).div(TUNING.SELF.LOG_DIV).add(1) },
 			effectDisplay() { return "×" + format(this.effect()) },
@@ -171,7 +171,7 @@ addLayer("dz", {
 			effect() {
 				return new Decimal(1).add(player["dz"].best.add(1).log(10).div(20)).min(1.1)
 			},
-			effectDisplay() { return "候簿效果 ^" + format(this.effect()) },
+			effectDisplay() { return L("候簿效果 ^", "ledger effect ^") + format(this.effect()) },
 		},
 		25: {
 			title: function() { return L("水泽腹坚·候簿", "the ice hardens to its centre · Ledger") },
@@ -235,7 +235,7 @@ addLayer("dz", {
 			display() {
 				if (player.dz.nine >= TUNING.NINE_NINE_MAX) return L("九九已尽 —— 冬至候 +9×9", "the nine nines are done — 冬至候 +9x9")
 				if (player.dz.nineCool > 0) return L("再等 <b>" + format(player.dz.nineCool, 1) + "</b> 秒", "wait <b>" + format(player.dz.nineCool, 1) + "</b>s")
-				return L("数九 <b>" + player.dz.nine + "</b> / " + TUNING.NINE_NINE_MAX + "　（每 " + TUNING.NINE_NINE_TICK + " 秒可数一次）", "nine <b>" + player.dz.nine + "</b> / " + TUNING.NINE_NINE_MAX + " (once every " + TUNING.NINE_NINE_TICK + "s)")
+				return L("<b>" + player.dz.nine + "</b> / " + TUNING.NINE_NINE_MAX + "　（每 " + TUNING.NINE_NINE_TICK + " 秒可数一次）", "<b>" + player.dz.nine + "</b> / " + TUNING.NINE_NINE_MAX + " (once every " + TUNING.NINE_NINE_TICK + "s)")
 			},
 			canClick() { return dzNineReady() },
 			onClick() { dzCountNine() },

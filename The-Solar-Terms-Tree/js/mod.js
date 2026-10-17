@@ -55,7 +55,8 @@ let changelog = `<h1>Changelog / 更新</h1><br>
 		  shop, the 72-tile pentad chart, and the year's 8 score-attack trials.`
 
 let winText = `七十二候尽，二十四气周。<br>圭表无影可测，历法无岁可推——岁功成。<br><br>
-	<b>节气树 · 七十二候 · 通关</b><br><br>
+	All seventy-two pentads observed, the twenty-four terms complete. The gnomon has no shadow left to measure and the calendar no year left to push — the year is done.<br><br>
+	<b>节气树 · 七十二候 · 通关 / The Solar Terms Tree — Complete</b><br><br>
 	（岁复一岁，可继续推历。 / Keep going — a year is never the last one.）`
 
 /* Custom action-functions invented inside layers. Everything that MUTATES state
@@ -74,7 +75,55 @@ var HOU_SLOTS = [11, 12, 13, 14, 15, 21, 22, 23, 24]                 // the nine
 function zh() {
 	return !(typeof player !== "undefined" && player && player.lang === "en")
 }
-function L(zhText, enText) { return zh() ? zhText : enText }
+
+/* English cleanup for the generated layer files. The Chinese term names are the
+ * game's nouns, so the English branches are allowed to quote them; this map turns
+ * the ones that read as untranslated prose into their English names. Order
+ * matters: 冬至候 must be replaced before 冬至, 立春候 before 立春. */
+var EN_FIX = [
+	/* compounds first: 冬至候 must not be eaten by the generic 候 rules */
+	[/候簿效果/g, "ledger effect"],
+	[/历书三市/g, "the three markets"],
+	[/立春候/g, "Lichun Hou"],
+	[/春分候/g, "Chunfen Hou"],
+	[/立夏候/g, "Lixia Hou"],
+	[/夏至候/g, "Xiazhi Hou"],
+	[/立秋候/g, "Liqiu Hou"],
+	[/秋分候/g, "Qiufen Hou"],
+	[/立冬候/g, "Lidong Hou"],
+	[/冬至候/g, "Dongzhi Hou"],
+	[/立春/g, "Spring Begins"],
+	[/春分/g, "Spring Equinox"],
+	[/立夏/g, "Summer Begins"],
+	[/夏至/g, "Summer Solstice"],
+	[/立秋/g, "Autumn Begins"],
+	[/秋分/g, "Autumn Equinox"],
+	[/立冬/g, "Winter Begins"],
+	[/冬至/g, "Winter Solstice"],
+	/* then the generic unit and prose tokens */
+	[/all 候 output/g, "all pentad output"],
+	[/候 output/g, "pentad output"],
+	[/候 softcap/g, "pentad softcap"],
+	[/log10\(候/g, "log10(pentad"],
+	[/log10\(日影/g, "log10(sun-shadow"],
+	[/the 候 above/g, "the node above"],
+	[/the 节 above/g, "the node above"],
+	[/of this 节/g, "of this node"],
+	[/This node's 候 buy/g, "This node's pentads buy"],
+	[/spend this node's 候/g, "spend this node's pentads"],
+	[/<\/b> 候/g, "</b> pentads"],
+	[/交节/g, "season turn"],
+	[/交历/g, "revision"],
+	[/修历/g, "calendar revision"],
+	[/岁功成/g, "the Year Is Complete"],
+	[/岁祭/g, "year ritual"],
+]
+function L(zhText, enText) {
+	if (zh()) return zhText
+	let s = enText
+	for (let i = 0; i < EN_FIX.length; i++) s = s.replace(EN_FIX[i][0], EN_FIX[i][1])
+	return s
+}
 
 /* ---------------------------------------------------------------------------
  *  Counting the theme's own numbers — used by the tree header and the endgame
@@ -173,6 +222,8 @@ function getPointGen() {
 	if (hasUpgrade("al", 11)) gain = gain.times(upgradeEffect("al", 11))
 	if (hasUpgrade("al", 21)) gain = gain.times(upgradeEffect("al", 21))
 	if (getBuyableAmount("al", 11).gt(0)) gain = gain.times(buyableEffect("al", 11))
+	// al milestone 3: 24 observed pentads sharpen the shadow itself
+	if (hasMilestone("al", 3)) gain = gain.times(3)
 
 	// --- 立春's own cross-resource stone: the pentad reaches the shadow itself
 	if (hasUpgrade("lc", 15)) gain = gain.times(upgradeEffect("lc", 15))
@@ -216,11 +267,11 @@ var displayThings = [
 	function () {
 		if (!player.years) return undefined
 		return L("岁祭 <b>" + player.years + "</b> 次　（一甲子 = 60 岁）",
-			"<b>" + player.years + "</b> years祭ed (a 甲子 cycle is 60)")
+			"<b>" + player.years + "</b> year rituals held (a 60-year cycle)")
 	},
 	function () {
 		if (player.sui && player.sui.inChallenge !== undefined && player.sui.inChallenge >= 0)
-			return "<span style='color:#FF6F91'>" + L("八节试进行中 — 峰值为凭", "A 节 trial is running — only the peak counts") + "</span>"
+			return "<span style='color:#FF6F91'>" + L("八节试进行中 — 峰值为凭", "A seasonal trial is running — only the peak counts") + "</span>"
 		return undefined
 	},
 ]

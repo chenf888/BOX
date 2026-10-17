@@ -320,7 +320,7 @@ function upgradeBlock(n, i) {
     u.push('		13: {')
     u.push('			title: function() { return ' + L(hou[2][0], hou[2][1]) + ' },')
     u.push('			description: function() { return ' + L('本节之候自养：影愈长，察愈明 —— 本节候产 ×(候+1)^" + TUNING.SELF.SQRT_EXP + "，上限 ×" + TUNING.SELF.SQRT_CAP + "。',
-        'The pentads feed on themselves: x (候+1)^" + TUNING.SELF.SQRT_EXP + ", capped at x" + TUNING.SELF.SQRT_CAP + ".') + ' },')
+        'The pentads feed on themselves: x (pentads+1)^" + TUNING.SELF.SQRT_EXP + ", capped at x" + TUNING.SELF.SQRT_CAP + ".') + ' },')
     u.push('			cost: new Decimal(' + c[13] + '),')
     u.push('			effect() {')
     u.push('				let v = player["' + n.id + '"].points.add(1).pow(TUNING.SELF.SQRT_EXP)')
@@ -334,7 +334,7 @@ function upgradeBlock(n, i) {
     u.push('		14: {')
     u.push('			title: function() { return ' + L(hou[3][0], hou[3][1]) + ' },')
     u.push('			description: function() { return ' + L('积候成数：本节候产 ×(log10(候+10)/" + TUNING.SELF.LOG_DIV + "+1)。',
-        'Pentads accumulate: x (log10(候+10)/" + TUNING.SELF.LOG_DIV + "+1).') + ' },')
+        'Pentads accumulate: x (log10(pentads+10)/" + TUNING.SELF.LOG_DIV + "+1).') + ' },')
     u.push('			cost: new Decimal(' + c[14] + '),')
     u.push('			effect() { return player["' + n.id + '"].points.add(10).log(10).div(TUNING.SELF.LOG_DIV).add(1) },')
     u.push('			effectDisplay() { return "×" + format(this.effect()) },')
@@ -352,7 +352,7 @@ function upgradeBlock(n, i) {
         /* 立春 is row 0: its "parent currency" is 日影 itself, and the consumer
          * is getPointGen() in mod.js (the base is the layer-less layer). */
         u.push('			description: function() { return ' + L('候及日影：日影产出 ×(log10(日影+1)+1)。',
-            'The pentad reaches the sun-shadow itself: 日影 output x (log10(日影+1)+1).') + ' },')
+            'The pentad reaches the sun-shadow itself: sun-shadow output x (log10(sun-shadow+1)+1).') + ' },')
         u.push('			cost: new Decimal(' + c[15] + '),')
         u.push('			effect() { return player.points.add(1).log(10).add(1) },')
     }
@@ -372,7 +372,7 @@ function upgradeBlock(n, i) {
         u.push('			},')
     } else {
         u.push('			description: function() { return ' + L('历书既开（历 · 碑一）之后，本节候产 ×2。',
-            "Once the almanac is opened (历 stele 1), this node's output x2.") + ' },')
+            "Once the almanac is opened (almanac stele 1), this node's output x2.") + ' },')
         u.push('			cost: new Decimal(' + c[21] + '),')
         u.push('			effect() {')
         u.push('				if (hasMilestone("al", 0)) return new Decimal(2)')
@@ -410,7 +410,7 @@ function upgradeBlock(n, i) {
     u.push('			effect() {')
     u.push('				return new Decimal(1).add(player["' + n.id + '"].best.add(1).log(10).div(20)).min(1.1)')
     u.push('			},')
-    u.push('			effectDisplay() { return "候簿效果 ^" + format(this.effect()) },')
+    u.push('			effectDisplay() { return ' + L('候簿效果 ^', 'ledger effect ^') + ' + format(this.effect()) },')
     u.push('		},')
 
     /* --- 25: K7 unlock ticket for the 候簿 buyable subtab --- */
@@ -511,6 +511,8 @@ function gainMultBlock(n, i) {
     /* the almanac's meta on the named 候 currencies (M8 shop) */
     lines.push('		if (hasUpgrade("al", 12)) ret = ret.times(upgradeEffect("al", 12))')
     lines.push('		if (getBuyableAmount("al", 12).gt(0)) ret = ret.times(buyableEffect("al", 12))')
+    /* 授时 (al 15) names 立春 specifically — wire it on 立春 only */
+    if (n.id === "lc") lines.push('		if (hasUpgrade("al", 15)) ret = ret.times(upgradeEffect("al", 15))')
     /* the parent 节 hands its understanding down: this node's own currency is
      * the parent's `baseAmount`, so a bonus here IS a bonus to the parent's era */
     if (parent) {
@@ -890,8 +892,8 @@ function mechComponents(n, i) {
                 'the nine nines are done — 冬至候 +9x9') + '',
             '				if (player.dz.nineCool > 0) return ' + L('再等 <b>" + format(player.dz.nineCool, 1) + "</b> 秒"',
                 'wait <b>" + format(player.dz.nineCool, 1) + "</b>s"') + '',
-            '				return ' + L('数九 <b>" + player.dz.nine + "</b> / " + TUNING.NINE_NINE_MAX + "　（每 " + TUNING.NINE_NINE_TICK + " 秒可数一次）',
-                'nine <b>" + player.dz.nine + "</b> / " + TUNING.NINE_NINE_MAX + " (once every " + TUNING.NINE_NINE_TICK + "s)') + '',
+            '				return ' + L('<b>" + player.dz.nine + "</b> / " + TUNING.NINE_NINE_MAX + "　（每 " + TUNING.NINE_NINE_TICK + " 秒可数一次）',
+                '<b>" + player.dz.nine + "</b> / " + TUNING.NINE_NINE_MAX + " (once every " + TUNING.NINE_NINE_TICK + "s)') + '',
             '			},',
             '			canClick() { return dzNineReady() },',
             '			onClick() { dzCountNine() },',
@@ -1138,8 +1140,8 @@ function emitAlmanac() {
         '		},',
         '		23: {',
         '			title: function() { return ' + L('历元', 'The Epoch') + ' },',
-        '			description: function() { return ' + L('以历筹为元：历筹产 ×(历筹/1e3+1)^0.2。',
-            'The epoch of tokens: token output x (tokens/1e3+1)^0.2.') + ' },',
+        '			description: function() { return ' + L('以历筹为元：历筹产 ×(log10(历筹/1e3+1)+1)^0.2。',
+            'The epoch of tokens: token output x (log10(tokens/1e3+1)+1)^0.2.') + ' },',
         '			cost: new Decimal(TUNING.AL_UPG_COSTS[23]),',
         '			effect() { return player.al.points.div(1e3).add(1).log(10).add(1).pow(0.2) },',
         '			effectDisplay() { return "×" + format(this.effect()) },',
@@ -1150,12 +1152,12 @@ function emitAlmanac() {
             "Precession sharpens the three markets: their effect exponent becomes x1 .. x1.36, growing with observed pentads.") + ' },',
         '			cost: new Decimal(TUNING.AL_UPG_COSTS[24]),',
         '			effect() { return new Decimal(1).add(houObserved() / 200).min(1.36) },',
-        '			effectDisplay() { return "历书三市 ^" + format(this.effect()) },',
+        '			effectDisplay() { return ' + L('历书三市 ^', 'the three markets ^') + ' + format(this.effect()) },',
         '		},',
         '		25: {',
         '			title: function() { return ' + L('七十二候图', 'The Seventy-Two Chart') + ' },',
         '			description: function() { return ' + L('开启七十二候图（tab）：八节九候，尽列其名。',
-            'Unlock the 72-pentad chart (tab): eight 节, nine pentads each, every name printed.') + ' },',
+            'Unlock the 72-pentad chart (tab): eight nodes, nine pentads each, every name printed.') + ' },',
         '			cost: new Decimal(TUNING.AL_UPG_COSTS[25]),',
         '			unlocked() { return houObserved() >= 3 },',
         '		},',
@@ -1199,6 +1201,7 @@ function emitAlmanac() {
         '			effect(amount) {',
         '				let ret = new Decimal(TUNING.AL_BUY_EFFECT_MULT).pow(amount)',
         '				if (hasUpgrade("al", 24)) ret = ret.pow(upgradeEffect("al", 24))',
+        '				if (hasMilestone("al", 3)) ret = ret.pow(1.02)',
         '				return ret',
         '			},',
         '			unlocked() { return hasMilestone("al", 0) },',
@@ -1219,6 +1222,7 @@ function emitAlmanac() {
         '			effect(amount) {',
         '				let ret = new Decimal(TUNING.AL_BUY_EFFECT_MULT).pow(amount)',
         '				if (hasUpgrade("al", 24)) ret = ret.pow(upgradeEffect("al", 24))',
+        '				if (hasMilestone("al", 3)) ret = ret.pow(1.02)',
         '				return ret',
         '			},',
         '			unlocked() { return hasMilestone("al", 1) },',
@@ -1239,6 +1243,7 @@ function emitAlmanac() {
         '			effect(amount) {',
         '				let ret = new Decimal(TUNING.AL_BUY_EFFECT_MULT).pow(amount)',
         '				if (hasUpgrade("al", 24)) ret = ret.pow(upgradeEffect("al", 24))',
+        '				if (hasMilestone("al", 3)) ret = ret.pow(1.02)',
         '				return ret',
         '			},',
         '			unlocked() { return hasMilestone("al", 2) },',
@@ -1399,7 +1404,9 @@ function emitSui() {
         '	if (base.lt(req)) return new Decimal(0)',
         '	let g = base.div(req).pow(TUNING.SUI_EXPONENT).times(suiGainMult())',
         '	g = g.times(suiTrialMult())',
-        '	if (g.gte(TUNING.SUI_SOFTCAP)) g = g.div(TUNING.SUI_SOFTCAP).pow(TUNING.SOFTCAP_POWER).times(TUNING.SUI_SOFTCAP)',
+        '	let cap = TUNING.SUI_SOFTCAP',
+        '	if (hasUpgrade("sui", 22)) cap = cap * 1000',
+        '	if (g.gte(cap)) g = g.div(cap).pow(TUNING.SOFTCAP_POWER).times(cap)',
         '	return g.floor().max(0)',
         '}',
         'function suiNextAt() {',
@@ -1454,6 +1461,11 @@ function emitSui() {
         '			layerDataReset("sui", ["unlocked", "best", "total", "upgrades", "milestones", "maxpoints", "trialsRun"])',
         '		}',
         '	},',
+        '	onPrestige(gain) {',
+        '		// Only a real 岁祭 reaches this hook — trial entries call doReset(force)',
+        '		// and skip it — so this is exactly the "years of ritual" counter.',
+        '		player.years = (player.years || 0) + 1',
+        '	},',
         '	update(diff) {',
         '		// M2: the peak of a running trial is the score. It is kept across entries,',
         '		// so a later entry with more power behind it always beats the old record.',
@@ -1474,8 +1486,8 @@ function emitSui() {
         '		},',
         '		12: {',
         '			title: function() { return ' + L('岁差', 'Precession') + ' },',
-        '			description: function() { return ' + L('岁礼自养：岁礼产 ×√(岁礼+1)，软上限 10 倍。',
-            'The year feeds itself: 岁礼 output x sqrt(岁礼+1), softcapped at x10.') + ' },',
+        '			description: function() { return ' + L('岁礼自养：岁礼产 ×(岁礼+1)^0.3，软上限 10 倍。',
+            'The year feeds itself: 岁礼 output x (岁礼+1)^0.3, softcapped at x10.') + ' },',
         '			cost: new Decimal(TUNING.SUI_UPG_COSTS[12]),',
         '			effect() {',
         '				let v = player.sui.points.add(1).pow(0.3)',
@@ -1523,7 +1535,7 @@ function emitSui() {
         '		},',
         '		23: {',
         '			title: function() { return ' + L('岁实消长', 'The Wobble of the Year') + ' },',
-        '			description: function() { return ' + L('岁礼产 ×(岁礼/1e3+1)^0.2。', '岁礼 output x (岁礼/1e3+1)^0.2.') + ' },',
+        '			description: function() { return ' + L('岁礼产 ×(log10(岁礼/1e3+1)+1)^0.2。', '岁礼 output x (log10(岁礼/1e3+1)+1)^0.2.') + ' },',
         '			cost: new Decimal(TUNING.SUI_UPG_COSTS[23]),',
         '			effect() { return player.sui.points.div(1e3).add(1).log(10).add(1).pow(0.2) },',
         '			effectDisplay() { return "×" + format(this.effect()) },',
@@ -1534,7 +1546,7 @@ function emitSui() {
             "The year-ledger buyable's effect x1 .. x1.5, growing with 岁礼.") + ' },',
         '			cost: new Decimal(TUNING.SUI_UPG_COSTS[24]),',
         '			effect() { return new Decimal(1).add(player.sui.points.add(1).log(10).div(10)).min(1.5) },',
-        '			effectDisplay() { return "岁簿效果 ^" + format(this.effect()) },',
+        '			effectDisplay() { return ' + L('岁簿效果 ^', 'year-ledger effect ^') + ' + format(this.effect()) },',
         '		},',
         '		25: {',
         '			title: function() { return ' + L('岁簿', 'The Year Ledger') + ' },',
@@ -1688,7 +1700,7 @@ function emitSide() {
         '		12: {',
         '			name: function() { return ' + L('立表', 'The Gnomon Stands') + ' },',
         '			description: function() { return L("测影连中十次。", "Ten correct shadow readings in a row.") },',
-        '			done() { return player.lc.shadowStreak >= 10 },',
+        '			done() { return player.lc.shadowStreak >= TUNING.SHADOW_STREAK_CAP },',
         '			effect() { return new Decimal(1.15) },',
         '			effectDisplay() { return "日影 ×" + format(this.effect()) },',
         '		},',
@@ -1701,7 +1713,7 @@ function emitSide() {
         '		},',
         '		14: {',
         '			name: function() { return ' + L('八节既通', 'The Eight Nodes') + ' },',
-        '			description: function() { return ' + L('八节皆已解锁。', 'All eight 节 are unlocked.') + ' },',
+        '			description: function() { return ' + L('八节皆已解锁。', 'All eight nodes are unlocked.') + ' },',
         '			done() { return player.dz.unlocked },',
         '			effect() { return new Decimal(1.15) },',
         '			effectDisplay() { return "日影 ×" + format(this.effect()) },',

@@ -219,7 +219,7 @@ addLayer("al", {
 		},
 		23: {
 			title: function() { return L("历元", "The Epoch") },
-			description: function() { return L("以历筹为元：历筹产 ×(历筹/1e3+1)^0.2。", "The epoch of tokens: token output x (tokens/1e3+1)^0.2.") },
+			description: function() { return L("以历筹为元：历筹产 ×(log10(历筹/1e3+1)+1)^0.2。", "The epoch of tokens: token output x (log10(tokens/1e3+1)+1)^0.2.") },
 			cost: new Decimal(TUNING.AL_UPG_COSTS[23]),
 			effect() { return player.al.points.div(1e3).add(1).log(10).add(1).pow(0.2) },
 			effectDisplay() { return "×" + format(this.effect()) },
@@ -229,11 +229,11 @@ addLayer("al", {
 			description: function() { return L("岁差既明，历书三市更精：其效果指数 ×1 ~ ×1.36（随已察之候而长）。", "Precession sharpens the three markets: their effect exponent becomes x1 .. x1.36, growing with observed pentads.") },
 			cost: new Decimal(TUNING.AL_UPG_COSTS[24]),
 			effect() { return new Decimal(1).add(houObserved() / 200).min(1.36) },
-			effectDisplay() { return "历书三市 ^" + format(this.effect()) },
+			effectDisplay() { return L("历书三市 ^", "the three markets ^") + format(this.effect()) },
 		},
 		25: {
 			title: function() { return L("七十二候图", "The Seventy-Two Chart") },
-			description: function() { return L("开启七十二候图（tab）：八节九候，尽列其名。", "Unlock the 72-pentad chart (tab): eight 节, nine pentads each, every name printed.") },
+			description: function() { return L("开启七十二候图（tab）：八节九候，尽列其名。", "Unlock the 72-pentad chart (tab): eight nodes, nine pentads each, every name printed.") },
 			cost: new Decimal(TUNING.AL_UPG_COSTS[25]),
 			unlocked() { return houObserved() >= 3 },
 		},
@@ -272,6 +272,7 @@ addLayer("al", {
 			effect(amount) {
 				let ret = new Decimal(TUNING.AL_BUY_EFFECT_MULT).pow(amount)
 				if (hasUpgrade("al", 24)) ret = ret.pow(upgradeEffect("al", 24))
+				if (hasMilestone("al", 3)) ret = ret.pow(1.02)
 				return ret
 			},
 			unlocked() { return hasMilestone("al", 0) },
@@ -291,6 +292,7 @@ addLayer("al", {
 			effect(amount) {
 				let ret = new Decimal(TUNING.AL_BUY_EFFECT_MULT).pow(amount)
 				if (hasUpgrade("al", 24)) ret = ret.pow(upgradeEffect("al", 24))
+				if (hasMilestone("al", 3)) ret = ret.pow(1.02)
 				return ret
 			},
 			unlocked() { return hasMilestone("al", 1) },
@@ -310,6 +312,7 @@ addLayer("al", {
 			effect(amount) {
 				let ret = new Decimal(TUNING.AL_BUY_EFFECT_MULT).pow(amount)
 				if (hasUpgrade("al", 24)) ret = ret.pow(upgradeEffect("al", 24))
+				if (hasMilestone("al", 3)) ret = ret.pow(1.02)
 				return ret
 			},
 			unlocked() { return hasMilestone("al", 2) },

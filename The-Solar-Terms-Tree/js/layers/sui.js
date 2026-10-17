@@ -43,7 +43,9 @@ function suiGain() {
 	if (base.lt(req)) return new Decimal(0)
 	let g = base.div(req).pow(TUNING.SUI_EXPONENT).times(suiGainMult())
 	g = g.times(suiTrialMult())
-	if (g.gte(TUNING.SUI_SOFTCAP)) g = g.div(TUNING.SUI_SOFTCAP).pow(TUNING.SOFTCAP_POWER).times(TUNING.SUI_SOFTCAP)
+	let cap = TUNING.SUI_SOFTCAP
+	if (hasUpgrade("sui", 22)) cap = cap * 1000
+	if (g.gte(cap)) g = g.div(cap).pow(TUNING.SOFTCAP_POWER).times(cap)
 	return g.floor().max(0)
 }
 function suiNextAt() {
@@ -97,6 +99,11 @@ addLayer("sui", {
 			layerDataReset("sui", ["unlocked", "best", "total", "upgrades", "milestones", "maxpoints", "trialsRun"])
 		}
 	},
+	onPrestige(gain) {
+		// Only a real 岁祭 reaches this hook — trial entries call doReset(force)
+		// and skip it — so this is exactly the "years of ritual" counter.
+		player.years = (player.years || 0) + 1
+	},
 	update(diff) {
 		// M2: the peak of a running trial is the score. It is kept across entries,
 		// so a later entry with more power behind it always beats the old record.
@@ -117,7 +124,7 @@ addLayer("sui", {
 		},
 		12: {
 			title: function() { return L("岁差", "Precession") },
-			description: function() { return L("岁礼自养：岁礼产 ×√(岁礼+1)，软上限 10 倍。", "The year feeds itself: 岁礼 output x sqrt(岁礼+1), softcapped at x10.") },
+			description: function() { return L("岁礼自养：岁礼产 ×(岁礼+1)^0.3，软上限 10 倍。", "The year feeds itself: 岁礼 output x (岁礼+1)^0.3, softcapped at x10.") },
 			cost: new Decimal(TUNING.SUI_UPG_COSTS[12]),
 			effect() {
 				let v = player.sui.points.add(1).pow(0.3)
@@ -161,7 +168,7 @@ addLayer("sui", {
 		},
 		23: {
 			title: function() { return L("岁实消长", "The Wobble of the Year") },
-			description: function() { return L("岁礼产 ×(岁礼/1e3+1)^0.2。", "岁礼 output x (岁礼/1e3+1)^0.2.") },
+			description: function() { return L("岁礼产 ×(log10(岁礼/1e3+1)+1)^0.2。", "岁礼 output x (log10(岁礼/1e3+1)+1)^0.2.") },
 			cost: new Decimal(TUNING.SUI_UPG_COSTS[23]),
 			effect() { return player.sui.points.div(1e3).add(1).log(10).add(1).pow(0.2) },
 			effectDisplay() { return "×" + format(this.effect()) },
@@ -171,7 +178,7 @@ addLayer("sui", {
 			description: function() { return L("岁簿（buyable）之效 ×1 ~ ×1.5（随岁礼而长）。", "The year-ledger buyable's effect x1 .. x1.5, growing with 岁礼.") },
 			cost: new Decimal(TUNING.SUI_UPG_COSTS[24]),
 			effect() { return new Decimal(1).add(player.sui.points.add(1).log(10).div(10)).min(1.5) },
-			effectDisplay() { return "岁簿效果 ^" + format(this.effect()) },
+			effectDisplay() { return L("岁簿效果 ^", "year-ledger effect ^") + format(this.effect()) },
 		},
 		25: {
 			title: function() { return L("岁簿", "The Year Ledger") },

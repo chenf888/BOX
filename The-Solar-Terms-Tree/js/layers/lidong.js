@@ -101,7 +101,7 @@ addLayer("ld", {
 		},
 		13: {
 			title: function() { return L("雉入大水为蜃", "pheasants turn to clams") },
-			description: function() { return L("本节之候自养：影愈长，察愈明 —— 本节候产 ×(候+1)^" + TUNING.SELF.SQRT_EXP + "，上限 ×" + TUNING.SELF.SQRT_CAP + "。", "The pentads feed on themselves: x (候+1)^" + TUNING.SELF.SQRT_EXP + ", capped at x" + TUNING.SELF.SQRT_CAP + ".") },
+			description: function() { return L("本节之候自养：影愈长，察愈明 —— 本节候产 ×(候+1)^" + TUNING.SELF.SQRT_EXP + "，上限 ×" + TUNING.SELF.SQRT_CAP + "。", "The pentads feed on themselves: x (pentads+1)^" + TUNING.SELF.SQRT_EXP + ", capped at x" + TUNING.SELF.SQRT_CAP + ".") },
 			cost: new Decimal(9),
 			effect() {
 				let v = player["ld"].points.add(1).pow(TUNING.SELF.SQRT_EXP)
@@ -112,7 +112,7 @@ addLayer("ld", {
 		},
 		14: {
 			title: function() { return L("虹藏不见", "rainbows hide") },
-			description: function() { return L("积候成数：本节候产 ×(log10(候+10)/" + TUNING.SELF.LOG_DIV + "+1)。", "Pentads accumulate: x (log10(候+10)/" + TUNING.SELF.LOG_DIV + "+1).") },
+			description: function() { return L("积候成数：本节候产 ×(log10(候+10)/" + TUNING.SELF.LOG_DIV + "+1)。", "Pentads accumulate: x (log10(pentads+10)/" + TUNING.SELF.LOG_DIV + "+1).") },
 			cost: new Decimal(30),
 			effect() { return player["ld"].points.add(10).log(10).div(TUNING.SELF.LOG_DIV).add(1) },
 			effectDisplay() { return "×" + format(this.effect()) },
@@ -154,7 +154,7 @@ addLayer("ld", {
 			effect() {
 				return new Decimal(1).add(player["ld"].best.add(1).log(10).div(20)).min(1.1)
 			},
-			effectDisplay() { return "候簿效果 ^" + format(this.effect()) },
+			effectDisplay() { return L("候簿效果 ^", "ledger effect ^") + format(this.effect()) },
 		},
 		25: {
 			title: function() { return L("荔挺出·候簿", "rush grass sprouts · Ledger") },

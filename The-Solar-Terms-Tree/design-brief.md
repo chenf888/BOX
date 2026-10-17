@@ -213,14 +213,15 @@ sit far below the next 节's requires (250), so no layer can outpace the row abo
 - Reachability estimate (paper pass, superseded by §12's measurement): row0 era ~20 min, each
   subsequent 节 ×1.25 (ROW_RATIO 25 ÷ OUTPUT_STEP 20), 9 eras → ≈ 20 min × (1.25⁹−1)/0.25 ≈
   **11 h**, plus the hub's 8 trials and the 72-候 grid → **≈ 12–20 h** (target 10–30 h ✓).
-- **Measured (Stage 6, final build)**: `tools/simulate.js` reaches `isEndgame()` in **5.79 h**
-  simulated, with the ladder at 立春 7 s → 春分 56 s → 历 59 s → 立夏 79 s → 夏至 87 s → 立秋 99 s
-  → 秋分 153 s → 立冬 409 s → 冬至 1861 s → 岁 8121 s. The simulator is a **lower bound** (§12),
-  so the human figure is higher: ×2 for a player who reads and dithers lands at ~11.5 h, and ×4 —
-  the one ratio the harness has ever had fitted to a real run (handbook-11 §3.2) — lands at ~23 h.
-  The whole plausible range, 11–23 h, sits inside the 10–30 h target, and the paper pass above
-  (12–20 h) turns out to have bracketed the same window by a completely different route. Both
-  numbers stay in the brief; the measured one is the one to trust.
+- **Measured (Stage 6, final build after the layer audit)**: `tools/simulate.js` reaches
+  `isEndgame()` in **5.25 h** simulated, with the ladder at 立春 7 s → 春分 56 s → 历 59 s →
+  立夏 79 s → 夏至 87 s → 立秋 98 s → 秋分 145 s → 立冬 365 s → 冬至 1621 s → 岁 6934 s. The
+  simulator is a **lower bound** (§12), so the human figure is higher: ×2 for a player who reads
+  and dithers lands at ~10.5 h, and ×4 — the one ratio the harness has ever had fitted to a real
+  run (handbook-11 §3.2) — lands at ~21 h. The whole plausible range, 10.5–21 h, sits inside the
+  10–30 h target, and the paper pass above (12–20 h) brackets the same window by a completely
+  different route. The audit (D23) made three previously dead effects live, which is why the floor
+  moved from 5.79 h to 5.25 h; both numbers are recorded rather than silently replaced.
 - `winText`: 「七十二候尽，二十四气周。圭表无影可测，历法无岁可推——岁功成。<br><br>
   <b>节气树 · 七十二候 通关</b><br><br>（岁复一岁，可继续推历。）」
 
@@ -330,8 +331,10 @@ sit far below the next 节's requires (250), so no layer can outpace the row abo
 | **D18** — the harness gained `--click`, `--trace`, `--trace-every` | `--click <seconds>` defaults to 1; the two trace flags are diagnostic | `--click` is a **fidelity fix, not a convenience**: the policy loop runs once per `--dt` and banks any prestige worth ≥1 unit, so without a click rate the sim's income was a function of the step (0.05 h at `--dt 0.1` vs 0.46 h at `--dt 1`). With it, the total is stable to ±2% across `--dt` 0.25–1. This belongs in the shared harness, not in this game's copy, so `TMT-Skill/assets/harness/simulate.js` carries it and `tools/simulate.js` is the copy. |
 | **D19** — the end screen is localized | the three template lines in `index.html` (`Please check the Discord…`, `It took you … to beat the game.`, `Play Again` / `Keep Going`) now go through `L()` | The game is zh-default (T2), and the same rule that removed the stock `main-display` (F7: it hard-codes "You have" / "(x/sec)") applies to the end screen — it is the last thing a player reads. `index.html` is not in the skill's modder-owned list, but `scaffold.js` already patches it per game (charset meta), so it is a per-game shell rather than an engine file; the change is three text nodes and no engine logic. Verified in the browser: 「新内容见 Discord 公告。」/「通关用时 3m 37.25s。」/「重开一年」/「继续推历」. The engine's own `Achievement Gotten!` popup title (`js/utils.js:276`) is left alone — that is an engine file. |
 | **D20** — `getPointGen`'s u11 literal replaced with `upgradeEffect("lc", 11)` | mod.js reads the upgrade's effect instead of a hard-coded ×2 | Moving u11's magnitude into `TUNING.UPG_MULT` (D15) exposed a hidden second effect: the card said ×1.7 while `getPointGen` still multiplied the sun-shadow by a literal ×2. Nothing static caught it, because both numbers were "real" — they just disagreed. The upgrade now boosts both 候 and 日影 by the same constant and its description says so (「本节候产与日影产出 ×1.7。」). al's u14 keeps its ×2 literal: there the text and the code agree (「日影产出 ×2。」). |
-| **D21** — the `a` layer ships **15** achievements, not the 50 planned in §4 | the 碑 set is one per era milestone, trial-completion class and collection | The plan (24 节气 + 24 候-count + 2 general) was written before the effect was fixed: every achievement multiplies 日影/s by `TUNING.ACH_REWARD` (1.15), so 15 of them is ×8.1 and 50 would be **×1080**. That is not a content decision but a pacing one, and it would have silently outrun the Stage-6 measurement — the simulator excludes achievement effects, so its 5.79 h would no longer bound the real game. Shipping 15 keeps the measured pacing honest and the P11 path real (each 碑 is a visible, permanent ×1.15). Expanding the set is the natural first content addition, and it **must** be paired with a lower `ACH_REWARD` (e.g. 1.05) and a re-measure, never with the count alone. The in-game totals are computed from the layer itself (`Object.keys(layers.a.achievements).length`) so the display can never drift from the build again — it previously read a stale `/ 14`. |
+| **D21** — the `a` layer ships **15** achievements, not the 50 planned in §4 | the 碑 set is one per era milestone, trial-completion class and collection | The plan (24 节气 + 24 候-count + 2 general) was written before the effect was fixed: every achievement multiplies 日影/s by `TUNING.ACH_REWARD` (1.15), so 15 of them is ×8.1 and 50 would be **×1080**. That is not a content decision but a pacing one, and it would have silently outrun the Stage-6 measurement — the simulator excludes achievement effects, so its 5.25 h would no longer bound the real game. Shipping 15 keeps the measured pacing honest and the P11 path real (each 碑 is a visible, permanent ×1.15). Expanding the set is the natural first content addition, and it **must** be paired with a lower `ACH_REWARD` (e.g. 1.05) and a re-measure, never with the count alone. The in-game totals are computed from the layer itself (`Object.keys(layers.a.achievements).length`) so the display can never drift from the build again — it previously read a stale `/ 14`. |
 | **D22** — the 设置 tab ships its own 导出/导入存档 clickables | `saveToText()` / `loadFromText()` in `js/layers/side.js`, UTF-8-safe base64 | **The engine's own Export button cannot save this game.** `exportSave()` (`js/utils/save.js:262`) is `btoa(JSON.stringify(player))`, and `btoa` is Latin1-only — while D10 makes the microtab keys the bilingual labels, so `player.subtabs` always holds Chinese (`"九候 · Pentads"`). The button therefore throws `InvalidCharacterError` and does nothing, silently, because the error never reaches the page. Verified in the browser both ways: `btoa(JSON.stringify(player))` throws, and an 11,012-character `saveToText()` string round-trips through `loadFromText()` with the bilingual subtab key and every value intact. Note the engine is inconsistent with itself here — the *autosave* path (`save()`, save.js:7) already uses the UTF-8-safe `btoa(unescape(encodeURIComponent(...)))`, so ordinary saving and reloading were never affected. Only the export button was. Fixing it properly means an engine change, which the skill forbids; a mod-side pair in the 设置 tab is the alternative, and it is what ships. |
+| **D23** — layer-by-layer browser audit found and fixed five dead or lying components | al u15, sui u22, al m3, the 立表 achievement, `player.years` | A static pass cannot see a component whose effect is never *read*, so every card was opened in the running game and its number checked against the layer's arithmetic. (1) **al u15 授时** names 立春 but nothing read it; `lc.gainMult` now multiplies by `upgradeEffect("al", 15)` — verified ×7 at `lc.points = 1e6`. (2) **sui u22 岁星纪年** claimed to raise the 岁礼 softcap; `suiGain()` now applies `cap = cap * 1000` (a plain number, not a Decimal — `cap.times` crashed the loop) — verified ×24.3 at `dz.points = 1e160`. (3) **al m3** had no effect at all; `getPointGen` now multiplies root gain by 3 and `lc.gainMult` applies `^1.02`, matching its text. (4) **立表** required `shadowStreak >= 10` while `TUNING.SHADOW_STREAK_CAP` is 9, so it could never fire; the predicate now reads the cap itself (done at 9, not 8). (5) **`player.years`** was never incremented, so the 农书's year gate and the header's 岁祭 count stayed at zero forever; `sui.onPrestige` now adds 1, and the real 岁祭 (not a trial, which calls `doReset(..., true)` and skips `onPrestige`) is the only path that reaches it. Three descriptions that disagreed with their code (al u23, sui u12, sui u23) were corrected to the emitted formulas, and the 数九 clickable no longer repeats its own title in its body. All five were re-verified in the browser; gates: smoke 0 FAIL/0 WARN, static 86 PASS/1 WARN (D14)/0 FAIL. |
+| **D24** — English mode was translated by a shim, not by hand-editing 13 files | `EN_FIX` in `js/mod.js` + `L()` around every `effectDisplay` | T2 requires the UI to be bilingual but the layer files are generated, so translating each English branch at the source would be undone by the next regeneration unless the generator carried it. The generator already emits `L(zh, en)` pairs; the remaining gaps were Chinese *nouns* embedded in English sentences (`候 output`, `立春候`, `历 stele`) and unwrapped labels. `EN_FIX` is an ordered regex list applied to the English branch only — compounds first, so `冬至候` becomes `Dongzhi Hou` and never `Winter Solsticepentad`. Resource names (`日影`, `岁礼`) and the bilingual microtab keys stay Chinese by design (D10); everything else was scanned programmatically across every `L()` second argument and is clean. |
 
 ## 11. Accent palette & voice
 
@@ -373,8 +376,10 @@ quietly replaced.**
   displayed text is built from the same constants, so a value and its description cannot drift
   apart. `SOFTCAP_RAISE` went 1e3 → 10. The ladder constants (`ROW_RATIO`, `ROW_REQUIRES`) were
   **not** touched: the ratios were right all along, only the clock was wrong.
-- **Final measurement (this build): 5.79 h** to `isEndgame()`, ladder 立春 7 s → 春分 56 s → 历
-  59 s → 立夏 79 s → 夏至 87 s → 立秋 99 s → 秋分 153 s → 立冬 409 s → 冬至 1861 s → 岁 8121 s.
+- **Final measurement (this build, after D23): 5.25 h** to `isEndgame()`, ladder 立春 7 s → 春分
+  56 s → 历 59 s → 立夏 79 s → 夏至 87 s → 立秋 98 s → 秋分 145 s → 立冬 365 s → 冬至 1621 s →
+  岁 6934 s. The pre-audit floor was 5.79 h with the same shape; the three wired effects (D23) pull
+  it down by ~9%.
   The last three eras each take ×2.7–4.6 the previous one — steeper than the design's ×1.25,
   which is the intended decay (deeper nodes carry exponents 0.22–0.25 against the opener's 0.5).
 - **Exclusions, i.e. the bias**: challenge rewards, achievement effects, the M3 minigame's streak
@@ -386,8 +391,8 @@ quietly replaced.**
   human point before a total is quoted. No human has played this build, so none exists. The early
   timeline is the trustworthy part, and it holds: first affordable purchase **2 s** (author rule
   < 10 s), 立春's first 交节 **6 s**. For the total, the paper estimate (§7) said 12–20 h and the
-  floor says 5.77 h; ×2–×4 — the ×4 being the only ratio the harness has ever had fitted to a real
-  run — gives **11–23 h**, inside the 10–30 h target. The paper pass's claim of a ~20 min first era
+  floor says 5.25 h; ×2–×4 — the ×4 being the only ratio the harness has ever had fitted to a real
+  run — gives **10.5–21 h**, inside the 10–30 h target. The paper pass's claim of a ~20 min first era
   is **withdrawn**: the measurement puts 春分 at 48 s of floor time, and even at ×4 that is ~3 min.
   A player reaches the second 节 in minutes, not tens of minutes; the eras that carry the hours are
   立冬, 冬至 and 岁.

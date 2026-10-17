@@ -30,7 +30,7 @@ addLayer("a", {
 		12: {
 			name: function() { return L("立表", "The Gnomon Stands") },
 			description: function() { return L("测影连中十次。", "Ten correct shadow readings in a row.") },
-			done() { return player.lc.shadowStreak >= 10 },
+			done() { return player.lc.shadowStreak >= TUNING.SHADOW_STREAK_CAP },
 			effect() { return new Decimal(1.15) },
 			effectDisplay() { return "日影 ×" + format(this.effect()) },
 		},
@@ -43,7 +43,7 @@ addLayer("a", {
 		},
 		14: {
 			name: function() { return L("八节既通", "The Eight Nodes") },
-			description: function() { return L("八节皆已解锁。", "All eight 节 are unlocked.") },
+			description: function() { return L("八节皆已解锁。", "All eight nodes are unlocked.") },
 			done() { return player.dz.unlocked },
 			effect() { return new Decimal(1.15) },
 			effectDisplay() { return "日影 ×" + format(this.effect()) },
