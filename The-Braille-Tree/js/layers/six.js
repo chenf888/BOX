@@ -64,7 +64,7 @@ function sixTargetText() {
 	} else {
 		line += '<b>' + t("ui.dots") + ' ' + target.dots + '</b>'
 	}
-	line += '<br><span style="opacity:.7">' + t("six.learned") + ': ' + num(player.six.learned) + ' / ' + TUNING.CAP.six + '</span>'
+	line += '<br><span style="opacity:.7">' + t("six.learned") + ': ' + numWhole(player.six.learned) + ' / ' + numWhole(TUNING.CAP.six) + '</span>'
 	line += '<br><span style="color:' + (sixPatternMatches() ? "#8fd18f" : "#d18f8f") + '">'
 		+ (sixPatternMatches() ? t("ui.matched") : t("ui.notMatched")) + '</span>'
 	return line

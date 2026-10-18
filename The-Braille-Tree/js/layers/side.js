@@ -286,7 +286,7 @@ addLayer("ach", {
 		["display-text", function () {
 			let n = 0
 			for (let id in layers.ach.achievements) if (hasAchievement("ach", id)) n++
-			return '<div style="font-size:22px">' + t("ach.header") + ': ' + n + ' / 50</div>'
+			return '<div style="font-size:22px">' + t("ach.header") + ': ' + numWhole(n) + ' / ' + numWhole(50) + '</div>'
 		}],
 		["blank", "12px"],
 		"achievements",
@@ -320,8 +320,8 @@ addLayer("extra", {
 				["display-text", function () {
 					return '<div style="font-size:20px">' + t("extra.stats.title") + '</div><br>'
 						+ t("touch.resource") + ': ' + num(player.touch.points) + '<br>'
-						+ t("six.resource") + ': ' + num(player.six.learned) + ' / 64<br>'
-						+ t("eight.resource") + ': ' + num(player.eight.learned) + ' / 256<br>'
+						+ t("six.resource") + ': ' + numWhole(player.six.learned) + ' / ' + numWhole(64) + '<br>'
+						+ t("eight.resource") + ': ' + numWhole(player.eight.learned) + ' / ' + numWhole(256) + '<br>'
 						+ t("slate.resource") + ': ' + num(player.slate.points) + '<br>'
 						+ t("contracted.resource") + ': ' + num(player.contracted.points) + '<br>'
 						+ t("nemeth.resource") + ': ' + num(player.nemeth.points) + '<br>'

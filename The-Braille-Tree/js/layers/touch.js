@@ -103,8 +103,8 @@ addLayer("touch", {
 		12: {
 			title: function () { return t("touch.click12.t") },
 			display() {
-				return t("ui.sensitivity") + ': ' + num(player.touch.sensitivity) + ' / ' + num(touchSenseCap())
-					+ '<br>' + t("ui.senseLevel") + ': ' + num(player.touch.senseLevel)
+				return t("ui.sensitivity") + ': ' + numWhole(player.touch.sensitivity) + ' / ' + numWhole(touchSenseCap())
+					+ '<br>' + t("ui.senseLevel") + ': ' + numWhole(player.touch.senseLevel)
 			},
 			canClick() { return player.touch.sensitivity >= touchSenseCap() },
 			onClick() { touchCalibrate() },
@@ -135,7 +135,7 @@ addLayer("touch", {
 			height: 34,
 			progress() { return Math.min(1, player.touch.sensitivity / touchSenseCap()) },
 			display() {
-				return t("ui.sensitivity") + ': ' + num(player.touch.sensitivity) + ' / ' + num(touchSenseCap())
+				return t("ui.sensitivity") + ': ' + numWhole(player.touch.sensitivity) + ' / ' + numWhole(touchSenseCap())
 			},
 			fillStyle: { "background-color": "#d9c7a3" },
 			baseStyle: { "background-color": "#3a2f24" },

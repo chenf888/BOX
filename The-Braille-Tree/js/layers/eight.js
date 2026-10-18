@@ -59,7 +59,7 @@ function eightTargetText() {
 	} else {
 		line += '<b style="opacity:.7">' + t("ui.hidden") + '</b>'
 	}
-	line += '<br><span style="opacity:.7">' + t("eight.learned") + ': ' + num(player.eight.learned) + ' / ' + TUNING.CAP.eight + '</span>'
+	line += '<br><span style="opacity:.7">' + t("eight.learned") + ': ' + numWhole(player.eight.learned) + ' / ' + numWhole(TUNING.CAP.eight) + '</span>'
 	line += '<br><span style="color:' + (eightPatternMatches() ? "#8fd18f" : "#d18f8f") + '">'
 		+ (eightPatternMatches() ? t("ui.matched") : t("ui.notMatched")) + '</span>'
 	return line

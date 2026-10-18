@@ -282,6 +282,12 @@ These were not visible to static checks or the simulator; they were found by pla
    six/eight layer symbols are `⠼⠋`/`⠼⠓` and static text like “×2” is fully braille. A fresh
    profile now defaults to `brl-en`; the preference key was bumped to `.lang.v2` so an old
    `zh` choice does not mask the new default.
+10. **Achievement page template leak.** The achievement `<tooltip :text="...">` expression
+    contained double-quoted `t("ui.youDidIt", "You did it!")` calls inside a double-quoted
+    attribute. Vue closed the attribute early, so every achievement card printed raw template
+    source. The calls now use single quotes. The earned counter and integer counters
+    (learned cells, caps, sense level) use `numWhole`, so they show `2 / 50` rather than
+    `2.00 / 50.00` and render as proper braille digits.
 
 Final checks: static 67 PASS / 15 WARN / 0 FAIL; i18n 0 FAIL / 0 WARN (639 keys);
 smoke 0 FAIL / 1 WARN (the `extra` layer is `tabFormat`-only, a known false positive);

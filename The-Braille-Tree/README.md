@@ -123,6 +123,11 @@ and the language build reports `639 keys`.
   634 px, so no horizontal scrollbar.
 - Default language is `brl-en`; the preference key was bumped to
   `the-braille-tree-v83pqm.lang.v2` so old `zh` preferences do not mask the new default.
+- The achievement tooltip is a multiline `:text="..."` attribute; it used double quotes
+  inside `t("ui.youDidIt", ...)`, which closed the attribute early and leaked raw template
+  text onto every achievement card. It now uses single quotes. Integer counters
+  (`numWhole`) are used for the earned count, learned cells, caps and sense level, so they
+  render as `2 / 50`, not `2.00 / 50.00`.
 
 ## Files
 

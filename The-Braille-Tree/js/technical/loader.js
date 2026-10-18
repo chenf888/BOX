@@ -28,7 +28,7 @@
 
     for (var i = 0; i < files.length; i++) {
         var script = document.createElement("script")
-        script.src = "js/" + files[i] + "?v=20261018o"
+        script.src = "js/" + files[i] + "?v=20261018q"
         script.async = false
         script.onload = oneDone
         script.onerror = oneDone

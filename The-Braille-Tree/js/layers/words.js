@@ -129,7 +129,7 @@ addLayer("words", {
 				return Math.min(1, player.words.points.add(1).log10() / 3)
 			},
 			display() {
-				return t("words.bar") + ': ' + num(player.words.points) + ' / 1,000'
+				return t("words.bar") + ': ' + num(player.words.points) + ' / ' + numWhole(1000)
 			},
 		},
 	},
