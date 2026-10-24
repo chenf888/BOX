@@ -8,7 +8,7 @@ addLayer("d", {
 	symbol: "Da",
 	position: 0,
 	row: 2,
-	color: "#ffa657",
+	color: "#161412",
 	resource() { return L("数据", "Data") },
 	resZh: "数据", resEn: "Data",
 	baseResource: "参数级 Parameters",
@@ -91,10 +91,10 @@ addLayer("d", {
 
 	tabFormat: [
 		["display-text", tokenLineFn()],
-		["display-text", baseLineFn("d", "#ff79c6")],
+		["display-text", baseLineFn("d", "#161412")],
 		["display-text", mainLineFn("d")],
 		["display-text", bestLineFn("d")],
-		["display-text", softcapLineFn("d", function() { return new Decimal(TUNING.CAPS.d.start) }, "#ffa657")],
+		["display-text", softcapLineFn("d", function() { return new Decimal(TUNING.CAPS.d.start) }, "#161412")],
 		"blank",
 		"prestige-button",
 		"blank",
@@ -230,7 +230,7 @@ addLayer("d", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#ffa657" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 	},
 })

@@ -1,5 +1,8 @@
+// Tree branches, drawn as SVG (dir-1 print system: ink rules instead of canvas strokes).
+// The element id stays "treeCanvas" so every engine call site (resizeCanvas / needsCanvasUpdate)
+// keeps working; it is an <svg> now, and the drawing primitives below build SVG lines.
 var canvas;
-var ctx;
+var svgNS = "http://www.w3.org/2000/svg";
 
 window.addEventListener("resize", (_=>resizeCanvas()));
 
@@ -8,16 +11,13 @@ function retrieveCanvasData() {
 	let treeTab = document.getElementById("treeTab")
 	if (treeCanv===undefined||treeCanv===null) return false;
 	canvas = treeCanv;
-	ctx = canvas.getContext("2d");
 	return true;
 }
 
 function resizeCanvas() {
 	if (!retrieveCanvasData()) return
-	canvas.width = 0;
-    canvas.height = 0;
-	canvas.width  = window.innerWidth;
-	canvas.height = window.innerHeight;
+	canvas.setAttribute("width", window.innerWidth);
+	canvas.setAttribute("height", window.innerHeight);
 		drawTree();
 }
 
@@ -26,7 +26,7 @@ var colors_theme
 
 function drawTree() {
 	if (!retrieveCanvasData()) return;
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	while (canvas.firstChild) canvas.removeChild(canvas.firstChild);
 	for (layer in layers){
 		if (tmp[layer].layerShown == true && tmp[layer].branches){
 			for (branch in tmp[layer].branches)
@@ -45,16 +45,16 @@ function drawComponentBranches(layer, data, prefix) {
 	for(id in data) {
 		if (data[id].branches) {
 			for (branch in data[id].branches)
-			{
-				drawTreeBranch(id, data[id].branches[branch], prefix + layer + "-")
+				{
+					drawTreeBranch(id, data[id].branches[branch], prefix + layer + "-")
+				}
+
 			}
 
 		}
-	}
-
 }
 
-function drawTreeBranch(num1, data, prefix) { // taken from Antimatter Dimensions & adjusted slightly
+function drawTreeBranch(num1, data, prefix) { // was canvas 2D (Antimatter Dimensions lineage); now an SVG line
 	let num2 = data
 	let color_id = 1
 	let width = 15
@@ -79,10 +79,14 @@ function drawTreeBranch(num1, data, prefix) { // taken from Antimatter Dimension
     let y1 = start.top + (start.height / 2) + document.body.scrollTop;
     let x2 = end.left + (end.width / 2) + document.body.scrollLeft;
     let y2 = end.top + (end.height / 2) + document.body.scrollTop;
-    ctx.lineWidth = width;
-    ctx.beginPath();
-    ctx.strokeStyle = color_id
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
-    ctx.stroke();
+	// print system: branch weight is a fixed ink rule, not the engine's fat glow
+	width = Math.max(1, Math.min(2.5, width / 8));
+	let line = document.createElementNS(svgNS, "line");
+	line.setAttribute("x1", x1);
+	line.setAttribute("y1", y1);
+	line.setAttribute("x2", x2);
+	line.setAttribute("y2", y2);
+	line.setAttribute("stroke", color_id);
+	line.setAttribute("stroke-width", width);
+	canvas.appendChild(line);
 }

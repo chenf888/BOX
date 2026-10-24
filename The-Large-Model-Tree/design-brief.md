@@ -244,3 +244,19 @@ Measured timeline：first purchase **1 s**；c @10s、p @363s、d @2353s、a @31
 | 3 | f 里程碑标签「32卡/1024卡/32768卡/百万卡」与阈值 5/10/15/20 不符；f m2 文案「自动购买参数升级」无消费者 | 生成期文案未随 Stage 6 接线演进同步 | 标签改为与阈值一致（1/5/10/15/20 卡，m4 保留「百万卡之梦」）；f m2 删死文案；f m4 真接 `f.autoUpgrade() = tr m3 ‖ f m4` |
 | 备注 | 验证环境定时器 ~10× 节流（100ms 定时器 2.8s 只触发 3 次） | Chrome 对失焦/遮挡标签页强制节流（hasFocus=false） | **非游戏缺陷**——真人前台游玩 20Hz 正常；测试时以 `updateTemp+updateTabFormats+gameLoop` 手动驱动同一代码路径 |
 | 4 | 用户验收：英文模式下资源名/微页签/里程碑/购买项/成就等仍是中文；要求默认英文 | 237 处描述字段在**装载期**求值（`field: L(...)` 静态串）——L() 再动态也只反映装载时的模式；微页签键名/资源名是静态串；tab-buttons 等零依赖组件只在挂载时渲染一次（挂载早于存档加载，永远定格默认语言） | **全量 i18n 改造**：① L() 改为默认英文（chinesemode===true 才中文）+ bench startData 默认 false；② 237 处静态字段包成函数——引擎 updateTempData 每 tick 重调全部函数型字段写 tmp，语言切换即时生效；③ resource/baseResource→函数、9 个微页签键改英文 ID + tabLabel() 查表（tab-buttons 模板加 chinesemode 响应式绑定——零依赖组件的惯用法）；④ 6 层新增本地化 prestigeButtonText（引擎显示串本就英文）；⑤ 热键条 run() 化 + 热键描述包函数；⑥ toggleAuto 翻转后强制 updateTemp+updateTabFormats；⑦ 引擎残留英文标签（Cost:/Currently:/Time Played/Hotkeys）本地化。D-PRESTIGE 同样只认字面量 → baseResource 回退字面量（仅锁定悬停提示消费），prestigeButtonText 承担本地化。浏览器实测：默认英文全通、真实点击切换双向即时翻转（微页签/费用/里程碑/购买项/成就/挑战/热键/树节点提示）、bootErrors 全程为空 |
+
+## 13. UI redesign round (2026-10-24, huashu-design dir-1)
+
+Three-direction gate produced six candidates (see `design-demos/directions.md`); full drafts `dir-1/2/3.html`;
+user picked **dir-1 "Training Program Print"** (Experimental Jetset logic) — choice archived in `design-demos/direction-approved.md`.
+
+Implemented across `css/` (8 files rewritten), `js/utils/themes.js` (paper palettes, aqua→edition-b),
+`js/technical/canvas.js` (tree branches canvas→SVG, id kept so engine call sites unchanged),
+`index.html` (svg element, inline-SVG gear/chat icons, local `css/fonts.css`), `js/technical/systemComponents.js`
+(masthead overlay-head), `js/mod.js` (chapter-index displayThing), `js/components.js`+`displays.js`+`tuning.js`
+(all inline per-layer colors stripped → print palette), `js/utils.js` (popups no longer per-layer colored).
+Playability untouched: same engine hooks, same save id, bilingual toggle intact.
+
+Verified: boot errors [], console clean, purchase/prestige/language/save-reload pass, SVG branches render on unlock
+(lines=2 at c.best≥1024), design_lint check on index.html 0 red, tools/smoke.js 0 FAIL/0 WARN,
+external vision review ×3 (tree, layer, final) confirmed print system + fixed black popup + masthead overlap.

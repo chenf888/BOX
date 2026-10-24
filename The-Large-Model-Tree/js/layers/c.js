@@ -14,7 +14,7 @@ var tokParticle = {
 	dir: function() { return 70 + (Math.random() - 0.5) * 40 },
 	gravity: 1.2,
 	layer: "c",
-	color: "#79c0ff",
+	color: "#161412",
 }
 
 addLayer("c", {
@@ -22,7 +22,7 @@ addLayer("c", {
 	symbol: "Ct",
 	position: 0,
 	row: 0,
-	color: "#7ee787",
+	color: "#161412",
 	resource() { return L("上下文", "Context") },
 	resZh: "上下文", resEn: "Context",
 	baseResource: "token",
@@ -125,7 +125,7 @@ addLayer("c", {
 		["display-text", tokenLineFn()],
 		["display-text", function() {
 			return L("KV 缓存字节：", "KV-cache bytes: ") +
-				"<b style='color:#79c0ff'>" + format(player.c.bytes) + "</b>" +
+				"<b style='color:#161412'>" + format(player.c.bytes) + "</b>" +
 				L("（每秒 +", " (+") + format(getPointGen().times(new Decimal(TUNING.KV.rate)).times((hasUpgrade("c", 31) ? 2 : 1) * (hasUpgrade("a", 21) ? 2 : 1))) + L("）", ")")
 		}],
 		["display-text", mainLineFn("c")],
@@ -134,7 +134,7 @@ addLayer("c", {
 		["clickables", [11]],
 		"blank",
 		"prestige-button",
-		["display-text", softcapLineFn("c", function() { return layers.c.softcap() }, "#7ee787")],
+		["display-text", softcapLineFn("c", function() { return layers.c.softcap() }, "#161412")],
 		"blank",
 		["microtabs", "stuff"],
 		["blank", "65px"],
@@ -151,7 +151,7 @@ addLayer("c", {
 			"Buyables": {
 				content: [
 					["display-text", function() {
-						return L("KV 缓存字节：", "KV-cache bytes: ") + "<b style='color:#79c0ff'>" + format(player.c.bytes) + "</b>"
+						return L("KV 缓存字节：", "KV-cache bytes: ") + "<b style='color:#161412'>" + format(player.c.bytes) + "</b>"
 					}],
 					"blank", "buyables",
 				],
@@ -208,7 +208,7 @@ addLayer("c", {
 				player.points = player.points.add(getClickPower())
 				setClickableState(this.layer, this.id, getClickableState(this.layer, this.id) + 1)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#79c0ff", "border-color": "#79c0ff", "min-height": "60px" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412", "border-color": "#161412", "min-height": "60px" } },
 		},
 	},
 
@@ -372,7 +372,7 @@ addLayer("c", {
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
 			purchaseLimit: new Decimal(24),
-			style() { return { "background-color": "#0d1117", "color": "#ffa657" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 		12: {
 			title() { return L("🗜 上下文压缩", "🗜 Context compression") },
@@ -389,7 +389,7 @@ addLayer("c", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#7ee787" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 		13: {
 			title() { return L("⚡ 投机解码", "⚡ Speculative decoding") },
@@ -410,7 +410,7 @@ addLayer("c", {
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
 			purchaseLimit: new Decimal(20),
-			style() { return { "background-color": "#0d1117", "color": "#79c0ff" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 		14: {
 			title() { return L("🧠 KV 缓存池", "🧠 KV-cache pool") },
@@ -428,7 +428,7 @@ addLayer("c", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#79c0ff" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 	},
 })

@@ -8,7 +8,7 @@ addLayer("p", {
 	symbol: "Pa",
 	position: 0,
 	row: 1,
-	color: "#ff79c6",
+	color: "#161412",
 	resource() { return L("参数级", "Parameters") },
 	resZh: "参数级（每级 ×10 参数）", resEn: "parameter levels (×10 params each)",
 	baseResource: "上下文 Context",
@@ -86,11 +86,11 @@ addLayer("p", {
 
 	tabFormat: [
 		["display-text", tokenLineFn()],
-		["display-text", baseLineFn("p", "#7ee787")],
+		["display-text", baseLineFn("p", "#161412")],
 		["display-text", mainLineFn("p")],
 		["display-text", function() {
 			return L("≈ 参数量：", "≈ parameter count: ") +
-				"<b style='color:#ff79c6'>" + format(Decimal.pow(10, player.p.points)) + "</b>"
+				"<b style='color:#161412'>" + format(Decimal.pow(10, player.p.points)) + "</b>"
 		}],
 		["display-text", bestLineFn("p")],
 		"blank",
@@ -227,7 +227,7 @@ addLayer("p", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#ff79c6" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 	},
 })

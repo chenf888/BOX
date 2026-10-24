@@ -9,7 +9,7 @@ addLayer("f", {
 	symbol: "Fl",
 	position: 1,
 	row: 2,
-	color: "#ff7b72",
+	color: "#161412",
 	resource() { return L("算力档位", "Compute tiers") },
 	resZh: "算力档位", resEn: "compute tiers",
 	baseResource: "注意力 Attention",
@@ -90,11 +90,11 @@ addLayer("f", {
 
 	tabFormat: [
 		["display-text", tokenLineFn()],
-		["display-text", baseLineFn("f", "#d2a8ff")],
+		["display-text", baseLineFn("f", "#161412")],
 		["display-text", mainLineFn("f")],
 		["display-text", function() {
 			return L("≈ 集群规模：", "≈ cluster size: ") +
-				"<b style='color:#ff7b72'>" + formatWhole(Decimal.pow(2, player.f.points)) + "</b>" +
+				"<b style='color:#161412'>" + formatWhole(Decimal.pow(2, player.f.points)) + "</b>" +
 				L(" 张卡", " GPUs")
 		}],
 		["display-text", bestLineFn("f")],
@@ -235,7 +235,7 @@ addLayer("f", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#ff7b72" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 	},
 })

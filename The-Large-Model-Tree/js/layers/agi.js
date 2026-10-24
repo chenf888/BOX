@@ -9,7 +9,7 @@ addLayer("agi", {
 	symbol: "AI",
 	position: 0,
 	row: 5,
-	color: "#ffcc00",
+	color: "#D02700",
 	resource() { return L("AGI 里程碑", "AGI milestones") },
 	resZh: "AGI 里程碑", resEn: "AGI milestones",
 	baseResource() { return L("涌现", "Emergence") },
@@ -65,11 +65,11 @@ addLayer("agi", {
 
 	tabFormat: [
 		["display-text", tokenLineFn()],
-		["display-text", baseLineFn("agi", "#a5d6ff")],
+		["display-text", baseLineFn("agi", "#161412")],
 		["display-text", mainLineFn("agi")],
 		["display-text", function() {
 			return L("距离 1024：", "To 1024: ") +
-				"<b style='color:#ffcc00'>" + formatWhole(player.agi.points) + "</b> / 1024" +
+				"<b style='color:#D02700'>" + formatWhole(player.agi.points) + "</b> / 1024" +
 				L("（", " (") + formatWhole(player.agi.points.div(1024).times(100)) + "%）"
 		}],
 		["display-text", bestLineFn("agi")],

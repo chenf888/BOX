@@ -18,6 +18,10 @@ Never change the id — changing it erases every save.
 
 *You have tokens. Sampling → Context → Parameters → Data/Compute → Training → Deployment → Emergence → AGI: grow the life of a large language model into a tree whose winning number is 1024. A tribute to Programmer's Day (Oct 24 = 2^10).*
 
+**Visual system:** "Training Program Print" (direction dir-1, picked from three real drafts in `design-demos/` via the huashu-design three-direction gate) — warm paper `#F2EEE3`, ink `#161412`, press red `#D02700`; Helvetica + IBM Plex Mono (vendored under `css/fonts/`, fully offline). Upgrades read as ledger rows, milestones as numbered clauses, subtabs as running heads, the prestige button as a form action, and the tree as an ink diagram — branches and every icon are SVG, no raster images. Both bundled themes are paper editions (`default` warm / `edition-b` bright).
+
+**Languages:** English by default; switch to 中文 with the chinesemode toggle in the options tab — every surface is bilingual.
+
 **Content totals**（frozen build, counted via addLayer capture）
 
 | Layers | Upgrades | Milestones | Challenges | Buyables | Clickables | Achievements |

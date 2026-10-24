@@ -1,41 +1,48 @@
-/* Global things */
+/* Global things — print system */
 body {
 	color: var(--color);
 	overflow: hidden;
-	--background: #0f0f0f;
-	--color: #dfdfdf;
-	--points: #ffffff;
+	--background: #F2EEE3;
+	--color: #161412;
+	--points: #D02700;
+	--ink: #161412;
+	--ink2: #6d675a;
+	--red: #D02700;
+	--paper: #F2EEE3;
+	--paper2: #EAE4D3;
 	background: var(--background)
 }
 
 /* General text */
 h1, h2, h3, b, input {
 	display: inline;
-	font-family: "Lucida Console", "Courier New", monospace
 }
 
-/* These are styles for different states of components. You can make layer-specific versions with .c.locked, for example */
+/* States — print semantics: locked = not yet entered (dead ink), can = actionable (press red), bought = filed (red margin) */
 .locked {
-	background-color: #bf8f8f;
+	background-color: var(--paper2);
+	color: var(--ink2);
 	cursor: not-allowed;
+	border: 1px solid #c9c2ae;
 }
 
-/* Can meens can be clicked/bought/etc */
 .can {
 	cursor: pointer;
 }
 
 .can:hover {
-	transform: scale(1.15, 1.15);
-	box-shadow: 0 0 20px var(--points)
+	box-shadow: none;
 }
 
 .bought {
-	background-color: #77bf5f;
+	background-color: var(--paper);
+	color: var(--ink2);
 	cursor: default;
+	border: 1.5px solid var(--red);
 }
 
 #points {
 	color: var(--points);
-	text-shadow: 0 0 10px var(--points);
+	text-shadow: none;
+	font-weight: 600;
 }

@@ -1,166 +1,294 @@
+/* ===== Components — ledger / clauses / supply forms ===== */
+
+/* Upgrade = ledger row (full-width, left-set, top rule) */
 .upg {
-	min-height: 120px;
-	width: 120px;
-	border-radius: 25%;
-	border: 2px solid;
-	border-color: rgba(0, 0, 0, 0.125);
-	font-size: 10px;
+	min-height: 0;
+	width: 100%;
+	max-width: 860px;
+	border-radius: 0;
+	border: none;
+	border-top: 1.5px solid var(--ink);
+	background: transparent;
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--ink);
+	text-align: left;
+	padding: 10px 8px 10px 2px;
 	overflow: visible;
+	display: block;
 }
 
-.achievement {
-	height: 90px;
-	width: 90px;
-	border-radius: 25%;
-	border: 2px solid;
-	border-color: rgba(0, 0, 0, 0.125);
-	font-size: 10px;
-	color: white;
-	text-shadow: 0 0 2px #000000;
+.upg h3 {
+	font-size: 15px;
+	font-weight: 700;
 }
+
+/* affordable — red left margin + red cost line */
+.upg.can {
+	border-top-color: var(--ink);
+	background: transparent;
+}
+
+.upg.can h3 { color: var(--red); }
+
+.upg.can::before {
+	content: "▸";
+	color: var(--red);
+	font-weight: 700;
+	margin-right: 6px;
+}
+
+.upg.can:hover {
+	background: var(--paper2);
+}
+
+/* owned — filed away (dead ink, red rule kept, struck) */
+.upg.bought {
+	border: none;
+	border-top: 1px solid #c9c2ae;
+	background: transparent;
+	color: var(--ink2);
+	padding-left: 18px;
+}
+
+.upg.bought h3 {
+	color: var(--ink2);
+	text-decoration: line-through;
+	text-decoration-color: var(--red);
+}
+
+.upg.locked {
+	border: none;
+	border-top: 1px solid #c9c2ae;
+	background: transparent;
+	color: var(--ink2);
+	padding-left: 18px;
+}
+
+.upg.locked h3 { color: var(--ink2); }
+
+/* Achievement = numbered plate in the appendix grid */
+.achievement {
+	height: 96px;
+	width: 96px;
+	border-radius: 0;
+	border: 1.5px solid var(--ink);
+	background: var(--paper);
+	font-size: 12px;
+	color: var(--ink);
+	text-shadow: none;
+}
+
+.achievement.bought {
+	background: var(--ink);
+	color: var(--paper);
+	border-color: var(--ink);
+}
+
 .achievement:hover {
-	box-shadow: 0 0 10px var(--points);
+	box-shadow: none;
+	background: var(--paper2);
 	z-index: 7;
 }
 
+/* Buyable = supply form item */
 .buyable {
-	height: 200px;
-	width: 200px;
-	border-radius: 25%;
-	border: 2px solid;
-	border-color: rgba(0, 0, 0, 0.125);
-	font-size: 10px;
-	position:relative;
+	min-height: 0;
+	width: 100%;
+	max-width: 860px;
+	border-radius: 0;
+	border: none;
+	border-top: 2.5px solid var(--ink);
+	background: transparent;
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--ink);
+	text-align: left;
+	padding: 10px 8px 12px 2px;
+	position: relative;
+	display: block;
 }
 
+.buyable h3 { font-size: 15px; font-weight: 700; }
+
+.buyable.can h3 { color: var(--red); }
+.buyable.can:hover { background: var(--paper2); }
+
+.buyable.locked {
+	border-top-color: #c9c2ae;
+	color: var(--ink2);
+}
+
+.buyable.bought {
+	border-top-color: var(--red);
+}
+
+/* Milestone = clause */
 .milestone {
 	width: 100%;
 	min-width: 120px;
-	padding-left: 5px;
-	padding-right: 5px;
-	height: 75px;
-	background-color: #bf8f8f;
-	border: 4px solid;
-	border-radius: 4px;
-	border-color: rgba(0, 0, 0, 0.125);
-	color: rgba(0, 0, 0, 0.5);
+	padding: 10px 8px 10px 2px;
+	height: auto;
+	min-height: 0;
+	background-color: transparent;
+	border: none;
+	border-top: 2px solid #c9c2ae;
+	border-radius: 0;
+	color: var(--ink2);
+	text-align: left;
+	font-size: 14px;
+	line-height: 1.5;
 }
+
+.milestone h3 { font-size: 14.5px; font-weight: 700; color: var(--ink2); }
 
 .milestoneDone {
 	width: 100%;
 	min-width: 120px;
-	padding-left: 5px;
-	padding-right: 5px;
-
-	height: 75px;
-	background-color: #77bf5f;
-	border: 4px solid;
-	border-radius: 4px;
-	border-color: rgba(0, 0, 0, 0.125);
-	color: rgba(0, 0, 0, 0.5);
+	padding: 10px 8px 10px 2px;
+	height: auto;
+	min-height: 0;
+	background-color: transparent;
+	border: none;
+	border-top: 2.5px solid var(--ink);
+	border-radius: 0;
+	color: var(--ink);
+	text-align: left;
+	font-size: 14px;
+	line-height: 1.5;
 }
 
+.milestoneDone h3 { font-size: 14.5px; font-weight: 700; color: var(--red); }
+
+/* Challenge = boxed exhibit */
 .challenge {
-	background-color: #bf8f8f;
+	background-color: var(--paper);
 	position: relative;
-	border: 4px solid;
-	border-color: rgba(0, 0, 0, 0.125);
-	color: rgba(0, 0, 0, 0.5);
-	width: 300px;
-	height: 300px;
-	font-size: 15px;
-	border-radius: 33.33%;
+	border: 2px solid var(--ink);
+	color: var(--ink);
+	width: 320px;
+	height: auto;
+	min-height: 300px;
+	font-size: 14px;
+	line-height: 1.5;
+	border-radius: 0;
+	padding: 12px;
 }
 
 .challenge.done {
-	background-color: #77bf5f;
+	background-color: var(--paper2);
+	border-color: var(--red);
 }
 
 .challenge.canComplete {
-	background-color: #ffbf00;
+	background-color: var(--paper);
+	border-color: var(--red);
+	box-shadow: 0 0 0 2px var(--red);
 }
 
 /* Infoboxes */
 .story {
-    width: 600px;
-    max-width: 95%;
-    border-bottom: solid 4px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    text-align: left;
+	width: 640px;
+	max-width: 95%;
+	border: none;
+	border-bottom: 2px solid var(--ink);
+	border-radius: 0;
+	margin-bottom: 8px;
+	text-align: left;
+	background: transparent;
 }
 
 .story-title {
-    text-align: left;
-    font-size: 24px;
-    color: black;
-    cursor: pointer;
-    border: none;
-    padding: 2px;
-    border-radius: 8px 8px 0 0;
+	text-align: left;
+	font-size: 20px;
+	font-family: "IBM Plex Mono", monospace;
+	font-weight: 600;
+	color: var(--ink);
+	cursor: pointer;
+	border: none;
+	padding: 4px 2px;
+	border-radius: 0;
+	background: transparent;
 }
 
 .story-toggle {
-    border: none;
-    background: black;
-    color: white;
-    font-size: 20px;
-    pointer-events: none;
-    width: 1em;
-    display: inline-block;
+	border: none;
+	background: var(--ink);
+	color: var(--paper);
+	font-size: 16px;
+	pointer-events: none;
+	width: 1.2em;
+	display: inline-block;
 }
 
 .story-text {
-	padding: 2px;
-    border: solid 4px;
-    border-color: inherit;
-    border-radius: inherit;
-    border-top-left-radius: 0;
-    margin-bottom: -2px;
+	padding: 8px 4px;
+	border: none;
+	border-top: 1px solid #c9c2ae;
+	margin-bottom: 6px;
+	background: transparent;
 }
-
 
 /* Tiles are gridables */
 .tile {
-	height: 80px;
-	width: 80px;
-	border-radius: 15%;
-	border: 2px solid;
-	border-color: rgba(0, 0, 0, 0.125);
-	font-size: 10px;
+	height: 76px;
+	width: 76px;
+	border-radius: 0;
+	border: 1.5px solid var(--ink);
+	background: var(--paper);
+	font-size: 13px;
 	overflow: visible;
+	color: var(--ink);
 }
 
 .tile.can:hover {
-	box-shadow: 0 0 10px var(--points);
-	transform: scale(1.1, 1.1);
+	box-shadow: none;
+	background: var(--paper2);
+	transform: none;
 	z-index: 7;
 }
 
 .upgBig {
-	height: 200px;
-	width: 200px;
-	border-radius: 25%;
-	border: 2px solid;
-	border-color: rgba(0, 0, 0, 0.125);
+	height: auto;
+	min-height: 120px;
+	width: 100%;
+	max-width: 860px;
+	border-radius: 0;
+	border: 2px solid var(--ink);
+	background: var(--paper);
 }
 
-/* Used for respec button and similar */
+/* Prestige + form action buttons */
 .longUpg {
-	height: 50px;
-	width: 120px;
-	background: var(--points);
-	border-radius: 50%;
-	border: 2px solid;
-	border-color: rgba(0, 0, 0, 0.125);
-	font-size: 10px;
+	height: auto;
+	min-height: 44px;
+	width: auto;
+	min-width: 120px;
+	padding: 8px 18px;
+	background: var(--red);
+	border-radius: 0;
+	border: 2px solid var(--ink);
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--paper);
+}
+
+.longUpg.can:hover {
+	background: var(--ink);
+	border-color: var(--red);
 }
 
 .smallUpg {
 	height: 40px;
-	width: 40px;
-	border-radius: 25%;
-	border: 2px solid;
-	border-color: rgba(0, 0, 0, 0.125);
+	width: 64px;
+	border-radius: 0;
+	border: 1.5px solid var(--ink);
+	background: var(--paper);
+	color: var(--ink);
+	font-size: 12px;
 }
 
+.smallUpg.can:hover {
+	background: var(--ink);
+	color: var(--paper);
+}

@@ -1,83 +1,116 @@
 
-/* Prestige button */
+/* Prestige button — the big form action */
 .reset {
-	height: 120px;
-	width: 180px;
-	border-radius: 25%;
-	border: 4px solid;
-	border-color: rgba(0, 0, 0, 0.125);
+	height: auto;
+	min-height: 96px;
+	width: 100%;
+	max-width: 520px;
+	border-radius: 0;
+	border: 2px solid #161412;
+	background-color: #F2EEE3;
+	color: #161412;
+	font-size: 15px;
+	line-height: 1.5;
+	padding: 12px 16px;
 }
 
+.reset.can {
+	background-color: #D02700;
+	color: #F2EEE3;
+	font-weight: 600;
+}
+
+.reset.can:hover {
+	background-color: #161412;
+	border-color: #D02700;
+}
+
+.reset.locked {
+	border: 1.5px dashed #a89f88;
+	background-color: transparent;
+	color: #6d675a;
+}
+
+/* Subtabs = running heads */
 .tabButton {
 	background-color: transparent;
-	color: var(--color);
-	font-size: 20px;
+	color: #161412;
+	font-size: 15px;
+	font-family: "IBM Plex Mono", monospace;
 	cursor: pointer;
-	padding: 5px 20px;
-	margin: 5px;
-	border-radius: 10px;
-	border: 2px solid;
-	color: var(--color);
-
+	padding: 7px 16px 8px;
+	margin: 4px 6px;
+	border-radius: 0;
+	border: none;
+	border-bottom: 3px solid #c9c2ae;
 }
 
 .tabButton:hover {
-	transform: scale(1.1, 1.1);
-	text-shadow: 0 0 7px var(--color);
+	transform: none;
+	text-shadow: none;
+	border-bottom-color: #161412;
 }
 
-.tooltip { 
-    pointer-events: none;
-    text-align: center;
-    width: 150px;
-    font-size: 16px;
-    line-height: 1.2;
-    bottom: 100%;
-    left: 50%;
-    margin-bottom: 5px;
-    transform: translateX(-50%);
-    padding: 7px;
-    font-family: "Lucida Console", "Courier New", monospace;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    opacity: 0;
-    transition: opacity 0.5s;
-  
-    position: absolute;
-    z-index: 20000;
-  
-    background-color: var(--background_tooltip);
-    color: var(--points);
-    content: attr(tooltip);
-    font-size:14px;
+.tabButton.notify {
+	border-bottom-color: #D02700;
+	color: #D02700;
+	font-weight: 600;
+}
 
+.tabButton.resetNotify {
+	background-color: #D02700;
+	color: #F2EEE3;
+}
+
+/* Tooltips = margin notes */
+.tooltip {
+	pointer-events: none;
+	text-align: left;
+	width: 190px;
+	font-size: 13px;
+	line-height: 1.45;
+	bottom: 100%;
+	left: 50%;
+	margin-bottom: 5px;
+	transform: translateX(-50%);
+	padding: 8px 10px;
+	font-family: "IBM Plex Mono", monospace;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+	border: 1.5px solid #161412;
+	opacity: 0;
+	transition: opacity 0.12s;
+
+	position: absolute;
+	z-index: 20000;
+
+	background-color: var(--background_tooltip);
+	color: #161412;
+	content: attr(tooltip);
 }
 
 .tooltip::after {
-    content: " ";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: var(--background_tooltip) transparent transparent transparent;
+	content: " ";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: #161412 transparent transparent transparent;
 }
 
 /* Horizontal/vertical lines */
 .vl {
-	border-left: 6px solid var(--color);
+	border-left: 2px solid #161412;
 	height: 100%;
 	position: absolute;
 	left: 50%;
-	margin-left: -3px;
+	margin-left: -1px;
 	top: 0
 }
 
 .hl {
-	border-top: 3px solid var(--color);
+	border-top: 2px solid #161412;
 }

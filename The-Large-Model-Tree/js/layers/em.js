@@ -9,7 +9,7 @@ addLayer("em", {
 	symbol: "Em",
 	position: 0,
 	row: 4,
-	color: "#a5d6ff",
+	color: "#161412",
 	resource() { return L("涌现", "Emergence") },
 	resZh: "涌现", resEn: "Emergence",
 	baseResource: "训练进度 Training runs",
@@ -88,10 +88,10 @@ addLayer("em", {
 
 	tabFormat: [
 		["display-text", tokenLineFn()],
-		["display-text", baseLineFn("em", "#e3b341")],
+		["display-text", baseLineFn("em", "#161412")],
 		["display-text", mainLineFn("em")],
 		["display-text", bestLineFn("em")],
-		["display-text", softcapLineFn("em", function() { return layers.em.softcap() }, "#a5d6ff")],
+		["display-text", softcapLineFn("em", function() { return layers.em.softcap() }, "#161412")],
 		"blank",
 		"prestige-button",
 		"blank",
@@ -233,7 +233,7 @@ addLayer("em", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#a5d6ff" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 	},
 })

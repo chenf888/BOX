@@ -1,17 +1,23 @@
-/* Tree nodes, button nodes, and side layers */
-.treeNode {
-	height: 100px;
-	width: 100px;
-	border: var(--hqProperty1);
-	border-color: rgba(0, 0, 0, 0.125);
+/* Tree nodes — printed circuit marks: ink circles, red for actionable, dead ink for locked */
+.treeNode, .treeButton {
+	height: 96px;
+	width: 96px;
+	border: 2px solid var(--ink);
 	border-radius: 50%;
-	box-shadow: var(--hqProperty2a), var(--hqProperty2b);
-	font-size: 40px;
-	font-family: "Lucida Console", "Courier New", monospace;
-	color: rgba(0, 0, 0, 0.5);
-	text-shadow: var(--hqProperty3);
+	background: var(--paper);
+	box-shadow: none;
+	font-size: 26px;
+	font-weight: 600;
+	font-family: "IBM Plex Mono", Consolas, monospace;
+	color: var(--ink);
+	text-shadow: none;
 	padding: 0;
 	margin: 0 10px 0 10px;
+	transition: background-color .12s ease, color .12s ease, border-color .12s ease;
+}
+
+.treeButton {
+	border-radius: 12px;
 }
 
 .nodeLabel {
@@ -19,90 +25,46 @@
 	font-family: inherit;
 }
 
-.treeButton {
-	height: 100px;
-	width: 100px;
-	border: var(--hqProperty1);
-	border-color: rgba(0, 0, 0, 0.125);
-	border-radius: 33%;
-	box-shadow: var(--hqProperty2a), var(--hqProperty2b);
-	font-size: 40px;
-	font-family: "Lucida Console", "Courier New", monospace;
-	color: rgba(0, 0, 0, 0.5);
-	text-shadow: var(--hqProperty3);
-	padding: 0;
+/* actionable node — press red */
+.treeNode.can, .treeButton.can {
+	background: var(--red);
+	border-color: var(--ink);
+	color: var(--paper);
+}
+
+.treeNode.can:hover, .treeButton.can:hover {
+	transform: none;
+	background: var(--ink);
+	border-color: var(--red);
+}
+
+/* locked — dead ink outline */
+.treeNode.locked, .treeButton.locked {
+	background: transparent;
+	border: 1.5px dashed #a89f88;
+	color: #6d675a;
 }
 
 .smallNode {
 	height: 60px;
 	width: 60px;
-	font-size: 30px;
+	font-size: 18px;
 }
 
+/* something to collect — solid red ring */
 .resetNotify {
-	box-shadow: var(--hqProperty2a), 0 0 8px #ffffff;
-}
-
-.treeNode.can:hover {
-	transform: scale(1.15, 1.15);
-	box-shadow: var(--hqProperty2a), 0 0 20px var(--points);
+	box-shadow: 0 0 0 3px var(--red) !important;
+	border-color: var(--red);
 }
 
 .notify {
-	transform: scale(1.05, 1.05);
-	border-color: rgba(0, 0, 0, 0.125);
-	box-shadow: var(--hqProperty2a), 0 0 20px #ff0000;
+	transform: none;
+	border: 2px solid var(--red);
+	color: var(--red);
+	background: var(--paper);
+	box-shadow: none;
 }
 
-
-
-.mark {
-	position: relative;
-	display: inline-block;
-	width: 30px;
-	height: 30px;
-	z-index: 10000;
-	margin-left: 0.9em;
-	margin-right: 0.9em;
-	margin-bottom: 1.2em;
-	border-right: 0.3em solid transparent;
-	border-bottom: 0.7em solid transparent;
-	border-left: 0.3em solid transparent;
-	font-size: 10px;
-	overflow:auto;
-	pointer-events: none;
-}
-
-.star {
-	position: relative;
-	display: inline-block;
-	width: 0;
-	height: 0;
-	z-index: 10000;
-	margin-left: 0.9em;
-	margin-right: 0.9em;
-	margin-bottom: 1.2em;
-	border-right: 0.3em solid transparent;
-	border-bottom: 0.7em solid #ffcc00;
-	border-left: 0.3em solid transparent;
-	font-size: 10px;
-	pointer-events: none;
-
-}
-
-.star:before, .star:after {
-	content: "";
-    width: 0;
-    height: 0;
-    position: absolute;
-    top: .6em;
-    left: -1em;
-	border-right: 1em solid transparent;
-    border-bottom: 0.7em solid #ffcc00;
-    border-left: 1em solid transparent;
-	transform: rotate(-35deg);
-}
-
-.star:after {
-	transform: rotate(35deg);
+.mark, .star {
+	display: none;
 }

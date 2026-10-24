@@ -9,7 +9,7 @@ addLayer("dep", {
 	symbol: "Dp",
 	position: 1,
 	row: 3,
-	color: "#56d364",
+	color: "#161412",
 	resource() { return L("部署实例", "Deployments") },
 	resZh: "部署实例", resEn: "deployments",
 	baseResource: "训练进度 Training runs",
@@ -69,7 +69,7 @@ addLayer("dep", {
 
 	tabFormat: [
 		["display-text", tokenLineFn()],
-		["display-text", baseLineFn("dep", "#e3b341")],
+		["display-text", baseLineFn("dep", "#161412")],
 		["display-text", mainLineFn("dep")],
 		["display-text", bestLineFn("dep")],
 		"blank",
@@ -201,7 +201,7 @@ addLayer("dep", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#56d364" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 		12: {
 			title() { return L("🧠 KV 缓存优化", "🧠 KV-cache optimization") },
@@ -218,7 +218,7 @@ addLayer("dep", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#56d364" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 		13: {
 			title() { return L("⚡ 推测解码 v2", "⚡ Speculative decoding v2") },
@@ -235,7 +235,7 @@ addLayer("dep", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#56d364" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 	},
 })

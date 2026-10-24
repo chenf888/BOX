@@ -1,13 +1,17 @@
+/* ===== The Large Model Tree — "Training Program Print" system =====
+   Direction dir-1 (Experimental Jetset logic). Paper #F2EEE3, ink #161412,
+   press red #D02700. One sans (Helvetica/Arial) + one mono (IBM Plex Mono, local).
+   Structure: rules instead of cards; forms instead of candy buttons. */
+
 * {
-	transition-duration: 0.5s;
+	transition-duration: 0.12s;
 	text-align: center;
-	font-family: "Inconsolata", monospace;
-	font-weight: bold;
+	font-family: Helvetica, "Helvetica Neue", Arial, "Noto Sans SC", "Microsoft YaHei", sans-serif;
+	font-weight: normal;
 	table-align: center;
 	margin: auto;
 	-webkit-text-size-adjust: none;
 	text-size-adjust: none;
-
 }
 
 *:focus {
@@ -24,6 +28,11 @@ td {
 	padding: 0
 }
 
+/* mono runs (numbers, codes, folios, costs) */
+h1, h2, h3, b, .mono, #points, .upg, .milestone, .reset, .tabButton, .opt, .treeNode, .treeButton, .hotkey {
+	font-family: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+
 .upgTable {
 	display: flex !important;
 	flex-flow: column wrap;
@@ -33,12 +42,23 @@ td {
 	margin: 0 auto;
 }
 
+/* Rows are horizontal by default (tabs, achievements, challenges, grids);
+   only upgrade rows opt into the vertical ledger via .ledgerRow */
 .upgRow {
 	display: flex !important;
 	flex-flow: row wrap;
 	justify-content: center;
 	align-items: center;
 	max-width: 100%;
+	margin: 0 auto;
+}
+
+.upgRow.ledgerRow {
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: stretch;
+	max-width: 860px;
+	width: 100%;
 	margin: 0 auto;
 }
 
@@ -70,8 +90,10 @@ td {
 	background-color: transparent;
 	border: 1px solid transparent;
 	color: var(--color);
-	font-size: 40px;
+	font-family: "IBM Plex Mono", monospace;
+	font-size: 26px;
 	cursor: pointer;
+	z-index: 10001;
 }
 
 .other-back {
@@ -81,13 +103,16 @@ td {
 	background-color: transparent;
 	border: 1px solid transparent;
 	color: var(--color);
-	font-size: 60px;
+	font-family: "IBM Plex Mono", monospace;
+	font-size: 26px;
 	cursor: pointer;
+	z-index: 10001;
 }
 
-.back:hover {
-	transform: scale(1.1, 1.1);
-	text-shadow: 0 0 7px var(--color);
+.back:hover, .other-back:hover {
+	color: var(--red);
+	text-decoration: underline;
+	text-underline-offset: 4px;
 }
 
 .hidden {
@@ -95,11 +120,13 @@ td {
 	height: 50px !important;
 }
 
+/* SVG tree-branch layer (was canvas) */
 .canvas {
 	top: 0;
 	left: 0;
 	position: absolute;
 	z-index: -999;
+	pointer-events: none;
 }
 
 .left {
@@ -135,12 +162,13 @@ td {
 }
 
 .fast {
-	transition:color none
+	transition: color none
 }
 
 .col.right {
 	top: 0;
 	right: 0;
+	border-left: 2px solid var(--ink);
 }
 
 #app {
@@ -150,7 +178,7 @@ td {
 }
 
 .vl2 {
-	border-left: 3px solid var(--color);
+	border-left: 2px solid var(--ink);
 	height: 100%;
 }
 
@@ -168,22 +196,21 @@ ul {
 	transition-duration: 0s
 }
 
-.tooltipBox { 
+.tooltipBox {
 	position: relative;
-  }
-  
-  .tooltipBox:hover .tooltip{
-	opacity: 1;
-  }
+}
 
-  .forceTooltip .tooltip{
+.tooltipBox:hover .tooltip {
 	opacity: 1;
-  }
-  
+}
+
+.forceTooltip .tooltip {
+	opacity: 1;
+}
+
 .respecCheckbox {
 	display: inline-block;
 }
-
 
 #loadingSection {
 	display: flex;
@@ -192,8 +219,8 @@ ul {
 }
 
 .treeOverlay {
-	pointer-events:none;
-	overflow:hidden;
+	pointer-events: none;
+	overflow: hidden;
 }
 
 .front {
@@ -202,12 +229,12 @@ ul {
 
 .overlayThing {
 	z-index: 10000;
-	pointer-events:auto;
+	pointer-events: auto;
 }
 
 .sideLayers {
 	z-index: 10000;
-	pointer-events:auto;
+	pointer-events: auto;
 	position: absolute;
 	right: 55px;
 	top: 65px;
@@ -215,7 +242,7 @@ ul {
 }
 
 button > * {
-	pointer-events:none;
+	pointer-events: none;
 }
 
 .ghost {
@@ -223,7 +250,7 @@ button > * {
 }
 
 #treeTab td button {
-    margin: 0 10px;
+	margin: 0 10px;
 }
 
 .bg {
@@ -249,3 +276,34 @@ button > * {
 	--background: transparent !important;
 }
 
+/* ===== Program masthead (overlay-head) ===== */
+.masthead {
+	padding-bottom: 10px;
+	border-bottom: 2px solid var(--ink);
+	margin-bottom: 4px;
+}
+
+.masthead .m-brand {
+	font-family: "IBM Plex Mono", monospace;
+	font-size: 14px;
+	font-weight: 600;
+	letter-spacing: 0.28em;
+	color: var(--ink2);
+	margin-bottom: 4px;
+}
+
+.masthead .m-label { font-size: 14px; }
+
+.masthead .m-rate {
+	font-family: "IBM Plex Mono", monospace;
+	font-size: 13px;
+	color: var(--ink2);
+}
+
+.masthead #points { font-size: 30px; }
+
+.chapterLine {
+	font-family: "IBM Plex Mono", monospace;
+	font-size: 14px;
+	letter-spacing: 0.04em;
+}

@@ -170,10 +170,10 @@ function achMultTotal() {
 // 主货币行：你有 <big> X </big> 上下文
 function mainLineFn(id) {
 	return function() {
-		const col = layers[id].color
+		const col = "#D02700"
 		const nm = L(layers[id].resZh, layers[id].resEn)
 		return L("你有 ", "You have ") +
-			"<h2 style='color:" + col + ";text-shadow: 0px 0px 10px " + col + ";display:inline;margin:2px 0'>" +
+			"<h2 style='color:" + col + ";display:inline;margin:2px 0;font-family:\"IBM Plex Mono\",monospace'>" +
 			formatWhole(player[id].points) + "</h2> " + nm
 	}
 }
@@ -190,7 +190,7 @@ function bestLineFn(id) {
 // 基础货币行（prestige 层顶部）：当前 token / 上下文 / 参数 …
 function baseLineFn(id, col) {
 	return function() {
-		const c = col || "#79c0ff"
+		const c = col || "#161412"
 		return L("当前 ", "Current ") +
 			"<b style='color:" + c + "'>" + formatWhole(tmp[id].baseAmount) + "</b> " +
 			L(layers[id].baseZh, layers[id].baseEn)
@@ -201,7 +201,7 @@ function baseLineFn(id, col) {
 function tokenLineFn() {
 	return function() {
 		return L("你有 ", "You have ") +
-			"<b style='color:#79c0ff'>" + formatWhole(player.points) + "</b> token" +
+			"<b style='color:#161412'>" + formatWhole(player.points) + "</b> token" +
 			L("（每秒 +", " (+") + format(getPointGen()) + L("）", ")")
 	}
 }

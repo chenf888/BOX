@@ -9,7 +9,7 @@ addLayer("bench", {
 	name: "benchmarks",
 	symbol: "Bm",
 	row: "side",
-	color: "#8b949e",
+	color: "#161412",
 	resource() { return L("基准", "Benchmarks") },
 	resZh: "基准", resEn: "Benchmarks",
 	type: "none",

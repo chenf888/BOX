@@ -1,21 +1,19 @@
+/* Progress bars — printed gauges */
 .barBase {
 	overflow: hidden;
-	-webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
-	display:table
+	display: table;
 }
 
 .barBorder {
-	border: 2px solid;
-	border-radius: 10px;
-	border-color: var(--color);
+	border: 2px solid #161412;
+	border-radius: 0;
 	overflow: hidden;
-	-webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
-	margin:0
+	margin: 0;
 }
 
 .overlayTextContainer {
 	z-index: 3;
-	border-radius: 10px;
+	border-radius: 0;
 	vertical-align: middle;
 	display: flex;
 	justify-content: center;
@@ -24,15 +22,15 @@
 }
 
 .fill {
-	background-color: var(--color);
-	z-index:2;
-    position: absolute;
+	background-color: #D02700;
+	z-index: 2;
+	position: absolute;
 	overflow: hidden;
 	margin-left: -0.5px;
 	transition-duration: 0.2s;
-
 }
 
 .overlayText {
 	z-index: 6;
+	color: #161412;
 }

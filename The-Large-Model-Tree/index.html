@@ -12,7 +12,7 @@
 	<link rel="stylesheet" type="text/css" href="css/popup.css" />
 	<link rel="stylesheet" type="text/css" href="css/tree-node.css" />
 
-	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+	<link href="css/fonts.css" rel="stylesheet">
 
 	<script src="js/vue.min.js"></script>
 	<script src="js/technical/break_eternity.js"></script>
@@ -42,7 +42,7 @@
 
 <body onmousemove="updateMouse(event)">
 	<div id="app">
-		<canvas id="treeCanvas" class="canvas" v-if="!(tmp.gameEnded && !player.keepGoing)"></canvas>
+		<svg id="treeCanvas" class="canvas" v-if="!(tmp.gameEnded && !player.keepGoing)"></svg>
 
 		<div v-if="false" id="loadingSection" class="fullWidth">
 			<h1>Loading... (If this takes too long it means there was a serious error!)←</h1>
@@ -77,12 +77,22 @@
 				{{VERSION.withoutName}}</div>
 			<button
 			v-if="((player.navTab == 'none' && (tmp[player.tab].row == 'side' || tmp[player.tab].row == 'otherside' || player[player.tab].prevTab)) || player[player.navTab]?.prevTab)"				class="other-back overlayThing" onclick="goBack(player.navTab == 'none' ? player.tab : player.navTab)">←</button>
-			<img id="optionWheel" class="overlayThing" v-if="player.tab!='options-tab'" src="options_wheel.png"
-				onclick="showTab('options-tab')"></img>
+			<svg id="optionWheel" class="overlayThing" v-if="player.tab!='options-tab'" width="34" height="34" viewBox="0 0 34 34"
+				style="cursor:pointer" onclick="showTab('options-tab')">
+				<g fill="none" stroke="#161412" stroke-width="2.4">
+					<circle cx="17" cy="17" r="6.5"/>
+					<path d="M17 4.5v4M17 25.5v4M4.5 17h4M25.5 17h4M8.1 8.1l2.8 2.8M23.1 23.1l2.8 2.8M25.9 8.1l-2.8 2.8M10.9 23.1l-2.8 2.8"/>
+				</g>
+			</svg>
 			<div id="info" v-if="player.tab!='info-tab'" class="overlayThing" onclick="showTab('info-tab')"><br>i</div>
 			<div id="discord" class="overlayThing">
-				<img onclick="window.open((modInfo.discordLink ? modInfo.discordLink : 'https://discord.gg/F3xveHV'),'mywindow')"
-					src="discord.png" target="_blank"></img>
+				<svg onclick="window.open((modInfo.discordLink ? modInfo.discordLink : 'https://discord.gg/F3xveHV'),'mywindow')"
+					width="30" height="30" viewBox="0 0 30 30" style="cursor:pointer" fill="none" stroke="#6d675a" stroke-width="2">
+					<path d="M4 7h22v14H12l-6 5v-5H4z" stroke-linejoin="round"/>
+					<circle cx="11" cy="14" r="1.4" fill="#6d675a" stroke="none"/>
+					<circle cx="15" cy="14" r="1.4" fill="#6d675a" stroke="none"/>
+					<circle cx="19" cy="14" r="1.4" fill="#6d675a" stroke="none"/>
+				</svg>
 				<ul id="discord-links">
 					<li v-if="modInfo.discordLink"><a class="link" v-bind:href="modInfo.discordLink"
 							target="_blank">{{modInfo.discordName}}</a><br></li>

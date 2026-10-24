@@ -63,7 +63,7 @@ addLayer("tr", {
 	symbol: "Tr",
 	position: 0,
 	row: 3,
-	color: "#e3b341",
+	color: "#161412",
 	resource() { return L("训练进度", "Training runs") },
 	resZh: "训练进度", resEn: "training progress",
 	baseResource() { return L("数据 × 算力", "data × compute") },
@@ -155,9 +155,9 @@ addLayer("tr", {
 					formatWhole(player.tr.epochProgress / TUNING.TR.epochNeed * 100) + "% · " +
 					L("已完成 ", "completed ") + formatWhole(player.tr.epochs) + L(" 轮", " epochs")
 			},
-			fillStyle: { "background-color": "#e3b341" },
-			baseStyle: { "background-color": "#161b22" },
-			textStyle: { "color": "#0d1117" },
+			fillStyle: { "background-color": "#161412" },
+			baseStyle: { "background-color": "#F2EEE3" },
+			textStyle: { "color": "#F2EEE3" },
 			unlocked() { return player.tr.unlocked },
 		},
 	},
@@ -166,8 +166,8 @@ addLayer("tr", {
 		["display-text", tokenLineFn()],
 		["display-text", function() {
 			return L("数据 × 算力 = ", "data × compute = ") +
-				"<b style='color:#ffa657'>" + formatWhole(player.d.points) + "</b> × " +
-				"<b style='color:#ff7b72'>" + formatWhole(player.f.points) + "</b> = " +
+				"<b style='color:#161412'>" + formatWhole(player.d.points) + "</b> × " +
+				"<b style='color:#161412'>" + formatWhole(player.f.points) + "</b> = " +
 				"<b>" + formatWhole(player.d.points.times(player.f.points)) + "</b>"
 		}],
 		["display-text", mainLineFn("tr")],
@@ -415,7 +415,7 @@ addLayer("tr", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#e3b341" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 		12: {
 			title() { return L("📦 Batch Size 扩容", "📦 Bigger batch") },
@@ -432,7 +432,7 @@ addLayer("tr", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#e3b341" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 	},
 })

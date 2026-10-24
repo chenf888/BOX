@@ -9,7 +9,7 @@ addLayer("a", {
 	symbol: "At",
 	position: 1,
 	row: 1,
-	color: "#d2a8ff",
+	color: "#161412",
 	resource() { return L("注意力", "Attention") },
 	resZh: "注意力", resEn: "Attention",
 	baseResource: "上下文 Context",
@@ -86,7 +86,7 @@ addLayer("a", {
 
 	tabFormat: [
 		["display-text", tokenLineFn()],
-		["display-text", baseLineFn("a", "#7ee787")],
+		["display-text", baseLineFn("a", "#161412")],
 		["display-text", mainLineFn("a")],
 		["display-text", bestLineFn("a")],
 		"blank",
@@ -223,7 +223,7 @@ addLayer("a", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#d2a8ff" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 		12: {
 			title() { return L("🔀 GQA 实现", "🔀 GQA implementation") },
@@ -241,7 +241,7 @@ addLayer("a", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#d2a8ff" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 		13: {
 			title() { return L("⚡ FlashAttention-2", "⚡ FlashAttention-2") },
@@ -259,7 +259,7 @@ addLayer("a", {
 				setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
 				player[this.layer].spentOnBuyables = player[this.layer].spentOnBuyables.add(tmp[this.layer].buyables[this.id].cost)
 			},
-			style() { return { "background-color": "#0d1117", "color": "#d2a8ff" } },
+			style() { return { "background-color": "#F2EEE3", "color": "#161412" } },
 		},
 	},
 })

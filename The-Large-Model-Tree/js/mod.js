@@ -207,6 +207,16 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
+	// 程序目录行（dir-1 打印件系统）：章节号 + 层代号，红色 = 已开
+	function() {
+		const rows = [["c","CH.0"],["p","CH.1"],["a","CH.1"],["d","CH.2"],["f","CH.2"],["tr","CH.3"],["dep","CH.3"],["em","CH.4"],["agi","CH.5"]]
+		const parts = rows.map(function(r) {
+			const code = (tmp[r[0]] && tmp[r[0]].symbol) ? tmp[r[0]].symbol : r[0].toUpperCase()
+			const open = player[r[0]] && player[r[0]].unlocked
+			return open ? "<b style='color:#D02700'>" + r[1] + " " + code + "</b>" : "<span style='color:#6d675a'>" + r[1] + " " + code + "</span>"
+		})
+		return "<span class='chapterLine'>" + parts.join("&nbsp;&nbsp;·&nbsp;&nbsp;") + "</span>"
+	},
 	function() {
 		return L(
 			"<span style='opacity:0.75'>大模型之树 —— 献给 1024 程序员节 · 从 1 个 token 到 AGI</span>",
@@ -216,8 +226,8 @@ var displayThings = [
 	function() {
 		if (!player.agi.unlocked) return
 		return L(
-			"AGI 进度：<b style='color:#ffcc00'>" + formatWhole(player.agi.best) + "</b> / 1024",
-			"AGI progress: <b style='color:#ffcc00'>" + formatWhole(player.agi.best) + "</b> / 1024"
+			"AGI 进度：<b style='color:#D02700'>" + formatWhole(player.agi.best) + "</b> / 1024",
+			"AGI progress: <b style='color:#D02700'>" + formatWhole(player.agi.best) + "</b> / 1024"
 		)
 	},
 ]
@@ -231,7 +241,7 @@ function isEndgame() {
 
 // Style for the background, can be a function
 var backgroundStyle = {
-	"background-color": "#0d1117",
+	"background-color": "#F2EEE3",
 }
 
 // You can change this if you have things that can be messed up by long tick lengths
