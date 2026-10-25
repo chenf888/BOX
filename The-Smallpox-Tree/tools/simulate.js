@@ -297,6 +297,17 @@ const canPrestige = (l) => {
 function doPrestige(l) {
     const g = gainOf(l);
     if (g.lt(1)) return false;
+    /* cert 探针：发射瞬间打印五个门的富余量（哪个条件"刚达标"哪个就是真瓶颈；
+     * 2026-10-25 排查 9.29h 变快时加，两次调 LAUNCH_DOSES/ZERO 均无效果后定位用） */
+    if (l === "cert" && process.env.SIM_CERT_PROBE) {
+        const c = LAYERS.cert.launchCosts();
+        LOG("  cert-launch @ " + (t / 3600).toFixed(2) + " h  seal#" + (player.cert.points.toNumber() + 1) +
+            "  cmp " + global.format(player.cmp.points) + "/" + global.format(c.cmpReq) +
+            "  doses " + global.format(player.pro.points) + "/" + global.format(c.doses) +
+            "  funds " + global.format(player.int.points) + "/" + global.format(c.funds) +
+            "  sweeps " + global.format(player.sur.points) + "/" + global.format(c.sweeps) +
+            "  zeroTime " + global.format(player.sur.zeroTime) + "/" + global.format(c.zeroTimeReq));
+    }
     if (TRACE && events.firstPrestige[l] === undefined) {
         const L = LAYERS[l];
         const base = (typeof L.baseAmount === "function") ? L.baseAmount() : player.points;

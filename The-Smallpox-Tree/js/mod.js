@@ -61,7 +61,10 @@ function pressureRate() {
 	if (hasMilestone("sur", 0)) rate = rate.times(T("PRESSURE_RATE_UPG"))
 	if (hasMilestone("sur", 3)) rate = rate.times(T("PRESSURE_RATE_UPG"))
 	let cc = new Decimal(0)
-	if (player.cc && player.cc.unlocked && tmp.cc) cc = tmp.cc.points
+	// 必须读 player.cc.points：引擎的 tmp 只缓存层文件里定义过的函数返回值，
+	// cc 层没有 points() → tmp.cc.points 恒为 undefined → .times 每帧抛错 →
+	// 引擎主循环 ticking 标志永远停在 true → 整局静默冻结（用户存档 2026-10-25 实测）
+	if (player.cc && player.cc.unlocked) cc = player.cc.points
 	rate = rate.div(cc.times(T("PRESSURE_CC_FACTOR")).add(1))
 	if (player.sur && player.sur.buyables && tmp.sur) rate = rate.div(buyableEffect("sur", 11))
 	if (hasChallenge("sur", 13)) rate = rate.div(2)                        // 超规模爆发完成奖励

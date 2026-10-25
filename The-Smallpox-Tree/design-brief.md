@@ -180,7 +180,7 @@ side:      ( hist 历史档案·成就 5×10·剧情 )   ( dash 疫情档案·�
 ## 7. Endgame definition
 
 - **isEndgame()**: `hasMilestone("cert", 8)` —— 里程碑 #8 = 「★印章 9 —— 1979-10-25 人类天花绝迹日★」（`done() = cert.best ≥ 9`，即第 9 发认证发射）；#9–#11（全球委员会 1979-12-09、WHA33.3 1980-05-08、档案封卷）为 post-win 内容。cert 里程碑链：最后一例康复(1977-10-26) → 两年零病例监测（zeroTime）→ 区域委员会逐区认证 ×4 → 绝迹日 1979-10-25 → 全球委员会签署 1979-12-09 → WHA33.3 1980-05-08 → 实验室封存（CDC+VECTOR 两处）→ 档案封卷。
-- **M19 发射（cert.getResetGain / canReset，第 n 印 = `player.cert.points`）**：逐项清单（tabFormat 列出，绿/红着色）——疫苗剂量 ≥ `1e7×12^n`、协作资金 ≥ `1e5×6^n`（int u41/c11/buyable11 折扣）、围堵行动 ≥ `10+5n`、战役进度 ≥ `50×2.5^n`（cmp m10 ×0.75）、发射瞬间压强 ≤ 1、且**累计零病例监测期 ≥ `600(n+1)+300·n(n+1)/2` 秒**（首印免监测；逐发递增=「最后一英里」节奏阀）。发射重置 row ≤3（里程碑门控保留）。曲线全部入 tuning.js（LAUNCH_* 常数），游戏与模拟器同读。
+- **M19 发射（cert.getResetGain / canReset，第 n 印 = `player.cert.points`）**：逐项清单（tabFormat 列出，绿/红着色）——疫苗剂量 ≥ `1e7×12^n`、协作资金 ≥ `1e5×6.3^n`（2026-10-25 6→6.3，§12 #12）（int u41/c11/buyable11 折扣）、围堵行动 ≥ `10+5n`、战役进度 ≥ `50×2.5^n`（cmp m10 ×0.75）、发射瞬间压强 ≤ 1、且**累计零病例监测期 ≥ `600(n+1)+300·n(n+1)/2` 秒**（首印免监测；逐发递增=「最后一英里」节奏阀）。发射重置 row ≤3（里程碑门控保留）。曲线全部入 tuning.js（LAUNCH_* 常数），游戏与模拟器同读。
 - **winText**（双语函数）：「1979年10月25日，人类天花绝迹日。1980年5月8日，世界卫生大会正式宣布：天花——被消灭。谨以此树纪念三千年瘟疫的终结，与所有为之奋斗的人。」
 - ROW_RATIO = ×25（requires 阶梯）；OUTPUT_STEP = ×18（每行累计乘区）→ **每行时间 ×1.39**（11 §4.1 目标带 ×1.1–×1.6；5 行总漂移 ×5.2）。两常数入 `js/tuning.js`，游戏与模拟器同读（自检 21）。目标总时长 12–20h（medium），Stage 6 实测为准。
 
@@ -247,7 +247,7 @@ side:      ( hist 历史档案·成就 5×10·剧情 )   ( dash 疫情档案·�
 | 偏离9（Stage 6 实测修正） | requires 拉宽（r1 初版 → r9 终值）：vac 250→**1e5**、pro 2500→**1e8**、knw 7500→**1e11**、int 25000→**1e14**、cc 1e6→**1e11**、mob 2.5e5→**1e9**、sur（r5 新基）→**1e5**；initialStartPoints 0→1（零号病人） | 首跑模拟显示全层 4 分钟内解锁；拉宽后乘数堆叠仍把 row1 压在 ~3–9 分钟（乘数堆叠跨 30 个量级 vs 纸面阶梯 2 个量级），终值由 r2–r9 测量收敛（§11） |
 | 偏离10 | 挑战入场 onEnter 清空己方货币（sur c12/c13、vac c11/c12、int c11） | 防止"带着存量进挑战秒过"（canComplete 读活值）；TMT 惯例入场清场 |
 | 偏离11（Stage 6 实测修正） | **sur 的 base 由「病例」改为「接种者」（player.var.points）**，requires 1e6→1e5 | r3–r4 模拟：row-1 声望按引擎规则清空根货币（`player.points = getStartPoints()`，game.js doReset），sur 建在病例上会随自身清扫饿死；接种者经 vac m1 keep 存活，且与 row1 同货币使监测围堵的行情可读 |
-| 偏离12（Stage 6 实测修正） | 发射链终值重造（tuning.js）：doses `1e7×12^n`、funds `1e5×6^n`、sweeps `10+5n`、cmpReq `50×2.5^n`、**监测期 ladder `600(n+1)+300·n(n+1)/2`s**、发射瞬间 `pressure ≤ 1`、zeroTime 计入窗 `≤0.1`、sur 流调专项成本 `2^x`（原 3^x） | r4–r9 实测：① divide 型抑制永不为零，「按住两年」只能靠把回升速率压小、拉长 ≤0.1 的窗口——成本 3^x 买不起深度；② sur 2^L 等级墙掐断 cmp m4 自动清扫 → pressure 回不到发射窗 → 第 2 印死锁 44h（r4 教训：自动化供应层必须全程可按）；③ 监测期逐发递增把「最后一英里」做成终局主时钟（9 发合计 4.5h 纯监测下限），资源曲线让位于它 |
+| 偏离12（Stage 6 实测修正） | 发射链终值重造（tuning.js）：doses `1e7×12^n`、funds `1e5×6^n→6.3^n`（2026-10-25：cc 修复后 funds 成唯一硬门，§12 #12）、sweeps `10+5n`、cmpReq `50×2.5^n`、**监测期 ladder `600(n+1)+300·n(n+1)/2`s**、发射瞬间 `pressure ≤ 1`、zeroTime 计入窗 `≤0.1`、sur 流调专项成本 `2^x`（原 3^x） | r4–r9 实测：① divide 型抑制永不为零，「按住两年」只能靠把回升速率压小、拉长 ≤0.1 的窗口——成本 3^x 买不起深度；② sur 2^L 等级墙掐断 cmp m4 自动清扫 → pressure 回不到发射窗 → 第 2 印死锁 44h（r4 教训：自动化供应层必须全程可按）；③ 监测期逐发递增把「最后一英里」做成终局主时钟（9 发合计 4.5h 纯监测下限），资源曲线让位于它 |
 
 ## 11. Stage-6 measured retune（权威——实测后填写）
 
@@ -288,6 +288,18 @@ Sim exclusions（lower bound 方向）: 挑战奖励、成就效果（hist 11–
 | 8 | 默认语言为中文 | dash startData `chinesemode: false`（Q7 只定了"双语切换"没定默认；2026-10-25 用户指定默认英文），并把玩家现存档的偏好一次性切英文 | 默认语言也是要问的产品决策；localStorage 按 origin 隔离——同 origin 带查询串刷新可保存档破缓存 |
 | 9 | components.css 改动被 Chrome 启发式缓存吞掉 | index.html 的样式表链接加 `?v=2` 版本参数 | 改 CSS 后要给链接加版本参数，否则验证与玩家都会看到旧样式 |
 
+**第三轮（2026-10-25，玩家存档实测反馈：《新建 文本文档 (2)》卡死 + CX 挑战完成不了，均已活页面验证）**
+
+| # | 缺陷 | 根因 | 修法 |
+|---|---|---|---|
+| 10 | 载入存档后整局静默冻结（timePlayed/root 全停，控制台无报错） | mod.js `pressureRate()` 读 `tmp.cc.points`——引擎 tmp 只缓存层文件定义过的**函数**返回值，cc 层没有 `points()` → 恒 undefined → `.times` 每帧抛错；引擎主循环 `ticking` 标志在异常时永远停在 `true`（game.js interval），一帧抛错 = 永久停摆且首错发生在错误监听挂载前，故"无报错"。模拟器 layerStub 对任意属性返回 Decimal(1)，掩盖了这一类缺陷 | 改读 `player.cc.points`（玩家态恒有 Decimal）；8395 换 `tools/serve.js`（`Cache-Control: no-store`）——python http.server 无缓存头，修复后刷新仍跑旧 mod.js（与 #9 同类，但引擎 loader 加载的 modFiles 无法加 `?v=`，只能从服务器侧解） |
+| 11 | CX（vac）挑战 11/12 完成不了（sur 12、int 11 同病） | 引擎语义：**prestige 挑战层自身会立刻带上一帧缓存判定退出挑战**（doReset→completeChallenge，game.js:216，canComplete 读的是按压前缓存的 false）——目标建立在挑战层自身 prestige 资源上（覆盖率/vac.points、sur.points、int.points）的挑战数学上不可完成：层内资源唯一来源是被禁止的 prestige，被动增长又不存在 | 四挑战加"挑战内被动增长"：vac/sur/int `passiveGeneration()` 各加 `inChallenge` 分支（tuning `CHALLENGE_PASSIVE_GEN 0.1` normal 层 / `_STATIC 0.5` static 层），目标资源层内自爬、达标后点挑战框领取；sur 注意 cmp m4 走 autoPrestige 不能再加 passive 防止终局双计；挑战描述补"别在本层 prestige"提示。sur 11（var.points，低行资源）与 sur 13（pressure，update 自增）本就合法，未动 |
+| 12 | cc 压强除数修复后 pacing 越带（9.29h < 10h 下限） | 修复前模拟器 stub 让 cc 恒为 1，修复后真实 cc 节点数参与压强抑制 → 压强更低 → 资源链更快走完 | `LAUNCH_FUNDS_GROWTH 6→6.3`。两轮试错（DOSES 12→14、ZERO 阶梯 +17%）全部无效后加 cert 发射探针（simulate.js `SIM_CERT_PROBE=1`）实锤：**funds 是 2–9 号印章唯一硬门**（发射瞬间富余 <0.1%），DOSES/ZERO 富余 50×+；单旋钮 6.3 → **10.08h 回带**。无效改动已全部回退 |
+| 13 | （次生）挑战修复后的奖励使真实玩家更快 | 模拟器政策不进挑战（下界语义不变） | 接受：sim 仍为下界；10.08h 为不带挑战奖励的测量值 |
+
+第三轮验证：用户存档载入后循环存活（ticking=false、无 boot 错误、压强恢复爬升）；vac 11 实际完成（覆盖率 91.3% 时点框领取）、vac 12 实际完成（8 秒被动涨至 15.8 万公民 ≥ 1e4）→ `{"11":1,"12":1}` 落入存档；奖励接线核对（cc ×0.9 / vac ×1.25 / var ×1.5 / cert ×0.85）；static 100 PASS/3 WARN/0 FAIL、smoke 0/0 复跑全绿。
+
+
 | # | Symptom | Root cause | Fix |
 |---|---|---|---|
 | （待 Stage 6.5） | | | |
@@ -298,6 +310,6 @@ Final gates: static ___ PASS / ___ WARN / 0 FAIL；i18n ___（T2 无 js/lang/，
 
 - Stage 5 static_checks：**100 PASS / 3 WARN / 0 FAIL**（WARN：N-AUTOWIPE、D-REQRATIO ×1e4、D-REQRATIO ×1——§9.1 均有书面接受）
 - Stage 5.5 smoke：**0 FAIL / 0 WARN**
-- Stage 6 simulate：**14.96h**（`--click 1 --dt 1`；dt 0.5/2 → 12.38/19.74h；下界排除项见 §11）
+- Stage 6 simulate：**10.08h**（2026-10-25 第三轮复测；cc 压强修复前为 14.96h——两次均在带内，见 §12 #12）（`--click 1 --dt 1`；dt 0.5/2 → 12.38/19.74h；下界排除项见 §11）
 - Stage 6.5 browser：**5/5 通过**（§12 实录）
 - 交付物：`index.html` + `js/`（Vue 已本地化）+ `css/` + `design-brief.md` + `README.md` + `tools/`（不入 modFiles）

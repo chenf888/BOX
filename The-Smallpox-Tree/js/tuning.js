@@ -37,11 +37,19 @@ var TUNING = {
 	PRESSURE_SUPPRESS_GROWTH: 2,
 	PRESSURE_SUPPRESS_STEP: 1.25,  // 每级压强回升 ÷STEP          // 压强=0 累计 600 秒 ≈ "连续两年" 游戏叙事
 
+	// ---- 挑战层内被动增长（挑战修复 2026-10-25）----
+	// 引擎语义：prestige 挑战层会立刻用上一帧的缓存判定退出挑战（game.js doReset→completeChallenge），
+	// 所以"目标=挑战层自身 prestige 资源"的挑战（vac 11/12、sur 12、int 11）原本数学上不可完成。
+	// 修法：挑战内该层按 resetGen × 此速率 被动增长，目标资源自己爬升，达标后点挑战框领取。
+	CHALLENGE_PASSIVE_GEN: 0.1,        // normal 层（vac/int：resetGain 随进度放大）
+	CHALLENGE_PASSIVE_GEN_STATIC: 0.5, // static 层（sur：resetGain 恒 1，×0.5 → 40 次围堵 ≈ 80 秒）
+
 	// ---- M19 认证发射 (cert 层)：第 n 枚印章的逐项消耗 ----
 	LAUNCH_DOSES: 1e7,
 	LAUNCH_DOSES_GROWTH: 12,            // ×10^(n-1)（Stage-6 实测下调，见 brief §11）
 	LAUNCH_FUNDS: 1e5,
-	LAUNCH_FUNDS_GROWTH: 6,            // ×10^(n-1)（Stage-6 实测下调）
+	LAUNCH_FUNDS_GROWTH: 6.3,           // 6→6.3（2026-10-25：cc 压强修复后 9.29h 低于带宽；
+	                                    //  探针实锤 funds 是 2-9 号印章唯一硬门，DOSES/ZERO 均富余 50×）
 	LAUNCH_SWEEPS: 10,            // +(n-1)*5（线性：静态地板按 ×2 增长，指数价位会不可达, F14/F15 教训）
 	LAUNCH_SWEEP_STEP: 5,
 	LAUNCH_CMP_REQ: 50,           // 首次发射所需战役进度

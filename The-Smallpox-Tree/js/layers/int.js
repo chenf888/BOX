@@ -48,8 +48,13 @@ addLayer("int", {
 		{ key: "i", description() { return zh("I: Pledge funds", "I：划拨一笔协作资金") },
 		  onPress() { if (canReset(this.layer)) doReset(this.layer) } },
 	],
-	// cmp m8 打包
-	passiveGeneration() { return hasMilestone("cmp", 8) ? 1 : 0 },
+	// cmp m8 打包 + 挑战 11 内被动增长（挑战修复 2026-10-25）：
+	// int 11 目标是本层 prestige 资源（2500 资金），prestige 本层会带缓存判定立刻退出挑战 → 层内自己爬
+	passiveGeneration() {
+		if (hasMilestone("cmp", 8)) return 1
+		if (inChallenge("int", 11)) return T("CHALLENGE_PASSIVE_GEN")
+		return 0
+	},
 	resetsNothing() { return hasMilestone("cmp", 8) },
 	autoUpgrade() { return hasMilestone("cmp", 8) },
 	doReset(resettingLayer) {
@@ -224,7 +229,7 @@ addLayer("int", {
 	},
 	challenges: {
 		11: { name() { return zh("Funds Frozen", "资金冻结") },
-			challengeDescription() { return zh("Donors walk away (funds ÷5). Reach 2,500 funds anyway.", "捐助者拂袖而去（资金 ÷5）。在此状态下达到 2,500 资金。") },
+			challengeDescription() { return zh("Donors walk away (funds ÷5). Reach 2,500 funds anyway.<br><i>Funds trickle in on their own — click this challenge to claim it. Prestiging here aborts the run!</i>", "捐助者拂袖而去（资金 ÷5）。在此状态下达到 2,500 资金。<br><i>资金会自行流入——达标后点击本挑战领取。在此时退回（prestige）会直接中止挑战！</i>") },
 			onEnter() { player.int.points = new Decimal(0) },
 			canComplete() { return player.int.points.gte(2500) },
 			rewardDescription() { return zh("Certification launches cost 15% less", "认证发射消耗 −15%") },

@@ -50,6 +50,13 @@ addLayer("sur", {
 		  onPress() { if (canReset(this.layer)) doReset(this.layer) } },
 	],
 	// cmp m4 支柱打包（静态层自动化 = resetsNothing + autoPrestige，作者 #26）
+	// 挑战 12 内被动增长（挑战修复 2026-10-25）：sur 12 目标是本层 prestige 资源（40 次围堵），
+	// 而 prestige 本层会带缓存判定立刻退出挑战 → 只能层内自己爬（static resetGain 恒 1，用高速率常量）。
+	// 注意 cmp m4 的自动化走 autoPrestige（每帧自动按），这里不要加 passive 分支，否则终局双倍计入。
+	passiveGeneration() {
+		if (inChallenge("sur", 12)) return T("CHALLENGE_PASSIVE_GEN_STATIC")
+		return 0
+	},
 	resetsNothing() { return hasMilestone("cmp", 4) },
 	autoPrestige() { return hasMilestone("cmp", 4) },
 	autoUpgrade() { return hasMilestone("cmp", 4) },
@@ -298,7 +305,7 @@ addLayer("sur", {
 			rewardDescription() { return zh("Containment operations cost half", "围堵行动费用减半") },
 			unlocked() { return hasMilestone("sur", 1) } },
 		12: { name() { return zh("The Missing Reports", "漏报之祸") },
-			challengeDescription() { return zh("Passive variolation stops. Reach 40 operations anyway.", "被动接种停止。在此状态下达到 40 次围堵行动。") },
+			challengeDescription() { return zh("Passive variolation stops. Reach 40 operations anyway.<br><i>Operations accrue on their own — click this challenge to claim it. Prestiging here aborts the run!</i>", "被动接种停止。在此状态下达到 40 次围堵行动。<br><i>围堵行动会自行累积——达标后点击本挑战领取。在此时退回（prestige）会直接中止挑战！</i>") },
 			onEnter() { player.sur.points = new Decimal(0); player.sur.bounty = new Decimal(0) },
 			canComplete() { return player.sur.points.gte(40) },
 			rewardDescription() { return zh("Variolated ×1.5; bounty ×2", "接种者 ×1.5；奖励金 ×2") },

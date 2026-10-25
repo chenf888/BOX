@@ -68,8 +68,12 @@ addLayer("vac", {
 		  onPress() { if (canReset(this.layer)) doReset(this.layer) } },
 	],
 	// cmp m8 打包（resetsNothing + autoUpgrade + passiveGen）：终局全自动
+	// 挑战内被动增长：引擎里 prestige 本层会带上一帧缓存判定立刻退出挑战（game.js doReset→completeChallenge），
+	// 免疫公民/覆盖率只能靠层内自己爬（挑战修复 2026-10-25，速率 T("CHALLENGE_PASSIVE_GEN")）
 	passiveGeneration() {
-		return hasMilestone("int", 3) || hasMilestone("cmp", 8) ? 1 : 0
+		if (hasMilestone("int", 3) || hasMilestone("cmp", 8)) return 1
+		if (inChallenge("vac", 11) || inChallenge("vac", 12)) return T("CHALLENGE_PASSIVE_GEN")
+		return 0
 	},
 	resetsNothing() { return hasMilestone("cmp", 8) },
 	autoUpgrade() { return hasMilestone("cmp", 8) },
@@ -254,13 +258,13 @@ addLayer("vac", {
 	},
 	challenges: {
 		11: { name() { return zh("Cold Chain Broken", "冷链中断") },
-			challengeDescription() { return zh("Vaccine doses melt away (production ÷10). Reach 50% coverage anyway.", "疫苗剂量大量失效（产出 ÷10）。在此状态下达到 50% 覆盖率。") },
+			challengeDescription() { return zh("Vaccine doses melt away (production ÷10). Reach 50% coverage anyway.<br><i>Coverage keeps climbing on its own — click this challenge to claim it. Prestiging here aborts the run!</i>", "疫苗剂量大量失效（产出 ÷10）。在此状态下达到 50% 覆盖率。<br><i>覆盖率会自行爬升——达标后点击本挑战领取。在此时退回（prestige）会直接中止挑战！</i>") },
 			onEnter() { player.vac.points = new Decimal(0) },
 			canComplete() { return covPct().gte(50) },
 			rewardDescription() { return zh("Cold-chain nodes cost 10% less", "冷链节点费用 −10%") },
 			unlocked() { return hasMilestone("vac", 2) } },
 		12: { name() { return zh("Crisis of Trust", "信任危机") },
-			challengeDescription() { return zh("Rumors halve vaccination (immune citizens ÷2). Prove them wrong.", "谣言使接种减半（免疫公民 ÷2）。用事实回击。") },
+			challengeDescription() { return zh("Rumors halve vaccination (immune citizens ÷2). Prove them wrong.<br><i>Citizens keep coming in on their own — click this challenge to claim it. Prestiging here aborts the run!</i>", "谣言使接种减半（免疫公民 ÷2）。用事实回击。<br><i>免疫公民会自行增长——达标后点击本挑战领取。在此时退回（prestige）会直接中止挑战！</i>") },
 			onEnter() { player.vac.points = new Decimal(0) },
 			canComplete() { return player.vac.points.gte(1e4) },
 			rewardDescription() { return zh("Immune citizens ×1.25, forever", "免疫公民永久 ×1.25") },
