@@ -60,7 +60,7 @@ You can look in the [documentation](docs/!general-info.md) for more information 
 
 ## Verification（Stage 5–6.5 闸门记录）
 
-- static_checks：102 PASS / 3 WARN（均在 design-brief §9.1 有书面接受理由）/ 0 FAIL（2026-10-25 第三轮复测：+D-TMPPOINTS/D-CHALOWNRES 两条新护栏）
+- static_checks：104 PASS / 3 WARN（均在 design-brief §9.1 有书面接受理由）/ 0 FAIL（2026-10-25 第三轮复测：+D-TMPPOINTS/D-CHALOWNRES，同日再 +D-CUSTOMNEXTAT/D-DIFFNUM 四条新护栏，本作均为阴性）
 - smoke：0 FAIL / 0 WARN
 - simulate（`--click 1 --dt 1`）：**14.96h** 触达 endgame（medium 带 10–30h；dt 0.5→12.38h、dt 2→19.74h）
 - 浏览器（Stage 6.5）：boot 无错、12 层页签全渲染、四类声望各一次、升级+buyable 各购一次、

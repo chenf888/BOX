@@ -299,16 +299,9 @@ Sim exclusions（lower bound 方向）: 挑战奖励、成就效果（hist 11–
 
 第三轮验证：用户存档载入后循环存活（ticking=false、无 boot 错误、压强恢复爬升）；vac 11 实际完成（覆盖率 91.3% 时点框领取）、vac 12 实际完成（8 秒被动涨至 15.8 万公民 ≥ 1e4）→ `{"11":1,"12":1}` 落入存档；奖励接线核对（cc ×0.9 / vac ×1.25 / var ×1.5 / cert ×0.85）；static 100 PASS/3 WARN/0 FAIL、smoke 0/0 复跑全绿。
 
-
-| # | Symptom | Root cause | Fix |
-|---|---|---|---|
-| （待 Stage 6.5） | | | |
-
-Final gates: static ___ PASS / ___ WARN / 0 FAIL；i18n ___（T2 无 js/lang/，预期 silent pass）；smoke ___；measured ___ h。
-
 ## 13. Final gates（Stage 7 交付线，全部实测）
 
-- Stage 5 static_checks：**100 PASS / 3 WARN / 0 FAIL**（WARN：N-AUTOWIPE、D-REQRATIO ×1e4、D-REQRATIO ×1——§9.1 均有书面接受）
+- Stage 5 static_checks：**104 PASS / 3 WARN / 0 FAIL**（WARN：N-AUTOWIPE、D-REQRATIO ×1e4、D-REQRATIO ×1——§9.1 均有书面接受；2026-10-25 复跑口径：第三轮 +D-TMPPOINTS/D-CHALOWNRES 两护栏，同日再 +D-CUSTOMNEXTAT/D-DIFFNUM 两护栏，PASS 数随之 100→102→104，本作均为阴性）
 - Stage 5.5 smoke：**0 FAIL / 0 WARN**
 - Stage 6 simulate：**10.08h**（2026-10-25 第三轮复测；cc 压强修复前为 14.96h——两次均在带内，见 §12 #12）（`--click 1 --dt 1`；dt 0.5/2 → 12.38/19.74h；下界排除项见 §11）
 - Stage 6.5 browser：**5/5 通过**（§12 实录）
