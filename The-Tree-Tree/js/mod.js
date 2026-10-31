@@ -11,15 +11,22 @@ let modInfo = {
 	offlineLimit: 1,  // In hours
 }
 
-// ---- T2 language flag (P17): default English; persisted OUTSIDE the save (design/15 §2) ----
-window.chinesemode = false
+// ---- T2 language flag (P17): default English (Q7). Single source of truth is
+// options.chinesemode — persisted with the options save (save.js stores options separately
+// and merges them over getStartOptions; the legacy localStorage key is honored by the
+// getStartOptions override in tree.js, which runs AFTER options.js — this file runs at
+// index.html line 21, BEFORE options.js, and must not touch any engine symbol).
+// Every tt() site reads window.chinesemode, a LIVE VIEW of the option, so the Options-page
+// toggle flips all text in place — no reload.
 try {
-    window.chinesemode = localStorage.getItem(modInfo.id + ".lang") === "zh"
-} catch (e) {}
+    Object.defineProperty(window, "chinesemode", {
+        get() { try { return options.chinesemode === true } catch (e) { return false } },   // options is in TDZ until utils/options.js runs
+        configurable: true,
+    })
+} catch (e) { window.chinesemode = false }
 function toggleLang() {
-    window.chinesemode = !window.chinesemode
-    try { localStorage.setItem(modInfo.id + ".lang", window.chinesemode ? "zh" : "en") } catch (e) {}
-    location.reload()
+    options.chinesemode = !options.chinesemode
+    try { localStorage.setItem(modInfo.id + ".lang", options.chinesemode ? "zh" : "en") } catch (e) {}
 }
 
 // Set your version in num and name

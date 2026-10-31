@@ -10,7 +10,7 @@ addLayer("bark", {
     position: 0,
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
 
-    baseResource: "branches",
+    baseResource() { return tt("branches", "树枝") },
     baseAmount() { return player.branch.points },
     requires: new Decimal(25000),
     type: "static",
@@ -39,7 +39,7 @@ addLayer("bark", {
     branches: ["branch"],
 
     hotkeys: [
-        { key: "k", description: tt("k: grow a layer of Bark", "k：长出一层树皮"),
+        { key: "k", description() { return tt("k: grow a layer of Bark", "k：长出一层树皮") },
           onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
 
@@ -63,9 +63,10 @@ addLayer("bark", {
     ],
     microtabs: {
         stuff: {
-            "Floors": { content: [["blank", "10px"], "upgrades"], buttonStyle() { return { "border-color": "#b08d6e" } } },
-            "Milestones": { content: [["blank", "10px"], "milestones"], buttonStyle() { return { "border-color": "#b08d6e" } } },
+            "Floors": { tabLabel() { return tt("Floors", "树皮层") },  content: [["blank", "10px"], "upgrades"], buttonStyle() { return { "border-color": "#b08d6e" } } },
+            "Milestones": { tabLabel() { return tt("Milestones", "里程碑") },  content: [["blank", "10px"], "milestones"], buttonStyle() { return { "border-color": "#b08d6e" } } },
             "Formulae": {
+                tabLabel() { return tt("Formulae", "公式") },
                 unlocked() { return hasUpgrade("bark", 15) },
                 content: [["blank", "10px"], ["display-text", function () {
                     return tt("Each Bark floor costs branches × base^(floors^1). Web boosts DIVIDE the cost.", "每层树皮价格 = 树枝 × 基数^(层数^1)。乘区之网会「除以」价格（越强越便宜）。")
@@ -80,43 +81,43 @@ addLayer("bark", {
     },
 
     upgrades: {
-        11: { title: tt("Outer Skin", "外皮"), description: tt("Leaf growth ×1.5.", "树叶生长 ×1.5。"), cost: new Decimal(1) },
-        12: { title: tt("Thick Ridges", "厚脊"), description: tt("The Wood softcap starts 10× later (visible on the tree tab).", "木头软帽起点 10×之后（树页顶部可见）。"), cost: new Decimal(2),
+        11: { title() { return tt("Outer Skin", "外皮") }, description() { return tt("Leaf growth ×1.5.", "树叶生长 ×1.5。") }, cost: new Decimal(1) },
+        12: { title() { return tt("Thick Ridges", "厚脊") }, description() { return tt("The Wood softcap starts 10× later (visible on the tree tab).", "木头软帽起点 10×之后（树页顶部可见）。") }, cost: new Decimal(2),
               unlocked() { return hasUpgrade(this.layer, 11) } },
-        13: { title: tt("Windbreak", "防风林"), description: tt("Branch gain ×1.5.", "树枝收益 ×1.5。"), cost: new Decimal(3),
+        13: { title() { return tt("Windbreak", "防风林") }, description() { return tt("Branch gain ×1.5.", "树枝收益 ×1.5。") }, cost: new Decimal(3),
               unlocked() { return hasUpgrade(this.layer, 11) } },
-        14: { title: tt("Root Guard", "护根"), description: tt("Root gain ×1.5.", "根须收益 ×1.5。"), cost: new Decimal(4),
+        14: { title() { return tt("Root Guard", "护根") }, description() { return tt("Root gain ×1.5.", "根须收益 ×1.5。") }, cost: new Decimal(4),
               unlocked() { return hasUpgrade(this.layer, 12) } },
-        15: { title: tt("Read the Rings", "读年轮"), description: tt("Reveal the Formulae tab.", "显现「公式」页签。"), cost: new Decimal(5),
+        15: { title() { return tt("Read the Rings", "读年轮") }, description() { return tt("Reveal the Formulae tab.", "显现「公式」页签。") }, cost: new Decimal(5),
               unlocked() { return hasUpgrade(this.layer, 13) } },
-        21: { title: tt("Fire Scar", "火疤"), description: tt("Wood gain ×1.5.", "木头收益 ×1.5。"), cost: new Decimal(6),
+        21: { title() { return tt("Fire Scar", "火疤") }, description() { return tt("Wood gain ×1.5.", "木头收益 ×1.5。") }, cost: new Decimal(6),
               unlocked() { return hasUpgrade(this.layer, 14) } },
-        22: { title: tt("Insulation", "隔热层"), description: tt("Leaf growth ×2.", "树叶生长 ×2。"), cost: new Decimal(8),
+        22: { title() { return tt("Insulation", "隔热层") }, description() { return tt("Leaf growth ×2.", "树叶生长 ×2。") }, cost: new Decimal(8),
               unlocked() { return hasUpgrade(this.layer, 15) } },
-        23: { title: tt("Layered Plates", "层叠甲片"), description: tt("Bark floors cost 20% less.", "树皮层价格 −20%。"), cost: new Decimal(10),
+        23: { title() { return tt("Layered Plates", "层叠甲片") }, description() { return tt("Bark floors cost 20% less.", "树皮层价格 −20%。") }, cost: new Decimal(10),
               unlocked() { return hasUpgrade(this.layer, 21) } },
-        24: { title: tt("Bough Brace", "枝撑"), description: tt("Branch gain ×1.5.", "树枝收益 ×1.5。"), cost: new Decimal(13),
+        24: { title() { return tt("Bough Brace", "枝撑") }, description() { return tt("Branch gain ×1.5.", "树枝收益 ×1.5。") }, cost: new Decimal(13),
               unlocked() { return hasUpgrade(this.layer, 22) } },
-        25: { title: tt("Root Plate", "根甲"), description: tt("Root gain ×1.5.", "根须收益 ×1.5。"), cost: new Decimal(17),
+        25: { title() { return tt("Root Plate", "根甲") }, description() { return tt("Root gain ×1.5.", "根须收益 ×1.5。") }, cost: new Decimal(17),
               unlocked() { return hasUpgrade(this.layer, 23) } },
     },
 
     milestones: {
-        0: { requirementDescription: tt("3 Bark floors", "3 层树皮"), effectDescription: tt("Unlock buy-max for Bark; leaf growth ×1.5", "解锁树皮「买满」；树叶生长 ×1.5"),
+        0: { requirementDescription() { return tt("3 Bark floors", "3 层树皮") }, effectDescription() { return tt("Unlock buy-max for Bark; leaf growth ×1.5", "解锁树皮「买满」；树叶生长 ×1.5") },
              done() { return player.bark.best.gte(3) } },
-        1: { requirementDescription: tt("3 Bark floors", "3 层树皮"), effectDescription: tt("Wood gain ×1.5", "木头收益 ×1.5"),
+        1: { requirementDescription() { return tt("3 Bark floors", "3 层树皮") }, effectDescription() { return tt("Wood gain ×1.5", "木头收益 ×1.5") },
              unlocked() { return hasMilestone(this.layer, 0) },
              done() { return player.bark.best.gte(5) } },
-        2: { requirementDescription: tt("3 Bark floors", "3 层树皮"), effectDescription: tt("Branch & Root gain ×1.5", "树枝与根须收益 ×1.5"),
+        2: { requirementDescription() { return tt("3 Bark floors", "3 层树皮") }, effectDescription() { return tt("Branch & Root gain ×1.5", "树枝与根须收益 ×1.5") },
              unlocked() { return hasMilestone(this.layer, 1) },
              done() { return player.bark.best.gte(8) } },
-        3: { requirementDescription: tt("3 Bark floors", "3 层树皮"), effectDescription: tt("Growth Rings (Wood buyable) are bought to max automatically", "「年轮」（木头可购项）自动买满"),
+        3: { requirementDescription() { return tt("3 Bark floors", "3 层树皮") }, effectDescription() { return tt("Growth Rings (Wood buyable) are bought to max automatically", "「年轮」（木头可购项）自动买满") },
              unlocked() { return hasMilestone(this.layer, 2) },
              done() { return player.bark.best.gte(11) } },
-        4: { requirementDescription: tt("3 Bark floors", "3 层树皮"), effectDescription: tt("Wood gain ×2", "木头收益 ×2"),
+        4: { requirementDescription() { return tt("3 Bark floors", "3 层树皮") }, effectDescription() { return tt("Wood gain ×2", "木头收益 ×2") },
              unlocked() { return hasMilestone(this.layer, 3) },
              done() { return player.bark.best.gte(14) } },
-        5: { requirementDescription: tt("3 Bark floors", "3 层树皮"), effectDescription: tt("All gains ×1.5", "所有收益 ×1.5"),
+        5: { requirementDescription() { return tt("3 Bark floors", "3 层树皮") }, effectDescription() { return tt("All gains ×1.5", "所有收益 ×1.5") },
              unlocked() { return hasMilestone(this.layer, 4) },
              done() { return player.bark.best.gte(18) } },
     },
@@ -136,7 +137,7 @@ addLayer("blossom", {
     position: 1,
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
 
-    baseResource: "roots",
+    baseResource() { return tt("roots", "根须") },
     baseAmount() { return player.root.points },
     requires: new Decimal(30000),
     type: "static",
@@ -181,7 +182,7 @@ addLayer("blossom", {
     branches: ["root"],
 
     hotkeys: [
-        { key: "f", description: tt("f: bloom", "f：开花"),
+        { key: "f", description() { return tt("f: bloom", "f：开花") },
           onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
 
@@ -205,9 +206,10 @@ addLayer("blossom", {
     ],
     microtabs: {
         stuff: {
-            "Blooms": { content: [["blank", "10px"], "upgrades"], buttonStyle() { return { "border-color": "#f2a6c2" } } },
-            "Milestones": { content: [["blank", "10px"], "milestones"], buttonStyle() { return { "border-color": "#f2a6c2" } } },
+            "Blooms": { tabLabel() { return tt("Blooms", "花朵") },  content: [["blank", "10px"], "upgrades"], buttonStyle() { return { "border-color": "#f2a6c2" } } },
+            "Milestones": { tabLabel() { return tt("Milestones", "里程碑") },  content: [["blank", "10px"], "milestones"], buttonStyle() { return { "border-color": "#f2a6c2" } } },
             "Formulae": {
+                tabLabel() { return tt("Formulae", "公式") },
                 unlocked() { return hasUpgrade("blossom", 15) },
                 content: [["blank", "10px"], ["display-text", function () {
                     return tt("Each bloom costs roots × base^(blooms^1). Every bloom feeds leaves, wood, branches and roots at once.", "每朵花价格 = 根须 × 基数^(朵数^1)。每朵花同时滋养树叶、木头、树枝与根须。")
@@ -222,43 +224,43 @@ addLayer("blossom", {
     },
 
     upgrades: {
-        11: { title: tt("First Bloom", "初绽"), description: tt("Leaf growth ×1.5.", "树叶生长 ×1.5。"), cost: new Decimal(1) },
-        12: { title: tt("One Bloom Per Bough", "一枝一花"), description: tt("Wood gain ×1.5.", "木头收益 ×1.5。"), cost: new Decimal(2),
+        11: { title() { return tt("First Bloom", "初绽") }, description() { return tt("Leaf growth ×1.5.", "树叶生长 ×1.5。") }, cost: new Decimal(1) },
+        12: { title() { return tt("One Bloom Per Bough", "一枝一花") }, description() { return tt("Wood gain ×1.5.", "木头收益 ×1.5。") }, cost: new Decimal(2),
               unlocked() { return hasUpgrade(this.layer, 11) } },
-        13: { title: tt("Petal Drift", "落英"), description: tt("Branch gain ×1.5.", "树枝收益 ×1.5。"), cost: new Decimal(3),
+        13: { title() { return tt("Petal Drift", "落英") }, description() { return tt("Branch gain ×1.5.", "树枝收益 ×1.5。") }, cost: new Decimal(3),
               unlocked() { return hasUpgrade(this.layer, 11) } },
-        14: { title: tt("Root Feed", "落花护根"), description: tt("Root gain ×1.5.", "根须收益 ×1.5。"), cost: new Decimal(4),
+        14: { title() { return tt("Root Feed", "落花护根") }, description() { return tt("Root gain ×1.5.", "根须收益 ×1.5。") }, cost: new Decimal(4),
               unlocked() { return hasUpgrade(this.layer, 12) } },
-        15: { title: tt("Read the Season", "识季节"), description: tt("Reveal the Formulae tab.", "显现「公式」页签。"), cost: new Decimal(5),
+        15: { title() { return tt("Read the Season", "识季节") }, description() { return tt("Reveal the Formulae tab.", "显现「公式」页签。") }, cost: new Decimal(5),
               unlocked() { return hasUpgrade(this.layer, 13) } },
-        21: { title: tt("Full Bloom", "盛放"), description: tt("All bloom effects ×1.5.", "所有花朵效果 ×1.5。"), cost: new Decimal(6),
+        21: { title() { return tt("Full Bloom", "盛放") }, description() { return tt("All bloom effects ×1.5.", "所有花朵效果 ×1.5。") }, cost: new Decimal(6),
               unlocked() { return hasUpgrade(this.layer, 14) } },
-        22: { title: tt("Fruit Set", "坐果"), description: tt("Wood gain ×2.", "木头收益 ×2。"), cost: new Decimal(7),
+        22: { title() { return tt("Fruit Set", "坐果") }, description() { return tt("Wood gain ×2.", "木头收益 ×2。") }, cost: new Decimal(7),
               unlocked() { return hasUpgrade(this.layer, 15) } },
-        23: { title: tt("Nectar Trail", "蜜径"), description: tt("Leaf growth ×1.5.", "树叶生长 ×1.5。"), cost: new Decimal(9),
+        23: { title() { return tt("Nectar Trail", "蜜径") }, description() { return tt("Leaf growth ×1.5.", "树叶生长 ×1.5。") }, cost: new Decimal(9),
               unlocked() { return hasUpgrade(this.layer, 21) } },
-        24: { title: tt("Sap Rises", "树液上行"), description: tt("Sap gain ×1.5.", "树液收益 ×1.5。"), cost: new Decimal(11),
+        24: { title() { return tt("Sap Rises", "树液上行") }, description() { return tt("Sap gain ×1.5.", "树液收益 ×1.5。") }, cost: new Decimal(11),
               unlocked() { return hasUpgrade(this.layer, 22) } },
-        25: { title: tt("Pollination", "授粉"), description: tt("Sap gain ×1.5.", "树液收益 ×1.5。"), cost: new Decimal(13),
+        25: { title() { return tt("Pollination", "授粉") }, description() { return tt("Sap gain ×1.5.", "树液收益 ×1.5。") }, cost: new Decimal(13),
               unlocked() { return hasUpgrade(this.layer, 23) } },
     },
 
     milestones: {
-        0: { requirementDescription: tt("2 Blossoms", "2 朵花"), effectDescription: tt("Leaf growth ×1.5", "树叶生长 ×1.5"),
+        0: { requirementDescription() { return tt("2 Blossoms", "2 朵花") }, effectDescription() { return tt("Leaf growth ×1.5", "树叶生长 ×1.5") },
              done() { return player.blossom.best.gte(2) } },
-        1: { requirementDescription: tt("2 Blossoms", "2 朵花"), effectDescription: tt("Branch & Root prestiges no longer reset what is below; unlock buy-max", "枝与根的声望不再重置下层；解锁「买满」"),
+        1: { requirementDescription() { return tt("2 Blossoms", "2 朵花") }, effectDescription() { return tt("Branch & Root prestiges no longer reset what is below; unlock buy-max", "枝与根的声望不再重置下层；解锁「买满」") },
              unlocked() { return hasMilestone(this.layer, 0) },
              done() { return player.blossom.best.gte(4) } },
-        2: { requirementDescription: tt("2 Blossoms", "2 朵花"), effectDescription: tt("All bloom effects ×1.5", "所有花朵效果 ×1.5"),
+        2: { requirementDescription() { return tt("2 Blossoms", "2 朵花") }, effectDescription() { return tt("All bloom effects ×1.5", "所有花朵效果 ×1.5") },
              unlocked() { return hasMilestone(this.layer, 1) },
              done() { return player.blossom.best.gte(6) } },
-        3: { requirementDescription: tt("2 Blossoms", "2 朵花"), effectDescription: tt("Wood gain ×2", "木头收益 ×2"),
+        3: { requirementDescription() { return tt("2 Blossoms", "2 朵花") }, effectDescription() { return tt("Wood gain ×2", "木头收益 ×2") },
              unlocked() { return hasMilestone(this.layer, 2) },
              done() { return player.blossom.best.gte(8) } },
-        4: { requirementDescription: tt("2 Blossoms", "2 朵花"), effectDescription: tt("Branch & Root press themselves automatically", "枝与根自动声望"),
+        4: { requirementDescription() { return tt("2 Blossoms", "2 朵花") }, effectDescription() { return tt("Branch & Root press themselves automatically", "枝与根自动声望") },
              unlocked() { return hasMilestone(this.layer, 3) },
              done() { return player.blossom.best.gte(11) } },
-        5: { requirementDescription: tt("2 Blossoms", "2 朵花"), effectDescription: tt("Leaf growth formula ^1.03", "树叶生长公式 ^1.03"),
+        5: { requirementDescription() { return tt("2 Blossoms", "2 朵花") }, effectDescription() { return tt("Leaf growth formula ^1.03", "树叶生长公式 ^1.03") },
              unlocked() { return hasMilestone(this.layer, 4) },
              done() { return player.blossom.best.gte(14) } },
     },
@@ -274,7 +276,7 @@ addLayer("sap", {
     position: 2,
     startData() { return { unlocked: false, points: new Decimal(0), best: new Decimal(0), total: new Decimal(0) } },
 
-    baseResource: tt("the weaker of Branches/Roots", "树枝/根须中较弱的一方"),
+    baseResource() { return tt("the weaker of Branches/Roots", "树枝/根须中较弱的一方") },
     baseAmount() { return player.branch.points.min(player.root.points) },
     requires: new Decimal(3000000),
     type: "custom",
@@ -324,7 +326,7 @@ addLayer("sap", {
     branches: ["branch", "root"],   // P53 convergent: fed by BOTH arms
 
     hotkeys: [
-        { key: "s", description: tt("s: draw Sap", "s：采集树液"),
+        { key: "s", description() { return tt("s: draw Sap", "s：采集树液") },
           onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
 
@@ -341,7 +343,7 @@ addLayer("sap", {
         mdisp("sap"),
         "prestige-button",
         ["display-text", function () {
-            return tt("Drawn from the weaker arm: ", "取自较弱的一臂：") + format(player.branch.points.min(player.root.points)) + tt(" (min of branches/roots). Best: ", "（枝/根较弱值）。最多：") + format(player.sap.best)
+            return tt("Drawn from the weaker arm: ", "取自较弱的一臂：") + format(player.branch.points.min(player.root.points)) + tt(" (min of branches/roots). Best: ", "（枝/根较弱值）。最多：") + format(player.sap.best) + tt(". Requires: ", "。需求：") + format(tmp.sap.requires) + tt(" of the weaker arm", "（较弱一臂）")
         }],
         ["display-text", function () {
             return tt("Sap softcap starts at " + format(layers.sap.sapCapStart()) + " — visible, always.", "树液软帽始于 " + format(layers.sap.sapCapStart()) + " ——始终可见。")
@@ -351,9 +353,10 @@ addLayer("sap", {
     ],
     microtabs: {
         stuff: {
-            "Shop": { content: [["blank", "10px"], "buyables", "upgrades"], buttonStyle() { return { "border-color": "#e8d174" } } },
-            "Milestones": { content: [["blank", "10px"], "milestones"], buttonStyle() { return { "border-color": "#e8d174" } } },
+            "Shop": { tabLabel() { return tt("Shop", "商店") },  content: [["blank", "10px"], "buyables", "upgrades"], buttonStyle() { return { "border-color": "#e8d174" } } },
+            "Milestones": { tabLabel() { return tt("Milestones", "里程碑") },  content: [["blank", "10px"], "milestones"], buttonStyle() { return { "border-color": "#e8d174" } } },
             "Formulae": {
+                tabLabel() { return tt("Formulae", "公式") },
                 unlocked() { return hasUpgrade("sap", 15) },
                 content: [["blank", "10px"], ["display-text", function () {
                     return tt("Sap = (log10(min(branch,root)) − 3.4)^1.2 + 1, × web, double-softcapped. The tree's blood concentrates its weakest limb.", "树液 = (log10(min(枝,根)) − 3.4)^1.2 + 1，×乘区，双重软帽。树的血液浓缩于最弱的一肢。")
@@ -368,55 +371,55 @@ addLayer("sap", {
     },
 
     upgrades: {
-        11: { title: tt("Sap Flow", "树液流动"), description: tt("Branch gain formula ^1.1.", "树枝收益公式 ^1.1。"), cost: new Decimal(5) },
-        12: { title: tt("Root Pressure", "根压"), description: tt("Root gain formula ^1.1.", "根须收益公式 ^1.1。"), cost: new Decimal(17),
+        11: { title() { return tt("Sap Flow", "树液流动") }, description() { return tt("Branch gain formula ^1.1.", "树枝收益公式 ^1.1。") }, cost: new Decimal(5) },
+        12: { title() { return tt("Root Pressure", "根压") }, description() { return tt("Root gain formula ^1.1.", "根须收益公式 ^1.1。") }, cost: new Decimal(17),
               unlocked() { return hasUpgrade(this.layer, 11) } },
-        13: { title: tt("Sweet Reserve", "糖分储备"), description: tt("Leaf growth ×3.", "树叶生长 ×3。"), cost: new Decimal(80),
+        13: { title() { return tt("Sweet Reserve", "糖分储备") }, description() { return tt("Leaf growth ×3.", "树叶生长 ×3。") }, cost: new Decimal(80),
               unlocked() { return hasUpgrade(this.layer, 11) } },
-        14: { title: tt("Blossom Feed", "花之滋养"), description: tt("Leaf growth is boosted by your best Blossoms.", "树叶生长受花最多值加成。"), cost: new Decimal(400),
+        14: { title() { return tt("Blossom Feed", "花之滋养") }, description() { return tt("Leaf growth is boosted by your best Blossoms.", "树叶生长受花最多值加成。") }, cost: new Decimal(400),
               unlocked() { return hasUpgrade(this.layer, 12) },
               effect() { return player.blossom.best.add(1).pow(0.1) },
               effectDisplay() { return format(this.effect()) + "x" } },
-        15: { title: tt("Read the Flow", "读懂流动"), description: tt("Reveal the Formulae tab.", "显现「公式」页签。"), cost: new Decimal(2e3),
+        15: { title() { return tt("Read the Flow", "读懂流动") }, description() { return tt("Reveal the Formulae tab.", "显现「公式」页签。") }, cost: new Decimal(2e3),
               unlocked() { return hasUpgrade(this.layer, 13) } },
-        21: { title: tt("Second Tap", "第二采口"), description: tt("Sap gain ×1.5.", "树液收益 ×1.5。"), cost: new Decimal(1e4),
+        21: { title() { return tt("Second Tap", "第二采口") }, description() { return tt("Sap gain ×1.5.", "树液收益 ×1.5。") }, cost: new Decimal(1e4),
               unlocked() { return hasUpgrade(this.layer, 14) } },
-        22: { title: tt("Boiled Down", "熬浓"), description: tt("Wood gain ×2.", "木头收益 ×2。"), cost: new Decimal(8e4),
+        22: { title() { return tt("Boiled Down", "熬浓") }, description() { return tt("Wood gain ×2.", "木头收益 ×2。") }, cost: new Decimal(8e4),
               unlocked() { return hasUpgrade(this.layer, 15) } },
-        23: { title: tt("Syrup Glaze", "糖浆封层"), description: tt("Bark floors cost 15% less.", "树皮层价格 −15%。"), cost: new Decimal(5e5),
+        23: { title() { return tt("Syrup Glaze", "糖浆封层") }, description() { return tt("Bark floors cost 15% less.", "树皮层价格 −15%。") }, cost: new Decimal(5e5),
               unlocked() { return hasUpgrade(this.layer, 21) } },
-        24: { title: tt("Sap-Honey", "蜜露"), description: tt("Blossoms cost 15% less.", "开花价格 −15%。"), cost: new Decimal(5e6),
+        24: { title() { return tt("Sap-Honey", "蜜露") }, description() { return tt("Blossoms cost 15% less.", "开花价格 −15%。") }, cost: new Decimal(5e6),
               unlocked() { return hasUpgrade(this.layer, 22) } },
-        25: { title: tt("Amber", "琥珀"), description: tt("Leaf growth ×2.", "树叶生长 ×2。"), cost: new Decimal(5e7),
+        25: { title() { return tt("Amber", "琥珀") }, description() { return tt("Leaf growth ×2.", "树叶生长 ×2。") }, cost: new Decimal(5e7),
               unlocked() { return hasUpgrade(this.layer, 23) } },
-        31: { title: tt("Canopy Feed", "灌冠"), description: tt("Canopy gain ×1.5.", "冠层收益 ×1.5。"), cost: new Decimal(1e9),
+        31: { title() { return tt("Canopy Feed", "灌冠") }, description() { return tt("Canopy gain ×1.5.", "冠层收益 ×1.5。") }, cost: new Decimal(1e9),
               unlocked() { return hasUpgrade(this.layer, 24) } },
-        32: { title: tt("Seed Feed", "灌籽"), description: tt("Seed gain ×1.5.", "种子收益 ×1.5。"), cost: new Decimal(1e10),
+        32: { title() { return tt("Seed Feed", "灌籽") }, description() { return tt("Seed gain ×1.5.", "种子收益 ×1.5。") }, cost: new Decimal(1e10),
               unlocked() { return hasUpgrade(this.layer, 25) } },
-        33: { title: tt("Old Sugar", "陈糖"), description: tt("Sap gain ×1.5.", "树液收益 ×1.5。"), cost: new Decimal(1e11),
+        33: { title() { return tt("Old Sugar", "陈糖") }, description() { return tt("Sap gain ×1.5.", "树液收益 ×1.5。") }, cost: new Decimal(1e11),
               unlocked() { return hasUpgrade(this.layer, 31) } },
     },
 
     milestones: {
-        0: { requirementDescription: tt("10 Sap", "10 树液"), effectDescription: tt("Sap gain ×1.5", "树液收益 ×1.5"),
+        0: { requirementDescription() { return tt("10 Sap", "10 树液") }, effectDescription() { return tt("Sap gain ×1.5", "树液收益 ×1.5") },
              done() { return player.sap.best.gte(10) } },
-        1: { requirementDescription: tt("25 Sap", "25 树液"), effectDescription: tt("Branches & Roots grow passively over time", "枝与根随时间被动生长"),
+        1: { requirementDescription() { return tt("25 Sap", "25 树液") }, effectDescription() { return tt("Branches & Roots grow passively over time", "枝与根随时间被动生长") },
              unlocked() { return hasMilestone(this.layer, 0) },
              done() { return player.sap.best.gte(25) } },
-        2: { requirementDescription: tt("60 Sap", "60 树液"), effectDescription: tt("Leaf growth ×1.5; Sap flows in on its own", "树叶生长 ×1.5；树液自行流入"),
+        2: { requirementDescription() { return tt("60 Sap", "60 树液") }, effectDescription() { return tt("Leaf growth ×1.5; Sap flows in on its own", "树叶生长 ×1.5；树液自行流入") },
              unlocked() { return hasMilestone(this.layer, 1) },
              done() { return player.sap.best.gte(60) } },
-        3: { requirementDescription: tt("150 Sap", "150 树液"), effectDescription: tt("Sap softcap starts 10× later (visible)", "树液软帽起点 10×之后（可见）"),
+        3: { requirementDescription() { return tt("150 Sap", "150 树液") }, effectDescription() { return tt("Sap softcap starts 10× later (visible)", "树液软帽起点 10×之后（可见）") },
              unlocked() { return hasMilestone(this.layer, 2) },
              done() { return player.sap.best.gte(150) } },
-        4: { requirementDescription: tt("400 Sap", "400 树液"), effectDescription: tt("Branch & Root upgrades bought automatically; reveal Canopy & Seed", "枝与根升级自动购买；显现「冠」与「籽」"),
+        4: { requirementDescription() { return tt("400 Sap", "400 树液") }, effectDescription() { return tt("Branch & Root upgrades bought automatically; reveal Canopy & Seed", "枝与根升级自动购买；显现「冠」与「籽」") },
              unlocked() { return hasMilestone(this.layer, 3) },
              done() { return player.sap.best.gte(400) },
              onComplete() { player.canopy.unlocked = true; player.seed.unlocked = true } },
     },
 
     buyables: {
-        11: { title: tt("Concentrate", "浓缩汁"), description: tt("Leaf growth formula ^+0.01 per level. The grove will want this.", "每级树叶生长公式指数 +0.01。树林会需要它。"),
+        11: { title() { return tt("Concentrate", "浓缩汁") }, description() { return tt("Leaf growth formula ^+0.01 per level. The grove will want this.", "每级树叶生长公式指数 +0.01。树林会需要它。") },
               cost(x) { return new Decimal(TUNING.BUYABLE.sapConc.start).times(Decimal.pow(TUNING.BUYABLE.sapConc.base, x)) },
               effect(x) { return x.mul(0.01).add(1) },
               display() { return tt("Level: ", "等级：") + formatWhole(getBuyableAmount(this.layer, this.id)) + tt("<br>Leaf formula ^", "<br>树叶公式 ^") + format(buyableEffect(this.layer, this.id)) + tt("<br>Cost: ", "<br>价格：") + format(tmp[this.layer].buyables[this.id].cost) + tt(" Sap", " 树液") },
