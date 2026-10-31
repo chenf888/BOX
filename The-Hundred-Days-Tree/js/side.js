@@ -21,6 +21,20 @@ function oathStory() {
     return seg[Math.min(9, Math.floor(d / 10))]
 }
 
+// 课程时间表（从 tuning.PERIODS 唯一源渲染；当前时段高亮；📍=需签到；单栏适配窄分屏）
+function timetableHTML() {
+    var fmt = function (m) { var h = Math.floor(m / 60), mm = Math.floor(m % 60); return (h < 10 ? "0" : "") + h + ":" + (mm < 10 ? "0" : "") + mm }
+    var html = "<table style='font-size:11px;line-height:1.5;border-spacing:0 1px'>"
+    for (var i = 0; i < PERIODS.length; i++) {
+        var p = PERIODS[i]
+        var cur = currentPeriod().id === p.id
+        var st = cur ? "color:#e8590c;font-weight:bold" : "opacity:.85"
+        html += "<tr><td style='" + st + ";padding-right:7px;white-space:nowrap'>" + fmt(p.s) + "–" + fmt(p.e) + "</td>" +
+            "<td style='" + st + ";white-space:nowrap'>" + (cur ? "▶ " : "") + p.name + (p.sign ? " <span style='opacity:.55'>📍</span>" : "") + "</td></tr>"
+    }
+    return html + "</table>"
+}
+
 addLayer("oath", {
     name: "誓师",
     symbol: "誓",
@@ -54,6 +68,10 @@ addLayer("oath", {
                 "签到 " + (player.signToday || 0) + " / " + signN + "　" + line + "<br>" +
                 "答对 " + (player.correctToday || 0) + " 题　错题入本 " + (player.wrongLog || []).length + " 道<br>" +
                 (player.sleepToday ? "🌙 今晚已就寝" : "尚未就寝")
+        }],
+        "blank",
+        ["display-text", function () {
+            return "<b>课程时间表</b><span style='opacity:.55'>　📍 需签到</span><br>" + timetableHTML()
         }],
         "blank",
         ["display-text", function () { return "<span style='opacity:.75'>" + oathStory() + "</span>" }],
