@@ -4,7 +4,7 @@
 // gainMult() line here (P10 / anti-pattern A7).
 // ============================================================
 addLayer("s", {
-    name: "the Sieve",
+    name() { return L("筛子", "the Sieve") },
     symbol: "P",
     position: 0,
     startData() { return {
@@ -279,27 +279,27 @@ addLayer("s", {
     },
 
     hotkeys: [
-        { key: "s", description: L("S: 筛分素数", "S: Sieve for primes"),
+        { key: "s", description() { return L("S: 筛分素数", "S: Sieve for primes") },
           onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
 
     milestones: {
-        0: { requirementDescription: L("拥有 25 素数（历史最高）", "Reach 25 primes (best)"),
+        0: { requirementDescription() { return L("拥有 25 素数（历史最高）", "Reach 25 primes (best)") },
              effectDescription() { return L("素数获取 ×2", "Prime gain ×2") },
              done() { return player.s.best.gte(25) } },
-        1: { requirementDescription: L("拥有 100 素数", "Reach 100 primes"),
+        1: { requirementDescription() { return L("拥有 100 素数", "Reach 100 primes") },
              effectDescription() { return L("滤网冷却 ×0.75", "Filter cooldowns ×0.75") },
              unlocked() { return hasMilestone("s", 0) },
              done() { return player.s.best.gte(100) } },
-        2: { requirementDescription: L("拥有 1,000 素数", "Reach 1,000 primes"),
+        2: { requirementDescription() { return L("拥有 1,000 素数", "Reach 1,000 primes") },
              effectDescription() { return L("素数获取 ×3", "Prime gain ×3") },
              unlocked() { return hasMilestone("s", 1) },
              done() { return player.s.best.gte(1000) } },
-        3: { requirementDescription: L("拥有 10,000 素数", "Reach 10,000 primes"),
+        3: { requirementDescription() { return L("拥有 10,000 素数", "Reach 10,000 primes") },
              effectDescription() { return L("解锁 buyable 12（筛网分辨率）", "Unlock buyable 12 (Sieve resolution)") },
              unlocked() { return hasMilestone("s", 2) },
              done() { return player.s.best.gte(1e4) } },
-        4: { requirementDescription: L("拥有 1e5 素数", "Reach 1e5 primes"),
+        4: { requirementDescription() { return L("拥有 1e5 素数", "Reach 1e5 primes") },
              effectDescription() { return L("行 1+ 重置不再清除筛层升级与里程碑", "Row-1+ resets keep sieve upgrades & milestones") },
              unlocked() { return hasMilestone("s", 3) },
              done() { return player.s.best.gte(1e5) } },

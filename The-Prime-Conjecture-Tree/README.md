@@ -13,7 +13,7 @@
 **Saving:** autosaves to localStorage under the save key derived from `modInfo.id = "the-prime-conjecture-tree-54nlco"`.
 Never change the id — changing it erases every save.
 
-**One-line design:** 用筛子筛出素数，证明一条条定理，收编数论先贤的祝福，最终挑战黎曼 ζ 的非平凡零点——把数论史玩成一棵声望树。Bilingual (EN default, 中文 toggle on the tree tab). Endgame: pin 10 non-trivial zeros back to the critical line = prove the Riemann Hypothesis.
+**One-line design:** 用筛子筛出素数，证明一条条定理，收编数论先贤的祝福，最终挑战黎曼 ζ 的非平凡零点——把数论史玩成一棵声望树。Bilingual (EN default, 中文 toggle in the Options screen). Endgame: pin 10 non-trivial zeros back to the critical line = prove the Riemann Hypothesis.
 
 **Content totals** (counted from the frozen build by addLayer capture — not brace-counted):
 

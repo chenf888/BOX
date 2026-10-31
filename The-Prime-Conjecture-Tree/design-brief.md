@@ -272,6 +272,8 @@ Numbers noticed while playing enter HERE first → `js/tuning.js` → sim re-run
 | 5 | 化妆品：EN 模式显示 `(best 3）`（全角括号） | layer_s.js:381 收尾括号硬编码在 L() 之外 | 改为 `L("）", ")")` |
 | 6 | 自动化浏览器坐标/节点点击两条输入路径都误触别的元素（story/stats） | IAB 后端坐标映射与失效引用问题（elementFromPoint 命中目标正确、处理器为引擎标准 Vue 绑定）——**非游戏缺陷** | 页内 `elementFromPoint` + 原生 dispatch 原子化验证交互；真实声望/召唤/攻击/小游戏全部走通 |
 | 7 | **prob 层永不可达**：全库无任何代码写 `player.prob.unlocked = true`——M2 中枢（朗道 27 升级 + 4 挑战 + 里程碑链）在真实游玩中打不开（模拟器不查 unlocked 标志所以数字照算，静态规则也扫不到"没有写入者"这种缺失） | type none 层引擎从不自动解锁（game.js:198 只在 doReset 里翻转；type none 跳过 doReset）；zeta/story/casino 都有自己的 F28 写入器，**唯独 prob 漏了** | `layer_row2.js` update() 补写入器（numbers ≥ `TUNING.probUnlockNumbers` 5e7，brief §4 既定门槛）+ tooltip/tooltipLocked（原会显示 "Reach 0 undefined"）。实测：数字增长到门槛即解锁，挑战进入/退出/手性 ^0.8（9.1e15→5.85e12 精确）全通 ✓ |
+| 9 | **双语静态冻结**：成就 name/tooltip 等用静态 `name: L(cn,en)` 形态——mod 加载时 player 未定义，L 守卫返回英文并**永久冻结**（247 处：成就 50×2、里程碑/挑战/升级描述、层名 11 处纯英文） | 上轮 172 处 smoke 修复的正则漏掉了行内多字段形态（成就单行两字段）与层 name | `tools/fix_static_l.py` 批量转 `field() { return L(...) }`（tmp 每 tick 重调→切换即时生效），11 个层名补中文。实测：切换后成就/升级/层名双向实时 ✓ |
+| 10 | 语言切换按钮从树页迁到设置页（玩家要求，同款 `.opt` 切换键风格） | — | `technical/systemComponents.js` options 表新增 `Language / 语言: {{player.chinesemode?"中文":"English"}}` 行；tree.js 移除树页按钮。实测：设置内可见/可点、树页无残留 ✓ |
 | 8 | 胜利画面测试的教训：把 zeros 拉到 10 触发 zeta 里程碑链，级联 wipe 下行层的 unlocked 标志——**还原 zeros 不还原 unlocked**（doReset 的不可逆性）。此为游戏设计使然，非缺陷；但测试后必须重新注入存档再继续 | — | 测试顺序纪律：破坏性状态实验放最后，或实验后重新注入 |
 
 交互实测账（zeta 存档注入 + 逐字段核对）：筛子声望 2→40 primes（best/unlocked 记账、numbers 归零）✓；pairs 声望 +919 splits、素数 140.7M→30k 级联 wipes ✓；oracle 召唤 draws 17→18、9 槽祝福 ✓；boss 攻击 HP 1,000,000→495,444（perHit 504,555 = primes^0.5×mults）✓；存档→重载 splits/twins/upgrades/u25/语言逐字段精确 ✓。

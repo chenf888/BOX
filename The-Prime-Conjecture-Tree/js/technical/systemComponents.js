@@ -173,6 +173,7 @@ var systemComponents = {
 				</tr> 
 			<tr>
                 <td><button class="opt" onclick="toggleOpt('hideMilestonePopups')">Show Milestone Popups: {{ formatOption(!options.hideMilestonePopups) }}</button></td>
+                <td><button class="opt" onclick="toggleLang()">Language / 语言: {{ player.chinesemode?"中文":"English" }}</button></td>
             </tr>
         </table>`
     },

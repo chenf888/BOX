@@ -9,7 +9,7 @@
 // pi — Prime Counting π(x)
 // ------------------------------------------------------------
 addLayer("pi", {
-    name: "Prime Counting",
+    name() { return L("素数计数", "Prime Counting") },
     symbol: "π",
     position: 0,
     startData() { return {
@@ -74,7 +74,7 @@ addLayer("pi", {
     gainExp() { return new Decimal(1) },
 
     hotkeys: [
-        { key: "p", description: L("P: 重置素数为计数", "P: Reset primes for counts"),
+        { key: "p", description() { return L("P: 重置素数为计数", "P: Reset primes for counts") },
           onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
 
@@ -85,34 +85,34 @@ addLayer("pi", {
     autoUpgrade() { return hasMilestone("zeta", 1) },
 
     milestones: {
-        0: { requirementDescription: L("拥有 500 计数（最高）", "Reach 500 counts (best)"),
+        0: { requirementDescription() { return L("拥有 500 计数（最高）", "Reach 500 counts (best)") },
              effectDescription() { return L("筛分不再清空你的数", "Sieving no longer wipes your numbers") },
              done() { return player.pi.best.gte(500) } },
-        1: { requirementDescription: L("拥有 1,000 计数", "Reach 1,000 counts"),
+        1: { requirementDescription() { return L("拥有 1,000 计数", "Reach 1,000 counts") },
              effectDescription() { return L("计数获取 ×2", "Count gain ×2") },
              unlocked() { return hasMilestone("pi", 0) },
              done() { return player.pi.best.gte(1000) } },
-        2: { requirementDescription: L("拥有 4,000 计数", "Reach 4,000 counts"),
+        2: { requirementDescription() { return L("拥有 4,000 计数", "Reach 4,000 counts") },
              effectDescription() { return L("素数随时间滴流（passive generation）", "Primes trickle in over time") },
              unlocked() { return hasMilestone("pi", 1) },
              done() { return player.pi.best.gte(4000) } },
-        3: { requirementDescription: L("拥有 20,000 计数", "Reach 20,000 counts"),
+        3: { requirementDescription() { return L("拥有 20,000 计数", "Reach 20,000 counts") },
              effectDescription() { return L("计数获取 ×3", "Count gain ×3") },
              unlocked() { return hasMilestone("pi", 2) },
              done() { return player.pi.best.gte(2e4) } },
-        4: { requirementDescription: L("拥有 1e5 计数", "Reach 1e5 counts"),
+        4: { requirementDescription() { return L("拥有 1e5 计数", "Reach 1e5 counts") },
              effectDescription() { return L("解锁 π 的第三排升级", "Unlock π's third upgrade row") },
              unlocked() { return hasMilestone("pi", 3) },
              done() { return player.pi.best.gte(1e5) } },
-        5: { requirementDescription: L("拥有 1e6 计数", "Reach 1e6 counts"),
+        5: { requirementDescription() { return L("拥有 1e6 计数", "Reach 1e6 counts") },
              effectDescription() { return L("素数获取 ×2", "Prime gain ×2") },
              unlocked() { return hasMilestone("pi", 4) },
              done() { return player.pi.best.gte(1e6) } },
-        6: { requirementDescription: L("拥有 1e7 计数", "Reach 1e7 counts"),
+        6: { requirementDescription() { return L("拥有 1e7 计数", "Reach 1e7 counts") },
              effectDescription() { return L("计数获取 ×5", "Count gain ×5") },
              unlocked() { return hasMilestone("pi", 5) },
              done() { return player.pi.best.gte(1e7) } },
-        7: { requirementDescription: L("拥有 1e8 计数", "Reach 1e8 counts"),
+        7: { requirementDescription() { return L("拥有 1e8 计数", "Reach 1e8 counts") },
              effectDescription() { return L("行 2+ 重置保留 π 的升级与里程碑", "Row-2+ resets keep π upgrades & milestones") },
              unlocked() { return hasMilestone("pi", 6) },
              done() { return player.pi.best.gte(1e8) } },
@@ -283,7 +283,7 @@ addLayer("pi", {
 // fac — Factorization (算术基本定理), with the Ω secondary currency (M5)
 // ------------------------------------------------------------
 addLayer("fac", {
-    name: "Factorization",
+    name() { return L("因数分解", "Factorization") },
     symbol: "Ω",
     position: 1,
     startData() { return {
@@ -349,7 +349,7 @@ addLayer("fac", {
     },
 
     hotkeys: [
-        { key: "f", description: L("F: 重置素数为因数", "F: Reset primes for factors"),
+        { key: "f", description() { return L("F: 重置素数为因数", "F: Reset primes for factors") },
           onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
 
@@ -360,34 +360,34 @@ addLayer("fac", {
     autoUpgrade() { return hasMilestone("zeta", 2) },
 
     milestones: {
-        0: { requirementDescription: L("拥有 1,000 因数（最高）", "Reach 1,000 factors (best)"),
+        0: { requirementDescription() { return L("拥有 1,000 因数（最高）", "Reach 1,000 factors (best)") },
              effectDescription() { return L("Ω 产出 ×2", "Ω production ×2") },
              done() { return player.fac.best.gte(1000) } },
-        1: { requirementDescription: L("拥有 8,000 因数", "Reach 8,000 factors"),
+        1: { requirementDescription() { return L("拥有 8,000 因数", "Reach 8,000 factors") },
              effectDescription() { return L("自动筛分（auto-prestige 素数层）", "Auto-sieve (auto-prestige the Sieve)") },
              unlocked() { return hasMilestone("fac", 0) },
              done() { return player.fac.best.gte(8000) } },
-        2: { requirementDescription: L("拥有 2e4 因数", "Reach 2e4 factors"),
+        2: { requirementDescription() { return L("拥有 2e4 因数", "Reach 2e4 factors") },
              effectDescription() { return L("Ω 产出 ×2", "Ω production ×2") },
              unlocked() { return hasMilestone("fac", 1) },
              done() { return player.fac.best.gte(2e4) } },
-        3: { requirementDescription: L("拥有 1e5 因数", "Reach 1e5 factors"),
+        3: { requirementDescription() { return L("拥有 1e5 因数", "Reach 1e5 factors") },
              effectDescription() { return L("因数获取 ×3", "Factor gain ×3") },
              unlocked() { return hasMilestone("fac", 2) },
              done() { return player.fac.best.gte(1e5) } },
-        4: { requirementDescription: L("拥有 1e6 因数", "Reach 1e6 factors"),
+        4: { requirementDescription() { return L("拥有 1e6 因数", "Reach 1e6 factors") },
              effectDescription() { return L("解锁第二个 Ω 商店", "Unlock the second Ω shop") },
              unlocked() { return hasMilestone("fac", 3) },
              done() { return player.fac.best.gte(1e6) } },
-        5: { requirementDescription: L("拥有 1e7 因数", "Reach 1e7 factors"),
+        5: { requirementDescription() { return L("拥有 1e7 因数", "Reach 1e7 factors") },
              effectDescription() { return L("因数获取 ×5", "Factor gain ×5") },
              unlocked() { return hasMilestone("fac", 4) },
              done() { return player.fac.best.gte(1e7) } },
-        6: { requirementDescription: L("拥有 1e8 因数", "Reach 1e8 factors"),
+        6: { requirementDescription() { return L("拥有 1e8 因数", "Reach 1e8 factors") },
              effectDescription() { return L("行 2+ 重置保留因式分解层", "Row-2+ resets keep this layer's progress") },
              unlocked() { return hasMilestone("fac", 5) },
              done() { return player.fac.best.gte(1e8) } },
-        7: { requirementDescription: L("拥有 1e9 因数", "Reach 1e9 factors"),
+        7: { requirementDescription() { return L("拥有 1e9 因数", "Reach 1e9 factors") },
              effectDescription() { return L("Ω 产出 ×3", "Ω production ×3") },
              unlocked() { return hasMilestone("fac", 6) },
              done() { return player.fac.best.gte(1e9) } },
@@ -568,7 +568,7 @@ addLayer("fac", {
 // gap — Prime Gaps (素数间隔)
 // ------------------------------------------------------------
 addLayer("gap", {
-    name: "Prime Gaps",
+    name() { return L("素数间隔", "Prime Gaps") },
     symbol: "…",
     position: 2,
     startData() { return {
@@ -620,7 +620,7 @@ addLayer("gap", {
     gainExp() { return new Decimal(1) },
 
     hotkeys: [
-        { key: "g", description: L("G: 重置素数为间隔", "G: Reset primes for gaps"),
+        { key: "g", description() { return L("G: 重置素数为间隔", "G: Reset primes for gaps") },
           onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
 
@@ -630,26 +630,26 @@ addLayer("gap", {
     autoPrestige() { return hasMilestone("oracle", 2) },
 
     milestones: {
-        0: { requirementDescription: L("拥有 500 间隔（最高）", "Reach 500 gaps (best)"),
+        0: { requirementDescription() { return L("拥有 500 间隔（最高）", "Reach 500 gaps (best)") },
              effectDescription() { return L("间隔获取 ×2", "Gap gain ×2") },
              done() { return player.gap.best.gte(500) } },
-        1: { requirementDescription: L("拥有 2,000 间隔", "Reach 2,000 gaps"),
+        1: { requirementDescription() { return L("拥有 2,000 间隔", "Reach 2,000 gaps") },
              effectDescription() { return L("解锁 buyable：测隙尺", "Unlock the gap gauge buyable") },
              unlocked() { return hasMilestone("gap", 0) },
              done() { return player.gap.best.gte(2000) } },
-        2: { requirementDescription: L("拥有 1e4 间隔", "Reach 1e4 gaps"),
+        2: { requirementDescription() { return L("拥有 1e4 间隔", "Reach 1e4 gaps") },
              effectDescription() { return L("间隔获取 ×3", "Gap gain ×3") },
              unlocked() { return hasMilestone("gap", 1) },
              done() { return player.gap.best.gte(1e4) } },
-        3: { requirementDescription: L("拥有 5e4 间隔", "Reach 5e4 gaps"),
+        3: { requirementDescription() { return L("拥有 5e4 间隔", "Reach 5e4 gaps") },
              effectDescription() { return L("素的滴流加速（passive ×2）", "Prime trickle speeds up (passive ×2)") },
              unlocked() { return hasMilestone("gap", 2) },
              done() { return player.gap.best.gte(5e4) } },
-        4: { requirementDescription: L("拥有 2.5e5 间隔", "Reach 2.5e5 gaps"),
+        4: { requirementDescription() { return L("拥有 2.5e5 间隔", "Reach 2.5e5 gaps") },
              effectDescription() { return L("行 2+ 重置保留间隔层", "Row-2+ resets keep this layer") },
              unlocked() { return hasMilestone("gap", 3) },
              done() { return player.gap.best.gte(2.5e5) } },
-        5: { requirementDescription: L("拥有 1e6 间隔", "Reach 1e6 gaps"),
+        5: { requirementDescription() { return L("拥有 1e6 间隔", "Reach 1e6 gaps") },
              effectDescription() { return L("间隔获取 ×5", "Gap gain ×5") },
              unlocked() { return hasMilestone("gap", 4) },
              done() { return player.gap.best.gte(1e6) } },
@@ -808,7 +808,7 @@ addLayer("gap", {
 // lem — Lemma Library (引理库, M8 shop: sells K4/K5 meta-effects)
 // ------------------------------------------------------------
 addLayer("lem", {
-    name: "Lemma Library",
+    name() { return L("引理书库", "Lemma Library") },
     symbol: "λ",
     position: 3,
     startData() { return {
@@ -843,7 +843,7 @@ addLayer("lem", {
     gainExp() { return new Decimal(1) },
 
     hotkeys: [
-        { key: "l", description: L("L: 重置素数为引理", "L: Reset primes for lemmas"),
+        { key: "l", description() { return L("L: 重置素数为引理", "L: Reset primes for lemmas") },
           onPress() { if (canReset(this.layer)) doReset(this.layer) } },
     ],
 
@@ -852,22 +852,22 @@ addLayer("lem", {
     autoUpgrade() { return hasMilestone("zeta", 3) },
 
     milestones: {
-        0: { requirementDescription: L("拥有 100 引理（最高）", "Reach 100 lemmas (best)"),
+        0: { requirementDescription() { return L("拥有 100 引理（最高）", "Reach 100 lemmas (best)") },
              effectDescription() { return L("引理获取 ×2", "Lemma gain ×2") },
              done() { return player.lem.best.gte(100) } },
-        1: { requirementDescription: L("拥有 1,000 引理", "Reach 1,000 lemmas"),
+        1: { requirementDescription() { return L("拥有 1,000 引理", "Reach 1,000 lemmas") },
              effectDescription() { return L("解锁第二排引理", "Unlock the second lemma row") },
              unlocked() { return hasMilestone("lem", 0) },
              done() { return player.lem.best.gte(1000) } },
-        2: { requirementDescription: L("拥有 1e4 引理", "Reach 1e4 lemmas"),
+        2: { requirementDescription() { return L("拥有 1e4 引理", "Reach 1e4 lemmas") },
              effectDescription() { return L("引理获取 ×2", "Lemma gain ×2") },
              unlocked() { return hasMilestone("lem", 1) },
              done() { return player.lem.best.gte(1e4) } },
-        3: { requirementDescription: L("拥有 1e5 引理", "Reach 1e5 lemmas"),
+        3: { requirementDescription() { return L("拥有 1e5 引理", "Reach 1e5 lemmas") },
              effectDescription() { return L("引理获取 ×3", "Lemma gain ×3") },
              unlocked() { return hasMilestone("lem", 2) },
              done() { return player.lem.best.gte(1e5) } },
-        4: { requirementDescription: L("拥有 1e6 引理", "Reach 1e6 lemmas"),
+        4: { requirementDescription() { return L("拥有 1e6 引理", "Reach 1e6 lemmas") },
              effectDescription() { return L("行 2+ 重置保留引理库", "Row-2+ resets keep the library") },
              unlocked() { return hasMilestone("lem", 3) },
              done() { return player.lem.best.gte(1e6) } },
