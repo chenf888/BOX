@@ -80,6 +80,9 @@
   .t-terms   {--ac:#6FD1C3;--bg1:#0F282B;--bg2:#0A1B1D;--glow:rgba(111,209,195,.14);--edge:rgba(111,209,195,.22)}
   .t-nebula  {--ac:#82ABF0;--bg1:#122136;--bg2:#0A1526;--glow:rgba(130,171,240,.16);--edge:rgba(130,171,240,.22)}
   .t-truth   {--ac:#A09AF0;--bg1:#1C1840;--bg2:#131030;--glow:rgba(160,154,240,.16);--edge:rgba(160,154,240,.22)}
+  .t-tree    {--ac:#46A87D;--bg1:#10281F;--bg2:#081A13;--glow:rgba(70,168,125,.15);--edge:rgba(70,168,125,.22)}
+  .t-typhoon {--ac:#55C8D8;--bg1:#0F262B;--bg2:#0A1A1F;--glow:rgba(85,200,216,.16);--edge:rgba(85,200,216,.22)}
+  .t-prime   {--ac:#C86BD0;--bg1:#2B1233;--bg2:#1D0C22;--glow:rgba(200,107,208,.16);--edge:rgba(200,107,208,.22)}
   .t-smallpox{--ac:#B1A5C9;--bg1:#241E36;--bg2:#191426;--glow:rgba(177,165,201,.14);--edge:rgba(177,165,201,.22)}
   .t-ties    {--ac:#C9BFAE;--bg1:#2C2822;--bg2:#1E1B16;--glow:rgba(201,191,174,.13);--edge:rgba(201,191,174,.2)}
   .t-true    {--ac:#ECECF1;--bg1:#19191E;--bg2:#0F0F13;--glow:rgba(236,236,241,.08);--edge:rgba(236,236,241,.12)}
@@ -119,10 +122,13 @@
     <a class="nv t-yeast"    href="#yeast"><span class="z">酵母</span><span class="e">Yeast</span></a>
     <a class="nv t-myc"      href="#mycelium"><span class="z">菌丝</span><span class="e">Mycelium</span></a>
     <a class="nv t-llm"      href="#large-model"><span class="z">大模型</span><span class="e">LLM</span></a>
+    <a class="nv t-tree"     href="#tree-tree"><span class="z">树之树</span><span class="e">Tree Tree</span></a>
     <a class="nv t-terms"    href="#solar-terms"><span class="z">节气</span><span class="e">Solar Terms</span></a>
+    <a class="nv t-typhoon"  href="#typhoon"><span class="z">台风</span><span class="e">Typhoon</span></a>
     <a class="nv t-nebula"   href="#galaxy"><span class="z">星云</span><span class="e">Nebula</span></a>
     <a class="nv t-truth"    href="#truth-tower"><span class="z">真理</span><span class="e">Truth</span></a>
     <a class="nv t-smallpox" href="#smallpox"><span class="z">天花</span><span class="e">Smallpox</span></a>
+    <a class="nv t-prime"    href="#prime-conjecture"><span class="z">素数</span><span class="e">Primes</span></a>
     <a class="nv t-ties"     href="#ties"><span class="z">交情</span><span class="e">Ties</span></a>
     <a class="nv t-true"     href="#true-color"><span class="z">真彩</span><span class="e">True Color</span></a>
     <button class="lang" id="langbtn" type="button" aria-label="切换语言 Switch language"><span class="z">EN</span><span class="e">中文</span></button>
@@ -135,7 +141,7 @@
       <h1><span class="z">盒中树</span><span class="e">The Box of Trees</span></h1>
       <p class="lead"><span class="z">BOX 是一只装树的盒子：里面收着 chenf888 用 The Modding Tree 引擎自制的增量放置游戏，以后还会长出新树。每棵树有一种专属颜色，色带连成一条色谱长卷——认准一条，点进去就能玩。</span><span class="e">BOX is a box that holds trees: incremental games grown by chenf888 on The Modding Tree engine, with more sprouting all the time. Every tree has a color of its own, and the bands join into one long spectrum. Pick a strip, click, and play.</span></p>
       <div class="pal" aria-hidden="true">
-        <i class="t-broken"></i><i class="t-hundred"></i><i class="t-ninth"></i><i class="t-braille"></i><i class="t-yeast"></i><i class="t-myc"></i><i class="t-llm"></i><i class="t-terms"></i><i class="t-nebula"></i><i class="t-truth"></i><i class="t-smallpox"></i><i class="t-ties"></i><i class="t-true"></i>
+        <i class="t-broken"></i><i class="t-hundred"></i><i class="t-ninth"></i><i class="t-braille"></i><i class="t-yeast"></i><i class="t-myc"></i><i class="t-llm"></i><i class="t-tree"></i><i class="t-terms"></i><i class="t-typhoon"></i><i class="t-nebula"></i><i class="t-truth"></i><i class="t-smallpox"></i><i class="t-prime"></i><i class="t-ties"></i><i class="t-true"></i>
       </div>
     </div>
   </header>
@@ -231,6 +237,19 @@
     </div>
   </a>
 
+  <a class="band t-tree" id="tree-tree" href="/BOX/The-Tree-Tree/">
+    <div class="wrap">
+      <span class="glyph" aria-hidden="true">
+        <svg viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M36 64 V34"/><path d="M36 34 L19 19"/><path d="M36 34 L53 19"/><path d="M36 34 L36 18"/></g><g fill="currentColor"><circle cx="19" cy="19" r="3.5"/><circle cx="53" cy="19" r="3.5"/><circle cx="36" cy="14" r="3.5"/></g></svg>
+      </span>
+      <span class="body">
+        <span class="tt"><span class="z">The Tree Tree</span><span class="e">The Tree Tree</span></span>
+        <span class="intro"><span class="z">你自己就是一棵树，树形图即这棵树：叶子长成木，木长成枝与根，树皮、花、树液、树冠——最后把一片林种成世界之树。</span><span class="e">You are a tree, and the tree diagram IS the tree: grow leaves into wood, wood into branches and roots, mature into bark, blossom and sap, seed a canopy — then plant the grove until the World Tree itself is grown.</span></span>
+      </span>
+      <span class="dir">The-Tree-Tree/</span>
+    </div>
+  </a>
+
   <a class="band t-terms" id="solar-terms" href="/BOX/The-Solar-Terms-Tree/">
     <div class="wrap">
       <span class="glyph" aria-hidden="true">
@@ -257,6 +276,19 @@
     </div>
   </a>
 
+  <a class="band t-typhoon" id="typhoon" href="/BOX/The-Typhoon-Tree/">
+    <div class="wrap">
+      <span class="glyph" aria-hidden="true">
+        <svg viewBox="0 0 72 72"><g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M36 12 A24 24 0 0 1 60 36"/><path d="M36 60 A24 24 0 0 1 12 36"/></g><circle cx="36" cy="36" r="5.5" fill="currentColor"/><circle cx="60" cy="36" r="2.5" fill="currentColor"/><circle cx="12" cy="36" r="2.5" fill="currentColor"/></svg>
+      </span>
+      <span class="body">
+        <span class="tt"><span class="z">台风树</span> <span class="en">The Typhoon Tree</span><span class="e">The Typhoon Tree</span></span>
+        <span class="intro"><span class="z">从暖海上一缕水汽开始，把一次热带扰动喂成超强台风，最后在巅峰时刻亲手送它登陆。</span><span class="e">From a wisp of water vapor over warm seas, feed a tropical disturbance into a super typhoon — then guide it to landfall at its peak.</span></span>
+      </span>
+      <span class="dir">The-Typhoon-Tree/</span>
+    </div>
+  </a>
+
   <a class="band t-truth" id="truth-tower" href="/BOX/The-Truth-Tower/">
     <div class="wrap">
       <span class="glyph" aria-hidden="true">
@@ -280,6 +312,19 @@
         <span class="intro"><span class="z">从 1979-10-25 天花绝迹日讲起：病例、疫苗、监测到根除认证的流行病之树。</span><span class="e">It begins on 1979-10-25, the day smallpox was declared eradicated: cases, vaccines, surveillance — the road to a certified end.</span></span>
       </span>
       <span class="dir">The-Smallpox-Tree/</span>
+    </div>
+  </a>
+
+  <a class="band t-prime" id="prime-conjecture" href="/BOX/The-Prime-Conjecture-Tree/">
+    <div class="wrap">
+      <span class="glyph" aria-hidden="true">
+        <svg viewBox="0 0 72 72"><g fill="currentColor"><circle cx="16" cy="16" r="3.2"/><circle cx="56" cy="16" r="3.2"/><circle cx="16" cy="56" r="3.2"/><circle cx="56" cy="56" r="3.2"/></g><g fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="36" cy="16" r="3.2"/><circle cx="16" cy="36" r="3.2"/><circle cx="56" cy="36" r="3.2"/><circle cx="36" cy="56" r="3.2"/></g><line x1="9" y1="63" x2="63" y2="9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      </span>
+      <span class="body">
+        <span class="tt"><span class="z">推理素树</span> <span class="en">The Prime Conjecture Tree</span><span class="e">The Prime Conjecture Tree</span></span>
+        <span class="intro"><span class="z">用筛子筛出素数，证明一条条定理，收编数论先贤的祝福，最终挑战黎曼 ζ 的非平凡零点——把数论史玩成一棵声望树。</span><span class="e">Sieve out the primes, prove theorem after theorem, collect the blessings of the greats of number theory — then take on the non-trivial zeros of the Riemann zeta. Number theory’s history, played as a prestige tree.</span></span>
+      </span>
+      <span class="dir">The-Prime-Conjecture-Tree/</span>
     </div>
   </a>
 
