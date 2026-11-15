@@ -69,7 +69,7 @@ addLayer("a", {
         // row 1 — the first pond
         11: { name() { return lg("第一圈", "First Circle") },
               done() { return player.ri.total.gte(1) },
-              tooltip() { return lg("荡开第一次涟漪。<br>奖励：微响产量 ×1.5", "Ripple once.<br>Reward: hum gain ×1.5") } },
+              tooltip() { return lg("荡开第一次涟漪。<br>奖励：全部产量 ×1.5", "Ripple once.<br>Reward: ALL production ×1.5") } },
         12: { name() { return lg("水塘", "The Pond") },
               done() { return player.ri.best.gte(100) },
               tooltip() { return lg("拥有 100 涟漪（最高值）。", "Reach 100 ripples (best).") } },
@@ -88,7 +88,7 @@ addLayer("a", {
               tooltip() { return lg("回荡出第一个回声。", "Echo once.") } },
         22: { name() { return lg("谷中呼喊", "Valley Shout") },
               done() { return player.ec.best.gte(100) },
-              tooltip() { return lg("拥有 100 回声（最高值）。<br>奖励：微响产量 ×1.5", "Reach 100 echoes (best).<br>Reward: hum gain ×1.5") } },
+              tooltip() { return lg("拥有 100 回声（最高值）。<br>奖励：全部产量 ×1.5", "Reach 100 echoes (best).<br>Reward: ALL production ×1.5") } },
         23: { name() { return lg("涟心", "Ripple Heart") },
               done() { return hasMilestone("ri", 0) },
               tooltip() { return lg("达成里程碑「涟心」。", "Complete the 'Ripple Heart' milestone.") } },
@@ -101,7 +101,7 @@ addLayer("a", {
         // row 3 — resonance
         31: { name() { return lg("同相", "In Phase") },
               done() { return player.re.total.gte(1) },
-              tooltip() { return lg("共振出第一次谐振。<br>奖励：免费获得里程碑「涟心」的效果", "Resonate once.<br>Reward: the 'Ripple Heart' milestone, free") },
+              tooltip() { return lg("共振出第一次谐振。<br>奖励：免费获得里程碑「叠浪」的效果", "Resonate once.<br>Reward: the 'Compound Waves' milestone, free") },
               onComplete() { if (!hasMilestone("ri", 2)) player.ri.milestones.push(2) } },
         32: { name() { return lg("阶数 I", "In-Phase I") },
               done() { return hasMilestone("re", 0) },
@@ -114,7 +114,7 @@ addLayer("a", {
               tooltip() { return lg("拥有 1e7 微响。<br>奖励：微响产量 ×1.5", "Have 1e7 hums.<br>Reward: hum gain ×1.5") } },
         35: { name() { return lg("深水区", "Deep Water") },
               done() { return player.ri.best.gte(2.5e9) },
-              tooltip() { return lg("拥有 2.5e9 涟漪（最高值）。<br>奖励：微响产量 ×1.5", "Reach 2.5e9 ripples (best).<br>Reward: hum gain ×1.5") } },
+              tooltip() { return lg("拥有 2.5e9 涟漪（最高值）。<br>奖励：全部产量 ×1.5", "Reach 2.5e9 ripples (best).<br>Reward: ALL production ×1.5") } },
         // row 4 — standing waves
         41: { name() { return lg("立正", "Stand Still") },
               done() { return player.sw.total.gte(1) },
@@ -130,7 +130,7 @@ addLayer("a", {
               tooltip() { return lg("储存 100 涡度。", "Bank 100 vorticity.") } },
         45: { name() { return lg("回声学徒", "Echo Apprentice") },
               done() { return player.sw.best.gte(15) },
-              tooltip() { return lg("拥有 15 道驻波。<br>奖励：自动购买回声升级（备用通道）。", "Own 15 standing waves.<br>Reward: echo upgrades are bought automatically (alternate path).") } },
+              tooltip() { return lg("拥有 15 道驻波。<br>奖励：微响产量 ×2", "Own 15 standing waves.<br>Reward: hum gain ×2") } },
         // row 5 — overtones
         51: { name() { return lg("高八度", "One Octave Up") },
               done() { return player.ov.total.gte(1) },
@@ -209,7 +209,7 @@ addLayer("a", {
               tooltip() { return lg("拥有 10 衔尾蛇（最高值）。", "Reach 10 ouroboros (best).") } },
         94: { name() { return lg("全环自动化", "Fully Wound") },
               done() { return hasMilestone("ou", 4) },
-              tooltip() { return lg("达成里程碑「分形自动化」。", "Complete the 'Fractal Automation' milestone.") } },
+              tooltip() { return lg("达成里程碑「衔尾狂飙」。", "Complete the 'Ouroboros Rampage' milestone.") } },
         95: { name() { return lg("百环之舞", "A Hundred Rings") },
               done() { return player.ou.best.gte(100) },
               tooltip() { return lg("拥有 100 衔尾蛇（最高值）。<br>奖励：微响产量 ×25", "Reach 100 ouroboros (best).<br>Reward: hum gain ×25") } },

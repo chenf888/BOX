@@ -33,15 +33,16 @@ addLayer("in", {
         return lg("你的干波把更老的每一层推 ×" + format(this.effect().echoMult), "Your interference waves boost every older layer by ×" + format(this.effect().echoMult))
     },
 
-    // static: smaller gainMult = cheaper; the Beat Nodes feed the price themselves
-    gainMult() {
-        let m = new Decimal(1)
-        let d = 1.35 + (hasUpgrade("in", 12) ? 0.25 : 0)
-        m = m.div(Decimal.pow(d, getBuyableAmount("in", 11)))
-        m = m.div(echoWeb(["so", "ch", "fr", "si", "ou"]))
-        m = m.div(achievementReward("in"))
-        return m
+    // zone table — static floor: zones <1 mean CHEAPER (÷); gainMult is their product
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        add(lg("拍频节点（自增益项）", "Beat Nodes (self-gain)"), Decimal.pow(1.35 + (hasUpgrade("in", 12) ? 0.25 : 0), getBuyableAmount("in", 11)))
+        add(lg("回声网", "Echo web"), new Decimal(1).div(echoWeb(["so", "ch", "fr", "si", "ou"])))
+        add(lg("成就之力", "Achievements"), new Decimal(1).div(achievementReward("in")))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     gainExp() { return manifoldMod("in") },
 
     doReset(resettingLayer) {
@@ -76,8 +77,11 @@ addLayer("in", {
             "Formula": { content: [
                 ["blank", "12px"],
                 ["display-text", function() {
-                    return lg("干波是地板：每道成本 = 1e9 × 2^层数 × 价格系数。拍频节点（自增益项）让价格 ÷1.35^级 —— 节点喂养节点。",
-                              "Waves are a floor: each costs 1e9 × 2^floors × price factors. Beat Nodes (self-gain) divide the price by 1.35^level — nodes feeding nodes.")
+                    return lg("干波是地板：每道成本 = 1e9 × 2^层数 × 价格系数。拍频节点（自增益项）让价格 ÷1.35^级（u12「条纹图样」→1.6^级）—— 节点喂养节点。（乘区越小越便宜）",
+                              "Waves are a floor: each costs 1e9 × 2^floors × price factors. Beat Nodes (self-gain) divide the price by 1.35^level (1.6^level with 'Fringe Pattern') — nodes feeding nodes. (Smaller zones = cheaper)")
+                }],
+                ["display-text", function() {
+                    return lg("<b>当前价格系数：</b><br>", "<b>Active price zones:</b><br>") + zoneLines(layers.in.zoneList())
                 }],
             ] },
         },
@@ -151,13 +155,13 @@ addLayer("in", {
         },
         1: {
             requirementDescription() { return lg("叠出 12 道干波（最高值）", "Interfere 12 waves (best)") },
-            effectDescription() { return lg("反馈环产量 ×3。", "Feedback gain ×3.") },
+            effectDescription() { return lg("「干涉馈能」：反馈环产量 ×3。", "Interference Feed: feedback gain ×3.") },
             done() { return player.in.best.gte(12) },
             unlocked() { return hasMilestone("in", 0) },
         },
         2: {
             requirementDescription() { return lg("叠出 25 道干波（最高值）", "Interfere 25 waves (best)") },
-            effectDescription() { return lg("泛音产量 ×2.5。", "Overtone gain ×2.5.") },
+            effectDescription() { return lg("「相干泛音」：泛音产量 ×2.5。", "Coherent Overtones: overtone gain ×2.5.") },
             done() { return player.in.best.gte(25) },
             unlocked() { return hasMilestone("in", 1) },
         },
@@ -169,7 +173,7 @@ addLayer("in", {
         },
         4: {
             requirementDescription() { return lg("叠出 60 道干波（最高值）", "Interfere 60 waves (best)") },
-            effectDescription() { return lg("微响产量 ×5。", "Hum gain ×5.") },
+            effectDescription() { return lg("「全谱轰鸣」：微响产量 ×5。", "Full-Spectrum Roar: hum gain ×5.") },
             done() { return player.in.best.gte(60) },
             unlocked() { return hasMilestone("in", 3) },
         },
@@ -181,7 +185,7 @@ addLayer("in", {
             display() {
                 let d = tmp[this.layer].buyables[this.id]
                 let disc = 1.35 + (hasUpgrade("in", 12) ? 0.25 : 0)
-                return lg("自增益项：每个节点让干波价格 ÷" + disc + "，涟漪产量 ×" + (hasMilestone("in", 3) ? 1.2 : 1.1) + " —— 越买越便宜。<br>当前价格折扣：",
+                return lg("自增益项：每个节点让干波价格 ÷" + disc + "，涟漪产量 ×" + (hasMilestone("in", 3) ? 1.2 : 1.1) + "（成本 = 25 × 4^道数）—— 越买越便宜。<br>当前价格折扣：",
                           "Self-gain: each node divides wave prices by " + disc + " and boosts ripple gain ×" + (hasMilestone("in", 3) ? 1.2 : 1.1) + " — the more you buy, the cheaper it gets.<br>Current discount: ")
                     + format(d.effect.discount) + lg("<br>涟漪加成：", "<br>Ripple boost: ") + format(d.effect.ripple)
                     + "x" + lg("<br>数量：", "<br>Owned: ") + formatWhole(getBuyableAmount(this.layer, this.id))
@@ -249,17 +253,20 @@ addLayer("so", {
     },
     softcapPower() { return new Decimal(TUNING.SOFTCAP_POW.so) },
 
-    gainMult() {
-        let m = new Decimal(1)
-        if (hasUpgrade("so", 22)) m = m.times(2)
-        if (hasMilestone("so", 0)) m = m.times(3)
-        if (hasMilestone("so", 4)) m = m.times(3)
-        if (hasMilestone("so", 5)) m = m.times(25)
-        m = m.times(buyableEffect("so", 11))                              // 振荡器 Oscillator
-        m = m.times(echoWeb(["ch", "fr", "si", "ou"]))
-        m = m.times(achievementReward("so"))
-        return m
+    // zone table — gainMult is its product; the Formula tab renders the same list
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        if (hasUpgrade("so", 22)) add(lg("持续振荡", "Sustained Oscillation"), new Decimal(2))
+        if (hasMilestone("so", 0)) add(lg("自激共鸣", "Self-Resonance"), new Decimal(3))
+        if (hasMilestone("so", 4)) add(lg("混沌涌泵", "Chaos Pump"), new Decimal(3))
+        if (hasMilestone("so", 5)) add(lg("永动", "Perpetual Motion"), new Decimal(25))
+        add(lg("振荡器（自增益项）", "Oscillators (self-gain)"), buyableEffect("so", 11))
+        add(lg("回声网", "Echo web"), echoWeb(["ch", "fr", "si", "ou"]))
+        add(lg("成就之力", "Achievements"), achievementReward("so"))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     gainExp() { return manifoldMod("so") },
     // (ch.m3's ×3 was traded for the so.passiveGen grant — Stage-6 R1)
 
@@ -300,8 +307,11 @@ addLayer("so", {
                     return lg("自振荡产量 = (泛音 ÷ 1e10)^0.3 × 乘区 × 帽", "Self-oscillation gain = (overtones ÷ 1e10)^0.3 × zones × cap")
                 }],
                 ["display-text", function() {
-                    return lg("振荡器（自增益项）：每级让自振荡产量 ×1.45+，成本 ×3.2 —— 振荡喂振荡，回路自己转起来。",
-                              "Oscillators (self-gain): each level multiplies gain by ×1.45+ at ×3.2 cost — oscillation feeding oscillation, the loop spins itself.")
+                    return lg("振荡器（自增益项）：每级让自振荡产量 ×" + oscPer() + "，成本 = " + (hasUpgrade("so", 21) ? 6 : 12) + " × 3.2^级 —— 振荡喂振荡，回路自己转起来。",
+                              "Oscillators (self-gain): each level multiplies gain by ×" + oscPer() + " at cost " + (hasUpgrade("so", 21) ? 6 : 12) + " × 3.2^level — oscillation feeding oscillation, the loop spins itself.")
+                }],
+                ["display-text", function() {
+                    return lg("<b>当前乘区：</b><br>", "<b>Active zones:</b><br>") + zoneLines(layers.so.zoneList())
                 }],
             ] },
         },
@@ -410,7 +420,7 @@ addLayer("so", {
             title() { return lg("振荡器", "Oscillator") },
             display() {
                 let d = tmp[this.layer].buyables[this.id]
-                return lg("自增益项：每级让自振荡产量 ×" + oscPer() + "。<br>当前：", "Self-gain: each level multiplies self-oscillation gain by ×" + oscPer() + ".<br>Currently: ")
+                return lg("自增益项：每级让自振荡产量 ×" + oscPer() + "（成本 = " + (hasUpgrade("so", 21) ? 6 : 12) + " × 3.2^级）。<br>当前：", "Self-gain: each level multiplies self-oscillation gain by ×" + oscPer() + " (cost = " + (hasUpgrade("so", 21) ? 6 : 12) + " × 3.2^level).<br>Currently: ")
                     + format(d.effect) + "x" + lg("<br>等级：", "<br>Level: ") + formatWhole(getBuyableAmount(this.layer, this.id))
                     + lg("<br>成本：", "<br>Cost: ") + format(d.cost) + " " + lg("自振荡", "self-oscillations")
             },
@@ -477,18 +487,21 @@ addLayer("ch", {
     },
     softcapPower() { return new Decimal(TUNING.SOFTCAP_POW.ch) },
 
-    gainMult() {
-        let m = new Decimal(1)
-        if (hasUpgrade("ch", 22)) m = m.times(2)
-        if (hasUpgrade("si", 21)) m = m.times(3)                          // 引力透镜
-        if (hasMilestone("ch", 5)) m = m.times(100)
-        if (hasMilestone("fr", 1)) m = m.times(25)                        // 混沌产量 ×25
-        if (hasMilestone("fr", 4)) m = m.times(100)                       // 混沌产量 ×100
-        m = m.times(buyableEffect("ch", 11))                              // 吸引子 Attractor
-        m = m.times(echoWeb(["fr", "si", "ou"]))
-        m = m.times(achievementReward("ch"))
-        return m
+    // zone table — gainMult is its product; the Formula tab renders the same list
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        if (hasUpgrade("ch", 22)) add(lg("分岔", "Bifurcation"), new Decimal(2))
+        if (hasUpgrade("si", 21)) add(lg("透镜增辉（奇点）", "Brighter Lens (Singularity)"), new Decimal(3))
+        if (hasMilestone("ch", 5)) add(lg("完全湍流", "Full Turbulence"), new Decimal(100))
+        if (hasMilestone("fr", 1)) add(lg("分形馈混沌（分形）", "Fractal Feed (Fractal)"), new Decimal(25))
+        if (hasMilestone("fr", 4)) add(lg("分形湍流（分形）", "Fractal Turbulence (Fractal)"), new Decimal(100))
+        add(lg("吸引子（自增益项）", "Attractors (self-gain)"), buyableEffect("ch", 11))
+        add(lg("回声网", "Echo web"), echoWeb(["fr", "si", "ou"]))
+        add(lg("成就之力", "Achievements"), achievementReward("ch"))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     gainExp() { return manifoldMod("ch") },
 
     doReset(resettingLayer) {
@@ -528,8 +541,11 @@ addLayer("ch", {
                     return lg("混沌产量 = (自振荡 ÷ 1e11)^0.3 × 乘区 × 帽", "Chaos gain = (self-oscillations ÷ 1e11)^0.3 × zones × cap")
                 }],
                 ["display-text", function() {
-                    return lg("吸引子（自增益项）：每级让混沌产量 ×1.5+，成本 ×3.5 —— 蝴蝶扇翅，风暴自喂。",
-                              "Attractors (self-gain): each level multiplies chaos gain by ×1.5+ at ×3.5 cost — the butterfly flaps, the storm feeds itself.")
+                    return lg("吸引子（自增益项）：每级让混沌产量 ×" + attractPer() + "，成本 = " + (hasUpgrade("ch", 21) ? 10 : 20) + " × 3.5^级 —— 蝴蝶扇翅，风暴自喂。",
+                              "Attractors (self-gain): each level multiplies chaos gain by ×" + attractPer() + " at cost " + (hasUpgrade("ch", 21) ? 10 : 20) + " × 3.5^level — the butterfly flaps, the storm feeds itself.")
+                }],
+                ["display-text", function() {
+                    return lg("<b>当前乘区：</b><br>", "<b>Active zones:</b><br>") + zoneLines(layers.ch.zoneList())
                 }],
             ] },
         },
@@ -638,7 +654,7 @@ addLayer("ch", {
             title() { return lg("吸引子", "Attractor") },
             display() {
                 let d = tmp[this.layer].buyables[this.id]
-                return lg("自增益项：每级让混沌产量 ×" + attractPer() + "。<br>当前：", "Self-gain: each level multiplies chaos gain by ×" + attractPer() + ".<br>Currently: ")
+                return lg("自增益项：每级让混沌产量 ×" + attractPer() + "（成本 = " + (hasUpgrade("ch", 21) ? 10 : 20) + " × 3.5^级）。<br>当前：", "Self-gain: each level multiplies chaos gain by ×" + attractPer() + " (cost = " + (hasUpgrade("ch", 21) ? 10 : 20) + " × 3.5^level).<br>Currently: ")
                     + format(d.effect) + "x" + lg("<br>等级：", "<br>Level: ") + formatWhole(getBuyableAmount(this.layer, this.id))
                     + lg("<br>成本：", "<br>Cost: ") + format(d.cost) + " " + lg("混沌", "chaos")
             },

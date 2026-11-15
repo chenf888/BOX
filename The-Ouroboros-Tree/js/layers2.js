@@ -32,20 +32,21 @@ addLayer("sw", {
         return lg("你的驻波把更老的每一层推 ×" + format(this.effect().echoMult), "Your standing waves boost every older layer by ×" + format(this.effect().echoMult))
     },
 
-    // static: gainMult SMALLER = cheaper (07 rule 16); 波腹 antinodes divide the floor price
-    gainMult() {
-        let m = new Decimal(1)
-        if (hasUpgrade("sw", 12)) m = m.div(1.5)
-        m = m.div(Decimal.pow(antiDiscount(), getBuyableAmount("sw", 11)))
-        if (hasUpgrade("in", 13)) m = m.div(2)      // 相消干涉 — out-of-phase waves crush the price
-        if (hasUpgrade("so", 23)) m = m.div(1.5)    // 锁模
-        if (hasUpgrade("fr", 21)) m = m.div(2)      // 分形驻波
-        m = m.div(buyableEffect("ov", 11))          // 谐波列 overtone series
-        // deeper echoes make standing waves cheaper too
-        m = m.div(echoWeb(["fl", "ov", "in", "so", "ch", "fr", "si", "ou"]))
-        m = m.div(achievementReward("sw"))
-        return m
+    // zone table — static floor: zones <1 mean CHEAPER (÷); gainMult is their product
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        if (hasUpgrade("sw", 12)) add(lg("固定端", "Fixed End"), new Decimal(1).div(1.5))
+        add(lg("波腹（自增益项）", "Antinodes (self-gain)"), Decimal.pow(antiDiscount(), getBuyableAmount("sw", 11)))
+        if (hasUpgrade("in", 13)) add(lg("相消干涉（干波）", "Destructive Interference (Interference)"), new Decimal(0.5))
+        if (hasUpgrade("so", 23)) add(lg("锁模（自振荡）", "Mode Locking (Self-Osc.)"), new Decimal(1).div(1.5))
+        if (hasUpgrade("fr", 21)) add(lg("分形驻波（分形）", "Fractal Standing Wave (Fractal)"), new Decimal(0.5))
+        add(lg("谐波列", "Overtone Series"), new Decimal(1).div(buyableEffect("ov", 11)))
+        add(lg("回声网", "Echo web"), new Decimal(1).div(echoWeb(["fl", "ov", "in", "so", "ch", "fr", "si", "ou"])))
+        add(lg("成就之力", "Achievements"), new Decimal(1).div(achievementReward("sw")))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     gainExp() {
         let e = manifoldMod("sw")
         if (hasMilestone("sw", 3)) e = e.times(1.1)
@@ -85,8 +86,11 @@ addLayer("sw", {
             "Formula": { content: [
                 ["blank", "12px"],
                 ["display-text", function() {
-                    return lg("驻波是地板：每道成本 = 1.6e5 × 2^层数 × 价格系数。波腹（自增益项）让价格 ÷1.4^级 —— 波腹喂养波腹。",
-                              "Waves are a floor: each costs 1.6e5 × 2^floors × price factors. Antinodes (self-gain) divide the price by 1.4^level — antinodes feeding antinodes.")
+                    return lg("驻波是地板：每道成本 = 1.6e5 × 2^层数 × 价格系数。波腹（自增益项）让价格 ÷1.4^级 —— 波腹喂养波腹。（乘区越小越便宜）",
+                              "Waves are a floor: each costs 1.6e5 × 2^floors × price factors. Antinodes (self-gain) divide the price by 1.4^level — antinodes feeding antinodes. (Smaller zones = cheaper)")
+                }],
+                ["display-text", function() {
+                    return lg("<b>当前价格系数：</b><br>", "<b>Active price zones:</b><br>") + zoneLines(layers.sw.zoneList())
                 }],
             ] },
         },
@@ -161,7 +165,7 @@ addLayer("sw", {
         },
         1: {
             requirementDescription() { return lg("立起 6 道驻波（最高值）", "Stand 6 waves (best)") },
-            effectDescription() { return lg("谐振产量 ×3。", "Resonance gain ×3.") },
+            effectDescription() { return lg("「驻立谐振」：谐振产量 ×3。", "Standing Resonance: resonance gain ×3.") },
             done() { return player.sw.best.gte(6) },
             unlocked() { return hasMilestone("sw", 0) },
         },
@@ -190,7 +194,7 @@ addLayer("sw", {
             title() { return lg("波腹", "Antinode") },
             display() {
                 let d = tmp[this.layer].buyables[this.id]
-                return lg("自增益项：每道波腹让驻波价格 ÷" + antiDiscount() + "，涟漪产量 ×1.1 —— 越买越便宜。<br>当前价格折扣：",
+                return lg("自增益项：每道波腹让驻波价格 ÷" + antiDiscount() + "，涟漪产量 ×1.1（成本 = 20 × 4^道数）—— 越买越便宜。<br>当前价格折扣：",
                           "Self-gain: each antinode divides wave prices by " + antiDiscount() + " and boosts ripple gain ×1.1 — the more you buy, the cheaper it gets.<br>Current discount: ")
                     + format(d.effect.discount) + lg("<br>涟漪加成：", "<br>Ripple boost: ") + format(d.effect.ripple)
                     + "x" + lg("<br>数量：", "<br>Owned: ") + formatWhole(getBuyableAmount(this.layer, this.id))
@@ -267,26 +271,30 @@ addLayer("fl", {
     },
     softcapPower() { return new Decimal(TUNING.SOFTCAP_POW.fl) },
 
-    gainMult() {
-        let m = new Decimal(1)
-        if (hasUpgrade("fl", 12)) m = m.times(upgradeEffect("fl", 12))   // 回声记忆 — the self-term (reads best)
-        if (hasUpgrade("fl", 23)) m = m.times(upgradeEffect("fl", 23))
-        if (hasMilestone("fl", 2)) m = m.times(2.5)
-        if (hasMilestone("fl", 5)) m = m.times(3)
-        m = m.times(buyableEffect("fl", 12))                              // 涡核
-        if (hasUpgrade("ov", 14)) m = m.times(upgradeEffect("ov", 14))
-        if (hasUpgrade("in", 21)) m = m.times(3)      // 深度干涉
-        if (hasUpgrade("so", 15)) m = m.times(2.5)
-        if (hasUpgrade("ch", 15)) m = m.times(3)
-        if (hasUpgrade("fr", 15)) m = m.times(5)
-        if (hasUpgrade("si", 15)) m = m.times(8)
-        if (hasUpgrade("ou", 24)) m = m.times(10)
-        if (hasMilestone("fr", 0)) m = m.times(25)
-        m = m.times(buyableEffect("ov", 11))                              // 谐波列 overtone series
-        m = m.times(echoWeb(["ov", "in", "so", "ch", "fr", "si", "ou"]))
-        m = m.times(achievementReward("fl"))
-        return m
+    // zone table — gainMult is its product; the Formula tab renders the same list
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        if (hasUpgrade("fl", 12)) add(lg("回声记忆（自增益项）", "Echo Memory (self-gain)"), upgradeEffect("fl", 12))
+        if (hasUpgrade("fl", 23)) add(lg("环内回声", "Inner Echo"), upgradeEffect("fl", 23))
+        if (hasMilestone("fl", 2)) add(lg("环内扩容", "Loop Expansion"), new Decimal(2.5))
+        if (hasMilestone("fl", 5)) add(lg("全环反馈", "Full-Loop Feedback"), new Decimal(3))
+        add(lg("涡核", "Vortex Core"), buyableEffect("fl", 12))
+        if (hasUpgrade("ov", 14)) add(lg("上谐共鸣（泛音）", "Upper Resonance (Overtone)"), upgradeEffect("ov", 14))
+        if (hasUpgrade("in", 21)) add(lg("深度干涉（干波）", "Deep Interference (Interference)"), new Decimal(3))
+        if (hasMilestone("in", 1)) add(lg("干涉馈能（干波）", "Interference Feed (Interference)"), new Decimal(3))
+        if (hasUpgrade("so", 15)) add(lg("谐振反馈（自振荡）", "Resonant Feedback (Self-Osc.)"), new Decimal(2.5))
+        if (hasUpgrade("ch", 15)) add(lg("湍流馈能（混沌）", "Turbulent Feed (Chaos)"), new Decimal(3))
+        if (hasUpgrade("fr", 15)) add(lg("曼德博馈能（分形）", "Mandelbrot Feed (Fractal)"), new Decimal(5))
+        if (hasUpgrade("si", 15)) add(lg("霍金辐射（奇点）", "Hawking Radiation (Singularity)"), new Decimal(8))
+        if (hasUpgrade("ou", 24)) add(lg("环流归环（衔尾）", "Loops Return (Ouroboros)"), new Decimal(10))
+        if (hasMilestone("fr", 0)) add(lg("分形馈环（分形）", "Fractal Feed (Fractal)"), new Decimal(25))
+        add(lg("谐波列", "Overtone Series"), buyableEffect("ov", 11))
+        add(lg("回声网", "Echo web"), echoWeb(["ov", "in", "so", "ch", "fr", "si", "ou"]))
+        add(lg("成就之力", "Achievements"), achievementReward("fl"))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     gainExp() { return manifoldMod("fl") },
 
     // 涡度 banks on every real prestige (F24: onPrestige only fires on the non-forced path)
@@ -339,6 +347,9 @@ addLayer("fl", {
                     let p = hasUpgrade("fl", 31) ? 0.45 : 0.4
                     return lg("回声记忆（自增益项）：反馈环最高值^" + p + " —— 环记得自己曾经有多大。",
                               "Echo Memory (self-gain): feedback best^" + p + " — the loop remembers how big it once was.")
+                }],
+                ["display-text", function() {
+                    return lg("<b>当前乘区：</b><br>", "<b>Active zones:</b><br>") + zoneLines(layers.fl.zoneList())
                 }],
             ] },
         },
@@ -424,7 +435,7 @@ addLayer("fl", {
     milestones: {
         0: {
             requirementDescription() { return lg("拥有 25 反馈环（最高值）", "Reach 25 feedback loops (best)") },
-            effectDescription() { return lg("回声产量 ×3。", "Echo gain ×3.") },
+            effectDescription() { return lg("「环鸣」：回声产量 ×3。", "Ring Resonance: echo gain ×3.") },
             done() { return player.fl.best.gte(25) },
         },
         1: {
@@ -464,7 +475,7 @@ addLayer("fl", {
             title() { return lg("涡核", "Vortex Core") },
             display() {
                 let d = tmp[this.layer].buyables[this.id]
-                return lg("每级让反馈环产量 ×" + vortexPer() + "（吃涡度）。<br>当前：", "Each level multiplies feedback gain by ×" + vortexPer() + " (fed by vorticity).<br>Currently: ")
+                return lg("每级让反馈环产量 ×" + vortexPer() + "（吃涡度，成本 = 5 × 2.5^级）。<br>当前：", "Each level multiplies feedback gain by ×" + vortexPer() + " (fed by vorticity, cost = 5 × 2.5^level).<br>Currently: ")
                     + format(d.effect) + "x" + lg("<br>等级：", "<br>Level: ") + formatWhole(getBuyableAmount(this.layer, this.id))
                     + lg("<br>成本：", "<br>Cost: ") + format(d.cost) + " " + lg("涡度", "vorticity")
             },
@@ -527,23 +538,27 @@ addLayer("ov", {
     },
     softcapPower() { return new Decimal(TUNING.SOFTCAP_POW.ov) },
 
-    gainMult() {
-        let m = new Decimal(1)
-        if (hasUpgrade("ov", 12)) m = m.times(upgradeEffect("ov", 12))   // 谐波 self-term (log²)
-        if (hasUpgrade("ov", 14)) m = m.times(upgradeEffect("ov", 14))
-        if (hasUpgrade("ov", 23)) m = m.times(upgradeEffect("ov", 23))
-        if (hasUpgrade("in", 14)) m = m.times(upgradeEffect("in", 14))   // 拍频
-        if (hasMilestone("ov", 1)) m = m.times(2)
-        if (hasMilestone("ov", 3)) m = m.times(hasUpgrade("ov", 25) ? 6 : 3)
-        if (hasUpgrade("so", 14)) m = m.times(upgradeEffect("so", 14))
-        if (hasUpgrade("ch", 14)) m = m.times(upgradeEffect("ch", 14))
-        if (hasUpgrade("fr", 14)) m = m.times(upgradeEffect("fr", 14))
-        if (hasUpgrade("si", 14)) m = m.times(upgradeEffect("si", 14))
-        if (hasUpgrade("ou", 25)) m = m.times(10)
-        m = m.times(echoWeb(["in", "so", "ch", "fr", "si", "ou"]))
-        m = m.times(achievementReward("ov"))
-        return m
+    // zone table — gainMult is its product; the Formula tab renders the same list
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        if (hasUpgrade("ov", 12)) add(lg("谐波（自增益项）", "Harmonics (self-gain)"), upgradeEffect("ov", 12))
+        if (hasUpgrade("ov", 14)) add(lg("上谐共鸣", "Upper Resonance"), upgradeEffect("ov", 14))
+        if (hasUpgrade("ov", 23)) add(lg("谐振提取", "Resonance Extraction"), upgradeEffect("ov", 23))
+        if (hasUpgrade("in", 14)) add(lg("拍频（干波）", "Beat Frequency (Interference)"), upgradeEffect("in", 14))
+        if (hasMilestone("in", 2)) add(lg("相干泛音（干波）", "Coherent Overtones (Interference)"), new Decimal(2.5))
+        if (hasMilestone("ov", 1)) add(lg("鸣响", "Ringing"), new Decimal(2))
+        if (hasMilestone("ov", 3)) add(lg("泛音列", "Overtone Series"), hasUpgrade("ov", 25) ? new Decimal(6) : new Decimal(3))
+        if (hasUpgrade("so", 14)) add(lg("受激辐射（自振荡）", "Stimulated Emission (Self-Osc.)"), upgradeEffect("so", 14))
+        if (hasUpgrade("ch", 14)) add(lg("蝴蝶效应（混沌）", "Butterfly Effect (Chaos)"), upgradeEffect("ch", 14))
+        if (hasUpgrade("fr", 14)) add(lg("无限细节（分形）", "Infinite Detail (Fractal)"), upgradeEffect("fr", 14))
+        if (hasUpgrade("si", 14)) add(lg("引力透镜（奇点）", "Gravitational Lensing (Singularity)"), upgradeEffect("si", 14))
+        if (hasUpgrade("ou", 25)) add(lg("泛音归环（衔尾）", "Overtones Return (Ouroboros)"), new Decimal(10))
+        add(lg("回声网", "Echo web"), echoWeb(["in", "so", "ch", "fr", "si", "ou"]))
+        add(lg("成就之力", "Achievements"), achievementReward("ov"))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     gainExp() { return manifoldMod("ov") },
 
     doReset(resettingLayer) {
@@ -594,6 +609,9 @@ addLayer("ov", {
                 ["display-text", function() {
                     return lg("谐波（自增益项）：log10(泛音)² —— 频率越高，谐波越密。",
                               "Harmonics (self-gain): log10(overtones)² — the higher the tone, the denser the harmonics.")
+                }],
+                ["display-text", function() {
+                    return lg("<b>当前乘区：</b><br>", "<b>Active zones:</b><br>") + zoneLines(layers.ov.zoneList())
                 }],
             ] },
         },
@@ -705,12 +723,12 @@ addLayer("ov", {
     milestones: {
         0: {
             requirementDescription() { return lg("拥有 30 泛音（最高值）", "Reach 30 overtones (best)") },
-            effectDescription() { return lg("回声产量 ×3。", "Echo gain ×3.") },
+            effectDescription() { return lg("「谐和」：回声产量 ×3。", "Consonance: echo gain ×3.") },
             done() { return player.ov.best.gte(30) },
         },
         1: {
             requirementDescription() { return lg("拥有 60 泛音（最高值）", "Reach 60 overtones (best)") },
-            effectDescription() { return lg("泛音产量 ×2。", "Overtone gain ×2.") },
+            effectDescription() { return lg("「鸣响」：泛音产量 ×2。", "Ringing: overtone gain ×2.") },
             done() { return player.ov.best.gte(60) },
             unlocked() { return hasMilestone("ov", 0) },
         },
@@ -740,8 +758,8 @@ addLayer("ov", {
             display() {
                 let d = tmp[this.layer].buyables[this.id]
                 let per = hasMilestone("ov", 4) ? 1.4 : 1.3
-                return lg("泛音是老回路的倍频：每级让涟漪/回声/谐振/驻波/反馈环的产量全部 ×" + per + "。<br>等级：",
-                          "Overtones multiply the older loops: each level boosts ripple/echo/resonance/wave/feedback gain by ×" + per + ".<br>Level: ")
+                return lg("泛音是老回路的倍频：每级让涟漪/回声/谐振/驻波/反馈环的产量全部 ×" + per + "（成本 = 8 × 2.2^级）。<br>等级：",
+                          "Overtones multiply the older loops: each level boosts ripple/echo/resonance/wave/feedback gain by ×" + per + " (cost = 8 × 2.2^level).<br>Level: ")
                     + formatWhole(getBuyableAmount(this.layer, this.id))
                     + lg("<br>成本：", "<br>Cost: ") + format(d.cost) + " " + lg("泛音", "overtones")
             },

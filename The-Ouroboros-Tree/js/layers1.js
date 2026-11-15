@@ -34,39 +34,40 @@ addLayer("ri", {
     },
     softcapPower() { return new Decimal(TUNING.SOFTCAP_POW.ri) },
 
-    gainMult() {
-        let m = new Decimal(1)
-        // own content
-        if (hasUpgrade("ri", 12)) m = m.times(upgradeEffect("ri", 12))   // 泛波 — the layer's self-term
-        if (hasUpgrade("ri", 13)) m = m.times(2)
-        if (hasUpgrade("ri", 15)) m = m.times(2.5)
-        if (hasMilestone("ri", 0)) m = m.times(hasUpgrade("ri", 24) ? 5 : 2.5)
-        if (hasMilestone("ri", 2)) m = m.times(3)
-        // cross-layer boosts (each booster reads its OWN state — P10 web)
-        if (hasUpgrade("ec", 12)) m = m.times(2)
-        if (hasUpgrade("ec", 31)) m = m.times(upgradeEffect("ec", 31))
-        if (hasUpgrade("re", 24)) m = m.times(3)
-        if (hasUpgrade("sw", 25)) m = m.times(5)
-        if (hasUpgrade("in", 23)) m = m.times(3)
-        m = m.times(Decimal.pow(hasUpgrade("si", 23) ? 1.2 : 1.12, getBuyableAmount("fr", 11)))  // 自相似核
-        if (hasUpgrade("sw", 13)) m = m.times(upgradeEffect("sw", 13))
-        if (hasUpgrade("fl", 12)) m = m.times(2.5)
-        if (hasUpgrade("ov", 24)) m = m.times(3)
-        if (hasUpgrade("so", 24)) m = m.times(4)
-        if (hasUpgrade("ch", 24)) m = m.times(5)
-        if (hasUpgrade("fr", 24)) m = m.times(8)
-        if (hasUpgrade("si", 24)) m = m.times(10)
-        if (hasUpgrade("ou", 21)) m = m.times(10)
-        m = m.times(Decimal.pow(1.1, getBuyableAmount("sw", 11)))          // 波腹 antinodes widen the pond
-        m = m.times(buyableEffect("in", 11).ripple)                        // 拍频节点 Beat Nodes
-        m = m.times(buyableEffect("fr", 11).wide)                          // 自相似核 Self-Similarity Cores
-        m = m.times(buyableEffect("ov", 11))                               // 谐波列 overtone series
-        // echo web from every deeper layer
-        m = m.times(echoWeb(["ec", "re", "sw", "fl", "ov", "in", "so", "ch", "fr", "si", "ou"]))
-        // achievement rewards aimed at ripples
-        m = m.times(achievementReward("ri"))
-        return m
+    // the zone table — single source of truth: gainMult is its product and the
+    // Formula tab renders the same list, so display can never drift from the math.
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        if (hasUpgrade("ri", 12)) add(lg("泛波（自增益项）", "Spreading Wave (self-gain)"), upgradeEffect("ri", 12))
+        if (hasUpgrade("ri", 13)) add(lg("回响", "Echo Back"), new Decimal(2))
+        if (hasUpgrade("ri", 15)) add(lg("驻波纹", "Standing Pattern"), new Decimal(2.5))
+        if (hasMilestone("ri", 0)) add(lg("涟心", "Ripple Heart"), hasUpgrade("ri", 24) ? new Decimal(5) : new Decimal(2.5))
+        if (hasMilestone("ri", 2)) add(lg("叠浪", "Compound Waves"), new Decimal(3))
+        if (hasUpgrade("ec", 12)) add(lg("回声壁（回声）", "Echo Wall (Echo)"), new Decimal(2))
+        if (hasUpgrade("ec", 31)) add(lg("泛音预备（回声）", "Overtone Prep (Echo)"), upgradeEffect("ec", 31))
+        if (hasUpgrade("re", 24)) add(lg("波纹强化（谐振）", "Ripple Reinforce (Resonance)"), new Decimal(3))
+        if (hasUpgrade("sw", 25)) add(lg("驻波谐系（驻波）", "Wave Family (Standing Wave)"), new Decimal(5))
+        if (hasUpgrade("in", 23)) add(lg("波前弯曲（干波）", "Wavefront Bend (Interference)"), new Decimal(3))
+        add(lg("分形核加宽（分形）", "Core widening (Fractal)"), Decimal.pow(hasUpgrade("si", 23) ? 1.2 : 1.12, getBuyableAmount("fr", 11)))
+        if (hasUpgrade("sw", 13)) add(lg("谐波回响（驻波）", "Harmonic Echo (Standing Wave)"), upgradeEffect("sw", 13))
+        if (hasUpgrade("fl", 12)) add(lg("回声记忆（反馈环）", "Echo Memory (Feedback)"), new Decimal(2.5))
+        if (hasUpgrade("fl", 22) && player.fl.best.gte(100)) add(lg("浪回收（反馈环）", "Wave Recovery (Feedback)"), new Decimal(5))
+        if (hasUpgrade("ov", 24)) add(lg("泛音回赠（泛音）", "Overtone Gift (Overtone)"), new Decimal(3))
+        if (hasUpgrade("so", 24)) add(lg("谐波泵浦（自振荡）", "Harmonic Pump (Self-Osc.)"), new Decimal(4))
+        if (hasUpgrade("ch", 24)) add(lg("风暴潮（混沌）", "Storm Surge (Chaos)"), new Decimal(5))
+        if (hasUpgrade("fr", 24)) add(lg("回声分形（分形）", "Echo Fractal (Fractal)"), new Decimal(8))
+        if (hasUpgrade("si", 24)) add(lg("时空涟漪（奇点）", "Spacetime Ripples (Singularity)"), new Decimal(10))
+        if (hasUpgrade("ou", 21)) add(lg("涟漪归环（衔尾）", "Ripples Return (Ouroboros)"), new Decimal(10))
+        add(lg("波腹", "Antinodes"), Decimal.pow(1.1, getBuyableAmount("sw", 11)))
+        add(lg("拍频节点涟漪加成", "Beat Node ripple boost"), buyableEffect("in", 11).ripple)
+        add(lg("自相似核涟漪加成", "Core ripple boost"), buyableEffect("fr", 11).wide)
+        add(lg("谐波列", "Overtone Series"), buyableEffect("ov", 11))
+        add(lg("回声网", "Echo web"), echoWeb(["ec", "re", "sw", "fl", "ov", "in", "so", "ch", "fr", "si", "ou"]))
+        add(lg("成就之力", "Achievements"), achievementReward("ri"))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     gainExp() { return manifoldMod("ri") },
 
     // milestone-gated keeps: the endgame keeps upgrades/milestones on every reset (P9)
@@ -100,6 +101,7 @@ addLayer("ri", {
         stuff: {
             "Upgrades": { content: [["blank", "12px"], "upgrades"] },
             "Milestones": { content: [["blank", "12px"], "milestones"] },
+            "Pebbles": { content: [["blank", "12px"], "buyables"] },
             "Formula": { content: [
                 ["blank", "12px"],
                 ["display-text", function() {
@@ -112,8 +114,15 @@ addLayer("ri", {
                               "Spreading Wave (self-gain): ripples^" + p + ", fed into this layer's own gain. Eat yourself, grow yourself.")
                 }],
                 ["display-text", function() {
-                    return lg("回声网：" + format(echoWeb(["ec","re","sw","fl","ov","in","so","ch","fr","si","ou"])) + " ×（每一层更深的回路都在推你）",
-                              "Echo web: " + format(echoWeb(["ec","re","sw","fl","ov","in","so","ch","fr","si","ou"])) + " × (every deeper loop pushes you)")
+                    return lg("<b>当前乘区：</b><br>", "<b>Active zones:</b><br>") + zoneLines(layers.ri.zoneList()) +
+                        lg("（微响的乘区清单在下方）", "(the hum-gain zone list is below)")
+                }],
+                ["display-text", function() {
+                    return lg("<b>微响产量乘区：</b><br>", "<b>Hum-gain zones:</b><br>") + zoneLines(humZoneList()) +
+                        "<br>" + lg("根指数", "Root exponent") + ": ^" + format(manifoldMod("points")) +
+                        lg("（调谐流形）", " (tuning manifold)") +
+                        lg("，再 ÷", ", then ÷") + format(difficultyDivisor()) +
+                        lg("（难度阀门）", " (difficulty valve)")
                 }],
             ] },
         },
@@ -203,7 +212,7 @@ addLayer("ri", {
     milestones: {
         0: {
             requirementDescription() { return lg("拥有 2,500 涟漪（最高值）", "Reach 2,500 ripples (best)") },
-            effectDescription() { return lg("「涟心」：涟漪产量 ×2.5。", "Ripple Heart: ripple gain ×2.5.") },
+            effectDescription() { return lg("「涟心」：涟漪与微响产量 ×2.5。", "Ripple Heart: ripple AND hum gain ×2.5.") },
             done() { return player.ri.best.gte(2500) },
         },
         1: {
@@ -214,7 +223,7 @@ addLayer("ri", {
         },
         2: {
             requirementDescription() { return lg("拥有 2.5e7 涟漪（最高值）", "Reach 2.5e7 ripples (best)") },
-            effectDescription() { return lg("涟漪产量 ×3。", "Ripple gain ×3.") },
+            effectDescription() { return lg("「叠浪」：涟漪与微响产量 ×3。", "Compound Waves: ripple AND hum gain ×3.") },
             done() { return player.ri.best.gte(2.5e7) },
             unlocked() { return hasMilestone("ri", 1) },
         },
@@ -237,7 +246,7 @@ addLayer("ri", {
             title() { return lg("石子", "Pebble") },
             display() {
                 let d = tmp[this.layer].buyables[this.id]
-                return lg("每颗石子让微响产量 ×" + (hasUpgrade("ov", 41) ? 1.7 : 1.5) + "。<br>当前：", "Each pebble multiplies hum gain by ×" + (hasUpgrade("ov", 41) ? 1.7 : 1.5) + ".<br>Currently: ")
+                return lg("每颗石子让微响产量 ×" + (hasUpgrade("ov", 41) ? 1.7 : 1.5) + "（成本 = 10 × 2.5^持有数）。<br>当前：", "Each pebble multiplies hum gain by ×" + (hasUpgrade("ov", 41) ? 1.7 : 1.5) + " (cost = 10 × 2.5^owned).<br>Currently: ")
                     + format(d.effect) + "x" + lg("<br>持有：", "<br>Owned: ") + formatWhole(getBuyableAmount(this.layer, this.id))
                     + lg("<br>成本：", "<br>Cost: ") + format(d.cost) + " " + lg("涟漪", "ripples")
             },
@@ -301,30 +310,37 @@ addLayer("ec", {
     },
     softcapPower() { return new Decimal(TUNING.SOFTCAP_POW.ec) },
 
-    gainMult() {
-        let m = new Decimal(1)
-        if (hasUpgrade("ec", 13)) m = m.times(2)
-        if (hasUpgrade("ec", 14)) m = m.times(upgradeEffect("ec", 14))
-        if (hasMilestone("ec", 0)) m = m.times(2.5)
-        if (hasMilestone("ec", 2)) m = m.times(3)
-        if (hasUpgrade("ec", 22)) m = m.times(upgradeEffect("ec", 22))
-        if (hasUpgrade("ec", 25)) m = m.times(buyableEffect("ec", 11))   // 八度 doubles the Echo Chamber
-        if (hasUpgrade("sw", 23)) m = m.times(upgradeEffect("sw", 23))
-        if (hasUpgrade("sw", 13)) m = m.times(upgradeEffect("sw", 13))
-        if (hasUpgrade("re", 23) && player.re.best.gte(1e4)) m = m.times(5)
-        if (hasUpgrade("fl", 13)) m = m.times(2.5)
-        if (hasUpgrade("in", 24)) m = m.times(3)
-        if (hasUpgrade("ov", 25)) m = m.times(3)
-        if (hasUpgrade("so", 25)) m = m.times(4)
-        if (hasUpgrade("ch", 25)) m = m.times(5)
-        if (hasUpgrade("fr", 25)) m = m.times(8)
-        if (hasUpgrade("si", 25)) m = m.times(10)
-        if (hasUpgrade("ou", 22)) m = m.times(10)
-        m = m.times(buyableEffect("ov", 11))                               // 谐波列 overtone series
-        m = m.times(echoWeb(["re", "sw", "fl", "ov", "in", "so", "ch", "fr", "si", "ou"]))
-        m = m.times(achievementReward("ec"))
-        return m
+    // zone table — gainMult is its product; the Formula tab renders the same list
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        if (hasUpgrade("ec", 13)) add(lg("第二声部", "Second Voice"), new Decimal(2))
+        if (hasUpgrade("ec", 14)) add(lg("混响", "Reverberation"), upgradeEffect("ec", 14))
+        if (hasMilestone("ec", 0)) add(lg("回声激增", "Echo Surge"), new Decimal(2.5))
+        if (hasMilestone("ec", 2)) add(lg("回声涨潮", "Echo Tide"), new Decimal(3))
+        if (hasUpgrade("ec", 22)) add(lg("聆听深处", "Listen Deep"), upgradeEffect("ec", 22))
+        add(lg("回声室（自增益项）", "Echo Chamber (self-gain)"), buyableEffect("ec", 11))
+        if (hasUpgrade("ec", 25)) add(lg("八度（回声室再次生效）", "Octave (Chamber applied again)"), buyableEffect("ec", 11))
+        if (hasUpgrade("sw", 23)) add(lg("腔体耦合（驻波）", "Cavity Coupling (Standing Wave)"), upgradeEffect("sw", 23))
+        if (hasUpgrade("sw", 13)) add(lg("谐波回响（驻波）", "Harmonic Echo (Standing Wave)"), upgradeEffect("sw", 13))
+        if (hasUpgrade("re", 23) && player.re.best.gte(1e4)) add(lg("相位锁定（谐振）", "Phase Lock (Resonance)"), new Decimal(5))
+        if (hasMilestone("sw", 0)) add(lg("基波（驻波）", "Fundamental (Standing Wave)"), hasUpgrade("sw", 24) ? new Decimal(10) : new Decimal(5))
+        if (hasMilestone("fl", 0)) add(lg("环鸣（反馈环）", "Ring Resonance (Feedback)"), new Decimal(3))
+        if (hasMilestone("ov", 0)) add(lg("谐和（泛音）", "Consonance (Overtone)"), new Decimal(3))
+        if (hasUpgrade("fl", 13)) add(lg("正反馈（反馈环）", "Positive Feedback (Feedback)"), new Decimal(2.5))
+        if (hasUpgrade("in", 24)) add(lg("声影区（干波）", "Shadow Zone (Interference)"), new Decimal(3))
+        if (hasUpgrade("ov", 25)) add(lg("外溢（泛音）", "Spillway (Overtone)"), new Decimal(3))
+        if (hasUpgrade("so", 25)) add(lg("相位回注（自振荡）", "Phase Reinject (Self-Osc.)"), new Decimal(4))
+        if (hasUpgrade("ch", 25)) add(lg("回声涡旋（混沌）", "Echo Vortex (Chaos)"), new Decimal(5))
+        if (hasUpgrade("fr", 25)) add(lg("回声分形（分形）", "Echo Fractal (Fractal)"), new Decimal(8))
+        if (hasUpgrade("si", 25)) add(lg("回声视界（奇点）", "Echo Horizon (Singularity)"), new Decimal(10))
+        if (hasUpgrade("ou", 22)) add(lg("回声归环（衔尾）", "Echoes Return (Ouroboros)"), new Decimal(10))
+        add(lg("谐波列", "Overtone Series"), buyableEffect("ov", 11))
+        add(lg("回声网", "Echo web"), echoWeb(["re", "sw", "fl", "ov", "in", "so", "ch", "fr", "si", "ou"]))
+        add(lg("成就之力", "Achievements"), achievementReward("ec"))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     gainExp() {
         let e = manifoldMod("ec")
         if (hasMilestone("ec", 4)) e = e.times(1.02)   // 回声深度
@@ -368,8 +384,11 @@ addLayer("ec", {
                     return lg("回声产量 = (涟漪 ÷ 250)^(1/3) × 乘区 × 帽", "Echo gain = (ripples ÷ 250)^(1/3) × multiplier zones × cap")
                 }],
                 ["display-text", function() {
-                    return lg("回声室（自增益项）：每级 ×1.6 回声产量，成本 ×3 —— 买它喂它自己。",
-                              "Echo Chamber (self-gain): each level ×1.6 echo gain at ×3 cost — buy it to feed itself.")
+                    return lg("回声室（自增益项）：每级 ×1.6 回声产量，成本 = 5 × 3^级 —— 买它喂它自己。",
+                              "Echo Chamber (self-gain): each level ×1.6 echo gain at cost 5 × 3^level — buy it to feed itself.")
+                }],
+                ["display-text", function() {
+                    return lg("<b>当前乘区：</b><br>", "<b>Active zones:</b><br>") + zoneLines(layers.ec.zoneList())
                 }],
             ] },
         },
@@ -443,7 +462,7 @@ addLayer("ec", {
     milestones: {
         0: {
             requirementDescription() { return lg("拥有 500 回声（最高值）", "Reach 500 echoes (best)") },
-            effectDescription() { return lg("回声产量 ×2.5。", "Echo gain ×2.5.") },
+            effectDescription() { return lg("「回声激增」：回声产量 ×2.5。", "Echo Surge: echo gain ×2.5.") },
             done() { return player.ec.best.gte(500) },
         },
         1: {
@@ -454,7 +473,7 @@ addLayer("ec", {
         },
         2: {
             requirementDescription() { return lg("拥有 5e5 回声（最高值）", "Reach 5e5 echoes (best)") },
-            effectDescription() { return lg("回声产量 ×3。", "Echo gain ×3.") },
+            effectDescription() { return lg("「回声涨潮」：回声产量 ×3。", "Echo Tide: echo gain ×3.") },
             done() { return player.ec.best.gte(5e5) },
             unlocked() { return hasMilestone("ec", 1) },
         },
@@ -495,7 +514,8 @@ addLayer("ec", {
         },
     },
 
-    // automation: autoUpgrade ← sw.m2 ; the Echo Chamber autobuys (closed form) ← ch.m0
+    // automation: passiveGen ← re.m3 (In-Phase IV) ; autoUpgrade ← sw.m2 ; the Echo Chamber autobuys (closed form) ← ch.m0
+    passiveGeneration() { return hasMilestone("re", 3) ? 1 : 0 },
     autoUpgrade() { return hasMilestone("sw", 2) },
     automate() {
         if (hasMilestone("ch", 0)) geoBuyMax("ec", 11, 5, 3)
@@ -539,27 +559,31 @@ addLayer("re", {
     },
     softcapPower() { return new Decimal(TUNING.SOFTCAP_POW.re) },
 
-    gainMult() {
-        let m = new Decimal(1)
-        if (hasUpgrade("re", 13)) m = m.times(2)
-        if (hasUpgrade("re", 14)) m = m.times(upgradeEffect("re", 14))
-        if (hasUpgrade("re", 31)) m = m.times(upgradeEffect("re", 31))
-        m = m.times(buyableEffect("re", 11))
-        if (hasUpgrade("sw", 14)) m = m.times(upgradeEffect("sw", 14))
-        if (hasUpgrade("sw", 21)) m = m.times(3)
-        if (hasUpgrade("fl", 15)) m = m.times(2.5)
-        if (hasUpgrade("in", 22)) m = m.times(3)
-        if (hasUpgrade("ov", 31)) m = m.times(3)
-        if (hasUpgrade("so", 31)) m = m.times(4)
-        if (hasUpgrade("ch", 31)) m = m.times(5)
-        if (hasUpgrade("fr", 31)) m = m.times(8)
-        if (hasUpgrade("si", 31)) m = m.times(10)
-        if (hasUpgrade("ou", 23)) m = m.times(10)
-        m = m.times(buyableEffect("ov", 11))                               // 谐波列 overtone series
-        m = m.times(echoWeb(["sw", "fl", "ov", "in", "so", "ch", "fr", "si", "ou"]))
-        m = m.times(achievementReward("re"))
-        return m
+    // zone table — gainMult is its product; the Formula tab renders the same list
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        if (hasUpgrade("re", 13)) add(lg("谐振增幅", "Resonant Boost"), new Decimal(2))
+        if (hasUpgrade("re", 14)) add(lg("交叉调制", "Cross-Modulation"), upgradeEffect("re", 14))
+        if (hasUpgrade("re", 31)) add(lg("拍频", "Beat Frequency"), upgradeEffect("re", 31))
+        add(lg("谐振腔", "Cavity"), buyableEffect("re", 11))
+        if (hasUpgrade("sw", 14)) add(lg("驻波馈能（驻波）", "Wave Feeding (Standing Wave)"), upgradeEffect("sw", 14))
+        if (hasUpgrade("sw", 21)) add(lg("共振放大（驻波）", "Resonant Amplifier (Standing Wave)"), new Decimal(3))
+        if (hasMilestone("sw", 1)) add(lg("驻立谐振（驻波）", "Standing Resonance (Standing Wave)"), new Decimal(3))
+        if (hasUpgrade("fl", 15)) add(lg("环路谐振（反馈环）", "Loop Resonance (Feedback)"), new Decimal(2.5))
+        if (hasUpgrade("in", 22)) add(lg("干涉放大（干波）", "Interference Amplifier (Interference)"), new Decimal(3))
+        if (hasUpgrade("ov", 31)) add(lg("谐振提取（泛音）", "Resonance Extraction (Overtone)"), new Decimal(3))
+        if (hasUpgrade("so", 31)) add(lg("全环起振（自振荡）", "Whole-Loop Kick (Self-Osc.)"), new Decimal(4))
+        if (hasUpgrade("ch", 31)) add(lg("共振崩塌（混沌）", "Resonant Collapse (Chaos)"), new Decimal(5))
+        if (hasUpgrade("fr", 31)) add(lg("谐振分形（分形）", "Resonant Fractal (Fractal)"), new Decimal(8))
+        if (hasUpgrade("si", 31)) add(lg("谐振坍缩（奇点）", "Resonant Collapse (Singularity)"), new Decimal(10))
+        if (hasUpgrade("ou", 23)) add(lg("谐振归环（衔尾）", "Resonance Returns (Ouroboros)"), new Decimal(10))
+        add(lg("谐波列", "Overtone Series"), buyableEffect("ov", 11))
+        add(lg("回声网", "Echo web"), echoWeb(["sw", "fl", "ov", "in", "so", "ch", "fr", "si", "ou"]))
+        add(lg("成就之力", "Achievements"), achievementReward("re"))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     // the 同相 (in-phase) chain: each of the 5 milestones deepens the layer's own exponent
     gainExp() {
         let e = manifoldMod("re")
@@ -608,6 +632,9 @@ addLayer("re", {
                     for (let i = 0; i < 5; i++) if (hasMilestone("re", i)) n++
                     return lg("谐振产量 = (回声 ÷ 6.3e3)^(0.3 × " + (1 + n * 0.0333).toFixed(4) + ") × 乘区 × 帽 —— 同相链在加深指数本身。",
                               "Resonance gain = (echoes ÷ 6.3e3)^(0.3 × " + (1 + n * 0.0333).toFixed(4) + ") × zones × cap — the in-phase chain deepens the exponent itself.")
+                }],
+                ["display-text", function() {
+                    return lg("<b>当前乘区：</b><br>", "<b>Active zones:</b><br>") + zoneLines(layers.re.zoneList())
                 }],
             ] },
         },
@@ -715,7 +742,7 @@ addLayer("re", {
             title() { return lg("谐振腔", "Cavity") },
             display() {
                 let d = tmp[this.layer].buyables[this.id]
-                return lg("每级让谐振产量 ×" + (hasUpgrade("ov", 42) ? 1.7 : 1.55) + "。<br>当前：", "Each level multiplies resonance gain by ×" + (hasUpgrade("ov", 42) ? 1.7 : 1.55) + ".<br>Currently: ")
+                return lg("每级让谐振产量 ×" + (hasUpgrade("ov", 42) ? 1.7 : 1.55) + "（成本 = 1000 × 2.8^级）。<br>当前：", "Each level multiplies resonance gain by ×" + (hasUpgrade("ov", 42) ? 1.7 : 1.55) + " (cost = 1000 × 2.8^level).<br>Currently: ")
                     + format(d.effect) + "x" + lg("<br>等级：", "<br>Level: ") + formatWhole(getBuyableAmount(this.layer, this.id))
                     + lg("<br>成本：", "<br>Cost: ") + format(d.cost) + " " + lg("谐振", "resonance")
             },

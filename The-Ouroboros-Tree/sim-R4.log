@@ -1,0 +1,14 @@
+simulate: The-Ouroboros-Tree — 14 layer(s)
+  policy                   : buy instantly, one prestige press per layer per 1 s (step 1 s)
+  first affordable purchase : 2 s   (author rule: < 10 s)
+  first prestige by layer   : {"ri":4,"ec":128,"re":187,"sw":314,"fl":355,"ov":387,"in":406,"so":410,"ch":859,"fr":7227,"si":18175,"ou":19352}
+  peak income              : 2.079597487564894e35 at 19396 s
+  upgrades / milestones    : 126 / 64
+  achievements earned      : 47 / 50
+  total to isEndgame()     : 5.39 h
+
+  This is a LOWER BOUND: no challenge rewards, no clickables or board content,
+  no human dithering. Achievements ARE modelled (see the count above), so this
+  floor is much closer to real play than it used to be — but still a floor.
+  Pass --challenges for the other end of the bracket.
+  Rebalance the BRIEF, then re-run — never hand-tune the code.

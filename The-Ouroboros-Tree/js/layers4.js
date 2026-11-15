@@ -32,13 +32,16 @@ addLayer("fr", {
         return lg("你的分形把更老的每一层推 ×" + format(this.effect().echoMult), "Your fractals boost every older layer by ×" + format(this.effect().echoMult))
     },
 
-    gainMult() {
-        let m = new Decimal(1)
-        m = m.div(Decimal.pow(coreDiscount(), getBuyableAmount("fr", 11)))   // 自相似核
-        m = m.div(echoWeb(["si", "ou"]))
-        m = m.div(achievementReward("fr"))
-        return m
+    // zone table — static floor: zones <1 mean CHEAPER (÷); gainMult is their product
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        add(lg("自相似核（自增益项）", "Self-Similarity Cores (self-gain)"), Decimal.pow(coreDiscount(), getBuyableAmount("fr", 11)))
+        add(lg("回声网", "Echo web"), new Decimal(1).div(echoWeb(["si", "ou"])))
+        add(lg("成就之力", "Achievements"), new Decimal(1).div(achievementReward("fr")))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     gainExp() { return manifoldMod("fr") },
 
     doReset(resettingLayer) {
@@ -73,8 +76,11 @@ addLayer("fr", {
             "Formula": { content: [
                 ["blank", "12px"],
                 ["display-text", function() {
-                    return lg("分形是地板：每道成本 = 1e12 × 2^层数 × 价格系数。自相似核（自增益项）让价格 ÷" + coreDiscount() + "^级 —— 核里长出核。",
-                              "Fractals are a floor: each costs 1e12 × 2^floors × price factors. Self-Similarity Cores (self-gain) divide the price by " + coreDiscount() + "^level — cores growing cores.")
+                    return lg("分形是地板：每道成本 = 1e12 × 2^层数 × 价格系数。自相似核（自增益项）让价格 ÷" + coreDiscount() + "^级 —— 核里长出核。（乘区越小越便宜）",
+                              "Fractals are a floor: each costs 1e12 × 2^floors × price factors. Self-Similarity Cores (self-gain) divide the price by " + coreDiscount() + "^level — cores growing cores. (Smaller zones = cheaper)")
+                }],
+                ["display-text", function() {
+                    return lg("<b>当前价格系数：</b><br>", "<b>Active price zones:</b><br>") + zoneLines(layers.fr.zoneList())
                 }],
             ] },
         },
@@ -177,8 +183,8 @@ addLayer("fr", {
             title() { return lg("自相似核", "Self-Similarity Core") },
             display() {
                 let d = tmp[this.layer].buyables[this.id]
-                return lg("自增益项：每颗核让分形价格 ÷" + coreDiscount() + "，涟漪产量 ×1.12 —— 核里长出核。<br>当前价格折扣：",
-                          "Self-gain: each core divides fractal prices by " + coreDiscount() + " and boosts ripple gain ×1.12 — cores growing cores.<br>Current discount: ")
+                return lg("自增益项：每颗核让分形价格 ÷" + coreDiscount() + "，涟漪产量 ×" + (hasUpgrade("si", 23) ? 1.2 : 1.12) + "（成本 = 30 × 5^颗数）—— 核里长出核。<br>当前价格折扣：",
+                          "Self-gain: each core divides fractal prices by " + coreDiscount() + " and boosts ripple gain ×" + (hasUpgrade("si", 23) ? 1.2 : 1.12) + " (cost = 30 × 5^owned) — cores growing cores.<br>Current discount: ")
                     + format(d.effect.discount) + lg("<br>涟漪加成：", "<br>Ripple boost: ") + format(d.effect.wide)
                     + "x" + lg("<br>数量：", "<br>Owned: ") + formatWhole(getBuyableAmount(this.layer, this.id))
                     + lg("<br>成本：", "<br>Cost: ") + format(d.cost) + " " + lg("分形", "fractals")
@@ -246,17 +252,20 @@ addLayer("si", {
     },
     softcapPower() { return new Decimal(TUNING.SOFTCAP_POW.si) },
 
-    gainMult() {
-        let m = new Decimal(1)
-        if (hasUpgrade("si", 12)) m = m.times(upgradeEffect("si", 12))    // 事件视界 — the self-term (reads best)
-        if (hasUpgrade("si", 22)) m = m.times(2)
-        if (hasUpgrade("ou", 15)) m = m.times(3)                          // 尾环共鸣
-        if (hasMilestone("si", 4)) m = m.times(100)
-        if (hasMilestone("si", 5)) m = m.times(500)
-        m = m.times(echoWeb(["ou"]))
-        m = m.times(achievementReward("si"))
-        return m
+    // zone table — gainMult is its product; the Formula tab renders the same list
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        if (hasUpgrade("si", 12)) add(lg("事件视界（自增益项）", "Event Horizon (self-gain)"), upgradeEffect("si", 12))
+        if (hasUpgrade("si", 22)) add(lg("潮汐锁定", "Tidal Lock"), new Decimal(2))
+        if (hasUpgrade("ou", 15)) add(lg("尾环共鸣（衔尾）", "Tail Resonance (Ouroboros)"), new Decimal(3))
+        if (hasMilestone("si", 4)) add(lg("视界扩张", "Horizon Expansion"), new Decimal(100))
+        if (hasMilestone("si", 5)) add(lg("视界吞噬", "Horizon Devour"), new Decimal(500))
+        add(lg("回声网", "Echo web"), echoWeb(["ou"]))
+        add(lg("成就之力", "Achievements"), achievementReward("si"))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     gainExp() { return manifoldMod("si") },
 
     doReset(resettingLayer) {
@@ -298,6 +307,9 @@ addLayer("si", {
                     if (!hasUpgrade("si", 12)) return ""
                     return lg("事件视界（自增益项）：奇点最高值^" + TUNING.SELF_EXP.si + " —— 越大的奇点吞得越快。",
                               "Event Horizon (self-gain): singularity best^" + TUNING.SELF_EXP.si + " — the bigger the singularity, the faster it devours.")
+                }],
+                ["display-text", function() {
+                    return lg("<b>当前乘区：</b><br>", "<b>Active zones:</b><br>") + zoneLines(layers.si.zoneList())
                 }],
             ] },
         },
@@ -391,7 +403,7 @@ addLayer("si", {
         },
         4: {
             requirementDescription() { return lg("拥有 3000 奇点（最高值）", "Reach 3000 singularities (best)") },
-            effectDescription() { return lg("奇点产量 ×100。", "Singularity gain ×100.") },
+            effectDescription() { return lg("「视界扩张」：奇点产量 ×100。", "Horizon Expansion: singularity gain ×100.") },
             done() { return player.si.best.gte(3000) },
             unlocked() { return hasMilestone("si", 3) },
         },
@@ -438,14 +450,17 @@ addLayer("ou", {
                   "Your ouroboros boosts every older layer by ×" + format(this.effect().echoMult) + " and retunes the whole tree in the Tuning Manifold.")
     },
 
-    gainMult() {
-        let m = new Decimal(1)
-        if (hasUpgrade("ou", 12)) m = m.times(upgradeEffect("ou", 12))    // 自噬 — the self-term (reads best)
-        if (hasMilestone("ou", 3)) m = m.times(10)
-        if (hasMilestone("ou", 4)) m = m.times(25)
-        m = m.times(achievementReward("ou"))
-        return m
+    // zone table — gainMult is its product; the Formula tab renders the same list
+    zoneList() {
+        const z = []
+        const add = (n, v) => z.push({ n, v })
+        if (hasUpgrade("ou", 12)) add(lg("自噬（自增益项）", "Autophagy (self-gain)"), upgradeEffect("ou", 12))
+        if (hasMilestone("ou", 3)) add(lg("衔尾加速", "Ouroboros Acceleration"), new Decimal(10))
+        if (hasMilestone("ou", 4)) add(lg("衔尾狂飙", "Ouroboros Rampage"), new Decimal(25))
+        add(lg("成就之力", "Achievements"), achievementReward("ou"))
+        return z
     },
+    gainMult() { return zoneProduct(this.zoneList()) },
     gainExp() { return manifoldMod("ou") },
 
     doReset(resettingLayer) {
@@ -489,6 +504,9 @@ addLayer("ou", {
                 ["display-text", function() {
                     if (!hasUpgrade("ou", 12)) return ""
                     return lg("自噬（自增益项）：衔尾最高值^0.3 —— 蛇吃自己，越长越大。", "Autophagy (self-gain): ouroboros best^0.3 — the snake eats itself, and grows.")
+                }],
+                ["display-text", function() {
+                    return lg("<b>当前乘区：</b><br>", "<b>Active zones:</b><br>") + zoneLines(layers.ou.zoneList())
                 }],
             ] },
         },
@@ -576,13 +594,13 @@ addLayer("ou", {
         },
         3: {
             requirementDescription() { return lg("咬出 12 衔尾（最高值）", "Bite 12 ouroboros (best)") },
-            effectDescription() { return lg("衔尾产量 ×10。", "Ouroboros gain ×10.") },
+            effectDescription() { return lg("「衔尾加速」：衔尾产量 ×10。", "Ouroboros Acceleration: ouroboros gain ×10.") },
             done() { return player.ou.best.gte(12) },
             unlocked() { return hasMilestone("ou", 2) },
         },
         4: {
             requirementDescription() { return lg("咬出 20 衔尾（最高值）", "Bite 20 ouroboros (best)") },
-            effectDescription() { return lg("衔尾产量 ×25。", "Ouroboros gain ×25.") },
+            effectDescription() { return lg("「衔尾狂飙」：衔尾产量 ×25。", "Ouroboros Rampage: ouroboros gain ×25.") },
             done() { return player.ou.best.gte(20) },
             unlocked() { return hasMilestone("ou", 3) },
         },

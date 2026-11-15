@@ -47,51 +47,55 @@ function canGenPoints(){
 }
 
 // ---- the root economy (wiring map: every promised boost lands here) ----
+// humZoneList is the single source of truth for the root's multiplier zones —
+// getPointGen reduces it; ri's Formula tab renders the same list.
+function humZoneList() {
+	const z = []
+	const add = (n, v) => z.push({ n, v })
+	// ri upgrades — flat/absolute bonuses first (handbook 12: exponents are bad early)
+	if (hasUpgrade("ri", 11)) add(lg("初响", "First Chime"), new Decimal(2))
+	if (hasUpgrade("ri", 14)) add(lg("共振", "Resonate"), upgradeEffect("ri", 14))          // points^0.25
+	if (hasUpgrade("ri", 22) && player.points.gte(1e4)) add(lg("浪尖", "Crest"), new Decimal(3))
+	if (hasUpgrade("ri", 23)) add(lg("众声", "Chorus"), Decimal.pow(player.a.achievements.length + 1, 0.5))
+	if (hasUpgrade("re", 22)) add(lg("频谱分析（谐振）", "Spectrum Analysis (Resonance)"), upgradeEffect("re", 22))
+	if (hasUpgrade("sw", 22)) add(lg("共振放大（驻波）", "Resonant Amplifier (Standing Wave)"), upgradeEffect("sw", 22))
+	if (hasUpgrade("fl", 14)) add(lg("信号增益（反馈环）", "Signal Gain (Feedback)"), upgradeEffect("fl", 14))
+	if (hasUpgrade("ov", 22)) add(lg("高音清洗（泛音）", "Treble Wash (Overtone)"), upgradeEffect("ov", 22))
+	if (hasUpgrade("in", 11)) add(lg("相长干涉（干波）", "Constructive Interference (Interference)"), new Decimal(2.5))
+	if (hasUpgrade("in", 31)) add(lg("全谱共振（干波）", "Full-Spectrum Resonance (Interference)"), new Decimal(3))
+	if (hasMilestone("in", 4)) add(lg("全谱轰鸣（干波）", "Full-Spectrum Roar (Interference)"), new Decimal(5))
+	if (hasUpgrade("ou", 14)) add(lg("时间闭环（衔尾）", "Closed Timelike Curve (Ouroboros)"), upgradeEffect("ou", 14))
+	if (hasMilestone("ou", 5)) add(lg("万流归一（衔尾）", "All Streams Converge (Ouroboros)"), player.si.points.add(1).pow(0.25))
+	// ri milestones — both sides (ripple zones live in layers.ri.zoneList())
+	if (hasMilestone("ri", 0)) add(lg("涟心", "Ripple Heart"), hasUpgrade("ri", 24) ? new Decimal(5) : new Decimal(2.5))
+	if (hasMilestone("ri", 2)) add(lg("叠浪", "Compound Waves"), new Decimal(3))
+	// ri buyable 石子
+	add(lg("石子", "Pebbles"), buyableEffect("ri", 11))
+	// the echo web — every deeper layer's echo boosts the root (P10)
+	add(lg("回声网", "Echo web"), echoWeb(["ec", "re", "sw", "fl", "ov", "in", "so", "ch", "fr", "si", "ou"]))
+	// named point boosts from deeper layers' first upgrades
+	if (hasUpgrade("ec", 11)) add(lg("回声定位（回声）", "Echolocate (Echo)"), new Decimal(2))
+	if (hasUpgrade("ec", 15)) add(lg("声浪（回声）", "Sound Surge (Echo)"), new Decimal(2.5))
+	if (hasUpgrade("ec", 23)) add(lg("共鸣腔（回声）", "Resonant Cavity (Echo)"), new Decimal(3))
+	if (hasUpgrade("re", 11)) add(lg("谐振基准（谐振）", "Reference Tone (Resonance)"), new Decimal(2))
+	if (hasUpgrade("sw", 11)) add(lg("地基（驻波）", "Foundation (Standing Wave)"), new Decimal(3))
+	if (hasUpgrade("fl", 11)) add(lg("反馈启动（反馈环）", "Loop Start (Feedback)"), new Decimal(2))
+	if (hasUpgrade("ov", 11)) add(lg("基频（泛音）", "Fundamental (Overtone)"), new Decimal(2))
+	if (hasUpgrade("so", 11)) add(lg("起振（自振荡）", "Kickstart (Self-Osc.)"), new Decimal(2))
+	if (hasUpgrade("ch", 11)) add(lg("蝴蝶振翅（混沌）", "Butterfly Flap (Chaos)"), new Decimal(3))
+	if (hasUpgrade("fr", 11)) add(lg("自我复制（分形）", "Self-Replication (Fractal)"), new Decimal(3))
+	if (hasUpgrade("si", 11)) add(lg("引力坍缩（奇点）", "Gravitational Collapse (Singularity)"), new Decimal(3))
+	if (hasUpgrade("ou", 11)) add(lg("衔尾之首（衔尾）", "Head of the Snake (Ouroboros)"), new Decimal(10))
+	// achievement flat rewards on the root
+	add(lg("成就之力", "Achievements"), achievementReward("points"))
+	return z
+}
+
 function getPointGen() {
 	if (!canGenPoints()) return new Decimal(0)
 
-	let gain = new Decimal(1)
-
-	// ri upgrades — flat/absolute bonuses first (handbook 12: exponents are bad early)
-	if (hasUpgrade("ri", 11)) gain = gain.times(2)
-	if (hasUpgrade("ri", 14)) gain = gain.times(upgradeEffect("ri", 14))          // points^0.25
-	if (hasUpgrade("ri", 22) && player.points.gte(1e4)) gain = gain.times(3)      // K6 crest
-	if (hasUpgrade("ri", 23)) gain = gain.times(Decimal.pow(player.a.achievements.length + 1, 0.5)) // K3
-	if (hasUpgrade("re", 22)) gain = gain.times(upgradeEffect("re", 22))          // log-shape cross
-	if (hasUpgrade("sw", 22)) gain = gain.times(upgradeEffect("sw", 22))          // (sw+1)^0.5
-	if (hasUpgrade("fl", 14)) gain = gain.times(upgradeEffect("fl", 14))
-	if (hasUpgrade("ov", 22)) gain = gain.times(upgradeEffect("ov", 22))
-	if (hasUpgrade("in", 11)) gain = gain.times(2.5)                              // 相长干涉
-	if (hasUpgrade("in", 31)) gain = gain.times(3)                                // 全谱共振
-	if (hasUpgrade("ou", 14)) gain = gain.times(upgradeEffect("ou", 14))          // (ou+1)^0.3
-	if (hasMilestone("ou", 5)) gain = gain.times(player.si.points.add(1).pow(0.25)) // 万流归一
-
-	// ri milestones
-	if (hasMilestone("ri", 0)) gain = gain.times(2.5)
-	if (hasMilestone("ri", 2)) gain = gain.times(3)
-
-	// ri buyable 石子
-	gain = gain.times(buyableEffect("ri", 11))
-
-	// the echo web — every deeper layer's echo boosts the root (P10)
-	gain = gain.times(echoWeb(["ec", "re", "sw", "fl", "ov", "in", "so", "ch", "fr", "si", "ou"]))
-
-	// named point boosts from deeper layers
-	if (hasUpgrade("ec", 11)) gain = gain.times(2)
-	if (hasUpgrade("ec", 15)) gain = gain.times(2.5)
-	if (hasUpgrade("ec", 23)) gain = gain.times(3)
-	if (hasUpgrade("re", 11)) gain = gain.times(2)
-	if (hasUpgrade("sw", 11)) gain = gain.times(3)
-	if (hasUpgrade("fl", 11)) gain = gain.times(2)
-	if (hasUpgrade("ov", 11)) gain = gain.times(2)
-	if (hasUpgrade("so", 11)) gain = gain.times(2)
-	if (hasUpgrade("ch", 11)) gain = gain.times(3)
-	if (hasUpgrade("fr", 11)) gain = gain.times(3)
-	if (hasUpgrade("si", 11)) gain = gain.times(3)
-	if (hasUpgrade("ou", 11)) gain = gain.times(10)
-
-	// achievement rewards on the root
-	gain = gain.times(achievementReward("points"))
+	// multiplicative zones (single source of truth — see humZoneList)
+	let gain = zoneProduct(humZoneList())
 
 	// the tuning manifold reshapes the root exponent (Q8, endgame)
 	gain = gain.pow(manifoldMod("points"))

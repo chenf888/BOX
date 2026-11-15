@@ -33,6 +33,9 @@
 - ☐ ri u12「泛波」：涟漪越多微响产量越高（本层 gainMult 内可见软上限）。
 - ☐ fl u12「回声记忆」/ si u12「事件视界」/ ou u12「自噬」：三个读 **best** 的自增益，故意声望后 best 保留、加成不塌。
 - ☐ 每层 Formula 页文案与实际公式一致（1e9/1e10/…/1e14，exponent 0.3）。
+- ✅ ri Formula 页「当前乘区」+「微响产量乘区」双表逐行渲染（zoneLines 与 gainMult 同源）；sw Formula 页价格系数表（÷ 半透明形态）；根指数/难度阀行不再出 undefined。
+- ✅ ri「Pebbles」微页签：buyable 卡片在页签内、真实点击购买扣费精确（B6）。
+- ✅ ec 回声室：u21 解锁 → 购买 → ec Formula 出现「Echo Chamber (self-gain)」行，u25 后效果双算（B7 接线）。
 
 ## 5. 商店与涡度（行 4–5 特色）
 
@@ -61,4 +64,4 @@
 ## 9. 失败处置
 
 - NaN 或白屏 → 见 TMT-Skill `references/core/07` Part C 崩溃表；修复后重跑 Stage 5（`node scripts/static_checks.js <game-dir>` 须 0 FAIL）。
-- 自动验证记录见 `design-brief.md` §11（三轮模拟校准）与 §12（浏览器修复 B1–B3）。
+- 自动验证记录见 `design-brief.md` §11（R1–R4 四轮模拟校准，**R4 5.39h 终稿**）与 §12（浏览器修复 B1–B7，含 B4 sim 崩溃 = sed 批量改码教训）。

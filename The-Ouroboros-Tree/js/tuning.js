@@ -67,6 +67,29 @@ function echoWeb(ids) {
 	return m
 }
 
+// render a zone list (from a layer's zoneList()) as Formula-tab lines.
+// ×value for boosts, ÷value for discounts (static floors), inactive (×1) zones are hidden —
+// the zone list itself decides what's active, so display can never drift from the math.
+function zoneLines(zones) {
+	let out = ""
+	for (let i = 0; i < zones.length; i++) {
+		const v = zones[i].v
+		if (v === undefined || v.eq(1)) continue
+		const tag = v.gt(1) ? "×" + format(v) : "÷" + format(new Decimal(1).div(v))
+		out += "<span style='" + (v.gt(1) ? "" : "opacity:0.55;") + "font-size:0.92em'>" + tag + " — " + zones[i].n + "</span><br>"
+	}
+	return out
+}
+
+// reduce a zone list to its product — the single source of truth shared by
+// gainMult / getPointGen (every tick) and the Formula tab (on render). Adding a
+// zone here wires the effect AND documents it in one edit (N-UNWIRED by construction).
+function zoneProduct(zones) {
+	let m = new Decimal(1)
+	for (let i = 0; i < zones.length; i++) m = m.times(zones[i].v)
+	return m
+}
+
 // tuning-manifold exponent modifier for a currency ("points" or a layer id).
 // 1 while the manifold is locked or the level is ≤ neutral — pow(x,1) is a no-op.
 const MANIFOLD_MAP = { points: 11, ri: 12, ec: 13, re: 21, sw: 22, fl: 23, ov: 31, in: 32, so: 33, ch: 41, fr: 42, si: 43, ou: 51 }
